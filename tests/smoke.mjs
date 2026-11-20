@@ -41,7 +41,7 @@ await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');
   assert.match(css, /--ui-edge-tl-alpha/);
   assert.match(css, /--ui-edge-br-alpha/);
-  assert.match(css, /max-resolution:\\s*1\\.25dppx/);
+  assert.match(css, /max-resolution:\s*1\.25dppx/);
   assert.match(css, /linear-gradient\(to bottom right/);
   assert.match(css, /linear-gradient\(to top left/);
   assert.match(css, /-webkit-mask-composite:\s*xor/);
