@@ -33,6 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const s3 = document.getElementById('search-custom'); if (s3) { const people = [['Ada Lovelace', 'AL', 'online'], ['Grace Hopper', 'GH', 'away'], ['Alan Turing', 'AT', 'busy'], ['Margaret Hamilton', 'MH', 'online']]; s3.data = people.map(([label, initials, status]) => ({ label, initials, status })); s3.renderItem = (it) => { const row = document.createElement('div'); row.className = 'ui-row ui-row--nowrap'; const av = document.createElement('span'); av.className = 'ui-avatar ui-avatar--sm'; av.dataset.status = it.status; av.textContent = it.initials; const name = document.createElement('span'); name.textContent = it.label; row.append(av, name); return row; }; }
   const range = document.getElementById('range-demo'); if (range) { const set = () => { document.getElementById('range-out').textContent = range.value; }; range.addEventListener('ui-input', set); set(); }
   const pg = document.getElementById('pg'); pg?.addEventListener('ui-change', (e) => (document.getElementById('pg-out').textContent = `Page ${e.detail.page}`));
+  const datePicker = document.getElementById('date-demo');
+  const dateOutput = document.getElementById('date-demo-output');
+  datePicker?.addEventListener('ui-change', (event) => { if (dateOutput) dateOutput.textContent = event.detail.value || 'No date selected'; });
+  const timePicker = document.getElementById('time-demo');
+  const timeOutput = document.getElementById('time-demo-output');
+  timePicker?.addEventListener('ui-change', () => { if (timeOutput) timeOutput.textContent = timePicker.valueLabel.textContent; });
   // Effects playground
   const stage = document.getElementById('fx-stage');
   const fxInputs = [...document.querySelectorAll('[data-fx]')];
