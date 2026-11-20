@@ -25,11 +25,47 @@
     <a href="#theming"><img src="assets/icons/palette.svg" width="14" height="14" alt=""> Theming</a>
     &nbsp;·&nbsp;
     <a href="#repository-map"><img src="assets/icons/terminal.svg" width="14" height="14" alt=""> Repository</a>
+    &nbsp;·&nbsp;
+    <a href="#quick-copy-ai-prompt">AI prompt</a>
   </p>
 </div>
 
 
 ---
+
+<h2 align="center" id="quick-copy-ai-prompt">Quick copy AI prompt</h2>
+
+> [!IMPORTANT]
+> **AI agents must read the repository instructions before they start.** This prompt is the quick entry point. The full workflow is in [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md).
+
+Copy the prompt below into your AI coding agent. Use the code block copy control. It directs the agent to both Omorphia and the Modernimal design system.
+
+~~~text
+You are my product designer and engineering agent. I am building or improving an interface with Omorphia.
+
+MANDATORY BEFORE YOU CODE:
+1. Read the complete Omorphia AGENTS.md and AI/AGENT-PROMPT.md. Follow them as required project instructions.
+2. Inspect the existing project, its architecture, features, dependencies, source files, and tests before proposing changes.
+3. Read the full Modernimal Stylesheet from https://github.com/aabhro/Stylesheets/blob/main/Styles/Modernimal%20Stylesheet.md. Do not rely on summaries.
+4. Inspect https://github.com/aabhro/Stylesheets/blob/main/Components/Modernimal.html before creating UI components.
+5. Read the Stylesheets motion/README.md, motion/SKILL.md, motion/catalog.md, motion/tokens.css, motion/patterns.css, and motion/motion.js. Use motion/demo.html to verify patterns when needed. These references are mandatory, not optional inspiration.
+
+DESIGN CHOICE:
+For a new app, meaningful UI feature, or substantial redesign, first ask which direction to use unless I have already specified it: Modernimal (recommended), another named style from my Stylesheets repository, the existing project style, or a custom direction based on my references. Summarize the proposed design and ask what I want changed. Wait for approval before substantial implementation. For a focused bug fix or documentation-only task, preserve the existing style and do not ask unnecessary questions.
+
+WHEN MODERNIMAL IS SELECTED:
+Use its near-black editorial direction, approved neutral palette, restrained surfaces, readable typography, custom controls, accessible interactions, and purposeful motion. Keep every floating menu and overlay panel at #0a0a0a. Preserve the mandatory component and motion references. Ask me to approve an app accent color before building a Modernimal-based app, and make that accent editable later. Do not apply app-level accent settings to Omorphia library defaults unless I explicitly ask.
+
+OMORPHIA RULES:
+Preserve the framework-free, CDN-first architecture and native custom-element API. Keep the top-left / bottom-right directional edge illumination. In the Omorphia repository, edit src/ as the source of truth, never hand-edit generated dist/ bundles, and use the existing build script. Preserve the public API, themes, accessibility, keyboard behavior, reduced motion, and responsive layouts. Reuse existing components before inventing new ones.
+
+VERIFY:
+Inspect the final diff. Run npm run build and npm test when working in the Omorphia repository, plus relevant checks for the target app. Report exactly what was tested and disclose anything you could not verify. Never claim success without evidence.
+
+The Stylesheets repository is private. If you cannot access its complete files, ask me for access or a local copy. Never pretend to have read a required reference.
+~~~
+
+For the full checklist and agent-specific setup, see [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md). Modernimal lives in the separate [Stylesheets repository](https://github.com/aabhro/Stylesheets).
 
 <h2 align="center" id="overview"><img src="assets/icons/info.svg" width="18" height="18" alt="">&nbsp; Overview</h2>
 
