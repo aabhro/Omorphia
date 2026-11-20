@@ -68,6 +68,7 @@ await t('README surfaces the quick AI prompt and keeps its structure valid', () 
   assert.ok(promptStart > 0 && promptStart < overviewStart, 'quick-copy prompt appears before the overview');
   const prompt = readme.slice(promptStart, overviewStart);
   assert.ok(prompt.includes('AGENTS.md'), 'quick prompt links to mandatory repository instructions');
+  assert.ok(prompt.includes('https://github.com/aabhro/Omorphia'), 'quick prompt links directly to the Omorphia repository');
   assert.ok(prompt.includes('AI/AGENT-PROMPT.md'), 'quick prompt links to the full agent prompt');
   assert.ok(prompt.includes('Modernimal Stylesheet'), 'quick prompt references the selected design system');
   assert.ok(prompt.includes('Components/Modernimal.html'), 'quick prompt references the component library');
