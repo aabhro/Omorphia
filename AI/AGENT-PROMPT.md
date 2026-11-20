@@ -32,6 +32,7 @@ Before starting, read and inspect all applicable sources:
 - Root `AGENTS.md` and this entire prompt.
 - `package.json`, `.github/workflows/ci.yml`, and `scripts/build.mjs`.
 - The relevant files in `src/css/` and `src/js/`.
+- The complete [verified Omorphia component catalog](COMPONENT-CATALOG.md). Use it as the discovery map, then inspect the exact component implementation and CSS before using anything.
 - `index.html`, `showcase/`, and the related files in `tests/` when working on the demo or public behavior.
 - Existing `README.md` examples and API documentation before changing public APIs.
 
@@ -126,6 +127,31 @@ Understand the repository boundaries:
 
 When building an application that consumes Omorphia rather than editing the library, use its public CDN or module entry points and documented components. Do not copy or modify the library internals unless the user asks.
 
+
+## Mandatory component-first workflow
+
+> [!CAUTION]
+> **DO NOT WRITE UI MARKUP UNTIL YOU HAVE IDENTIFIED THE EXISTING OMORPHIA COMPONENT OR VERIFIED THAT NO BUILT-IN MATCH EXISTS.**
+>
+> "Use Omorphia" is not satisfied by loading its stylesheet while building a parallel component system. Reuse its actual elements and primitives.
+
+For every interface task, follow this workflow before code:
+
+1. Read [AI/COMPONENT-CATALOG.md](COMPONENT-CATALOG.md) from beginning to end. It lists the actual custom elements, their roles, verified APIs, working examples, class-based primitives, and common false assumptions.
+2. Inspect `src/js/index.js` and the exact matching file in `src/js/components/` or `src/js/icons.js`. Confirm that the element is registered and verify every attribute, accepted value, property, method, event, and slot from source. Inspect the related `src/css/` module too.
+3. Inspect the corresponding demo in `index.html` and follow its actual markup pattern. Do not use a component name found only in an AI response, screenshot, framework, or unrelated library.
+4. Write a component map before implementation: **UI requirement → exact Omorphia element or CSS primitive → source file → reason it fits**. Mark missing functionality as `NO BUILT-IN COMPONENT`.
+5. Use the existing component directly. Compose existing elements when a screen needs a larger pattern. Use native HTML with documented Omorphia classes for class-based controls.
+6. Only build an app-local custom component when no existing component or composition can satisfy the real behavior. State the exact gap first, keep it local and clearly app-specific, and do not duplicate a supported control.
+7. Only add a public element to Omorphia itself when the user explicitly asks for a library feature or approves the scope. Update source, registration/exports, styles, tests, showcase, README, the component catalog, and generated `dist/` output.
+8. Before delivery, search every changed file for `<ui-` and verify every custom tag and API against the exact source/version. Remove any unnecessary home-made button, input, dropdown, modal, tabs, toast, sidebar, or other duplicate.
+
+**Never guess. Never silently substitute. Never claim that a hand-built component is an Omorphia component.** The `.ui-input`, `.ui-textarea`, `.ui-select`, `.ui-card`, `.ui-alert`, and `.ui-badge` names are CSS classes on native HTML, not custom element tags. The Modernimal component showcase is a separate visual reference. It does not define Omorphia's JavaScript API.
+
+If a needed component appears absent, re-check the catalog and source. If the exact source or installed version cannot be inspected, stop before inventing an API and report the missing evidence. A failed CSS/JS import or wrong CDN version is an integration issue to diagnose, not an excuse to recreate the controls.
+
+Include a short **Component reuse audit** in the delivery report. Name the Omorphia components/classes reused and explain any custom UI that remains.
+ 
 ## 7. Design plan before implementation
 
 After the style and product direction are approved, prepare a compact plan. For UI work, include:
