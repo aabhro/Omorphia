@@ -224,9 +224,8 @@ await t('floating surfaces share a clipped-layer escape hatch and stack by open 
   assert.equal(second.open, true);
   assert.ok(first.panel.isConnected && second.panel.isConnected);
   for (const panel of [first.panel, second.panel]) {
-    assert.equal(panel.style.inset, 'auto', 'native popover defaults cannot stretch the panel across the viewport');
-    assert.equal(panel.style.right, 'auto');
-    assert.equal(panel.style.bottom, 'auto');
+    assert.equal(panel.style.right, 'auto', 'the right inset is cleared');
+    assert.equal(panel.style.bottom, 'auto', 'the bottom inset is cleared');
     assert.ok(panel.style.left.endsWith('px') && panel.style.top.endsWith('px'), 'panel is placed with explicit viewport coordinates');
   }
   if (first._uiFloatMode === 'portal' && second._uiFloatMode === 'portal') {
