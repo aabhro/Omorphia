@@ -62,7 +62,7 @@ Preserve the framework-free, CDN-first architecture and native custom-element AP
 VERIFY:
 Inspect the final diff. Run npm run build and npm test when working in the Omorphia repository, plus relevant checks for the target app. Report exactly what was tested and disclose anything you could not verify. Never claim success without evidence.
 
-The [Stylesheets repository](https://github.com/aabhro/Stylesheets) is public. Agents can inspect every linked reference directly. For complete local access, run `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special permissions or private checkout are required.
+The [Stylesheets repository](https://github.com/aabhro/Stylesheets) is public. Agents can inspect every linked reference directly. For complete local access, run `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special permissions or prior checkout are required.
 ~~~
 
 For the full checklist and agent-specific setup, see [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md). Modernimal lives in the separate [Stylesheets repository](https://github.com/aabhro/Stylesheets).
