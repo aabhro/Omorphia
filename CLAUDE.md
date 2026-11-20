@@ -1,5 +1,8 @@
 # Claude Code instructions
 
+Repository: https://github.com/aabhro/Omorphia
+
+
 @AGENTS.md
 
 @AI/AGENT-PROMPT.md
