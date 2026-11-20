@@ -1,6 +1,6 @@
 // Smoke tests: load the *built* production bundle in jsdom and exercise every component.
 import { JSDOM } from 'jsdom';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 const dom = new JSDOM('<!doctype html><html data-ui-theme="dark"><body></body></html>', { runScripts: 'outside-only', pretendToBeVisual: true, url: 'http://localhost/' });
@@ -14,7 +14,7 @@ let passed = 0; const t = async (name, fn) => { await fn(); passed++; console.lo
 const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; d.body.append(c); return c; };
 
 await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
-await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
+await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-command', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
 await t('Modernimal neutral theme and opaque overlay defaults', () => {
   const css = readFileSync('dist/omorphia.css', 'utf8');
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
@@ -88,6 +88,47 @@ await t('README surfaces the quick AI prompt and keeps its structure valid', () 
     }
   }
   assert.equal(depth, 0, 'all collapsible README sections are closed');
+});
+await t('AI component catalog matches registered elements and every agent entry point', () => {
+  const catalog = readFileSync('AI/COMPONENT-CATALOG.md', 'utf8');
+  const componentFiles = readdirSync('src/js/components')
+    .filter((file) => file.endsWith('.js'))
+    .map((file) => 'src/js/components/' + file)
+    .concat('src/js/icons.js');
+  const registered = new Set();
+  for (const file of componentFiles) {
+    const source = readFileSync(file, 'utf8');
+    for (const match of source.matchAll(/define\(['"]([^'"]+)['"]/g)) registered.add(match[1]);
+  }
+  const inventoryStart = catalog.indexOf('## 2. Actual custom elements');
+  const inventoryEnd = catalog.indexOf('### ', inventoryStart + 10);
+  assert.ok(inventoryStart >= 0 && inventoryEnd > inventoryStart, 'catalog has a bounded custom-element inventory');
+  const inventory = catalog.slice(inventoryStart, inventoryEnd);
+  const documented = new Set([...inventory.matchAll(/&lt;(ui-[a-z-]+)&gt;/g)].map((match) => match[1]));
+  assert.deepEqual([...documented].sort(), [...registered].sort(), 'catalog lists exactly the elements registered by source');
+  assert.equal(registered.size, 14, 'expected current Omorphia custom-element count');
+  for (const falseTag of ['ui-input', 'ui-select', 'ui-card', 'ui-alert', 'ui-badge']) {
+    assert.ok(catalog.includes('<code>&lt;' + falseTag + '&gt;</code>'), falseTag + ' is explicitly identified as a non-element');
+  }
+  for (const file of [
+    'AGENTS.md',
+    'AI/AGENT-PROMPT.md',
+    'README.md',
+    'CLAUDE.md',
+    '.github/copilot-instructions.md',
+    '.cursor/rules/omorphia.mdc'
+  ]) {
+    const instructions = readFileSync(file, 'utf8');
+    assert.ok(instructions.includes('AI/COMPONENT-CATALOG.md') || instructions.includes('COMPONENT-CATALOG.md'), file + ' links the component catalog');
+  }
+  const readme = readFileSync('README.md', 'utf8');
+  const promptStart = readme.indexOf('~~~text');
+  const promptEnd = readme.indexOf('~~~', promptStart + 7);
+  const quickPrompt = readme.slice(promptStart, promptEnd);
+  assert.ok(quickPrompt.includes('AI/COMPONENT-CATALOG.md'), 'copyable prompt requires the component catalog');
+  assert.match(quickPrompt, /COMPONENT-FIRST RULE/);
+  assert.match(quickPrompt, /Do not guess/);
+  assert.match(catalog, /Component reuse audit/);
 });
 await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');
