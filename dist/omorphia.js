@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.7 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.2.0 | MIT | https://github.com/aabhro/Omorphia */
 var Omorphia = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -21,17 +21,31 @@ var Omorphia = (() => {
   // src/js/index.js
   var index_exports = {};
   __export(index_exports, {
+    UIAccordion: () => UIAccordion,
+    UIAccordionItem: () => UIAccordionItem,
     UIButton: () => UIButton,
+    UICheckbox: () => UICheckbox,
     UICommandPalette: () => UICommandPalette,
+    UIDatePicker: () => UIDatePicker,
+    UIDrawer: () => UIDrawer,
     UIDropdown: () => UIDropdown,
+    UIInput: () => UIInput,
+    UIMenuItem: () => UIMenuItem,
     UIModal: () => UIModal,
+    UIOption: () => UIOption,
     UIPagination: () => UIPagination,
     UIPopover: () => UIPopover,
+    UIRadio: () => UIRadio,
+    UIRange: () => UIRange,
     UISearch: () => UISearch,
+    UISelect: () => UISelect,
     UISidebar: () => UISidebar,
     UISidebarItem: () => UISidebarItem,
+    UISwitch: () => UISwitch,
     UITab: () => UITab,
     UITabs: () => UITabs,
+    UITextarea: () => UITextarea,
+    UITimePicker: () => UITimePicker,
     UITooltip: () => UITooltip,
     commands: () => commands,
     config: () => config2,
@@ -131,6 +145,25 @@ var Omorphia = (() => {
       } catch (_) {
       }
     }
+  }
+  function morphSurface(anchor, surface, opening = true) {
+    if (!anchor || !surface || typeof surface.animate !== "function") return null;
+    if (globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return null;
+    const a = anchor.getBoundingClientRect();
+    const b = surface.getBoundingClientRect();
+    if (!a.width || !a.height || !b.width || !b.height) return null;
+    const originX = (a.left + a.width / 2 - b.left) / b.width * 100;
+    const originY = (a.top + a.height / 2 - b.top) / b.height * 100;
+    const scaleX = Math.max(0.12, Math.min(1, a.width / b.width));
+    const scaleY = Math.max(0.12, Math.min(1, a.height / b.height));
+    surface.style.transformOrigin = originX + "% " + originY + "%";
+    const from = { opacity: 0, transform: "scale(" + scaleX + "," + scaleY + ")" };
+    const to = { opacity: 1, transform: "scale(1,1)" };
+    return surface.animate(opening ? [from, to] : [to, from], {
+      duration: opening ? 190 : 145,
+      easing: opening ? "cubic-bezier(.16,1,.3,1)" : "cubic-bezier(.4,0,1,1)",
+      fill: "both"
+    });
   }
   function inheritTheme(from, to) {
     const t = from.closest("[data-ui-theme]")?.getAttribute("data-ui-theme");
@@ -343,7 +376,7 @@ var Omorphia = (() => {
 
   // src/js/components/button.js
   var UIButton = class extends HTMLElement {
-    static observedAttributes = ["variant", "size", "icon", "icon-end", "loading", "disabled", "type", "label", "aria-label"];
+    static observedAttributes = ["variant", "size", "icon", "icon-end", "loading", "disabled", "type", "label", "aria-label", "aria-haspopup", "aria-controls", "aria-expanded", "aria-describedby"];
     connectedCallback() {
       if (!this.button) {
         const kids = [...this.childNodes];
@@ -366,6 +399,10 @@ var Omorphia = (() => {
       bool(this, "loading") ? b.setAttribute("aria-busy", "true") : b.removeAttribute("aria-busy");
       const label = this.getAttribute("label") || this.getAttribute("aria-label");
       label ? b.setAttribute("aria-label", label) : b.removeAttribute("aria-label");
+      for (const name of ["aria-haspopup", "aria-controls", "aria-expanded", "aria-describedby"]) {
+        const value = this.getAttribute(name);
+        value == null ? b.removeAttribute(name) : b.setAttribute(name, value);
+      }
       if (!hasText && !label) console.warn("[edgelit] Icon-only <ui-button> needs a label attribute for screen readers.", this);
       const start = this.getAttribute("icon"), end = this.getAttribute("icon-end");
       b.replaceChildren(...[start && icon(start), hasText && this.labelEl, end && icon(end)].filter(Boolean));
@@ -421,8 +458,7 @@ var Omorphia = (() => {
       if (this.bubble) this.sync();
     }
     describedTarget() {
-      const f = this.firstElementChild || this;
-      return f.localName === "ui-button" && f.querySelector("button") || f;
+      return this.firstElementChild || this;
     }
     sync() {
       this.bubble.textContent = this.getAttribute("content") || "";
@@ -574,7 +610,7 @@ var Omorphia = (() => {
       this.hide();
     }
     get open() {
-      return this.panel?.hasAttribute("data-open") || false;
+      return !!(this.panel?.hasAttribute("data-open") && !this.panel?.hasAttribute("data-closing"));
     }
     set open(v) {
       v ? this.show() : this.hide();
@@ -582,11 +618,15 @@ var Omorphia = (() => {
     reposition = () => place(this.trigger, this.panel, { placement: this.getAttribute("placement") || "bottom-start", offset: 6 });
     show() {
       if (this.open || !this.panel) return;
+      this._morphToken = (this._morphToken || 0) + 1;
+      this._morphAnimation?.cancel?.();
+      this.panel.removeAttribute("data-closing");
       inheritTheme(this, this.panel);
       this.enhance?.();
       showFloat(this.panel);
       this.reposition();
       this.focusTarget?.setAttribute("aria-expanded", "true");
+      this._morphAnimation = morphSurface(this.trigger, this.panel, true);
       this._off = whileOpen({ anchor: this, floating: this.panel, reposition: this.reposition, onClose: (why) => {
         this.hide();
         if (why === "escape") this.focusTarget?.focus();
@@ -597,8 +637,26 @@ var Omorphia = (() => {
     hide() {
       if (!this.open) return;
       this._off?.();
-      hideFloat(this.panel);
+      this._off = null;
       this.focusTarget?.setAttribute("aria-expanded", "false");
+      const token = this._morphToken = (this._morphToken || 0) + 1;
+      this.panel.setAttribute("data-closing", "");
+      this._morphAnimation?.cancel?.();
+      const animation = morphSurface(this.trigger, this.panel, false);
+      if (animation) {
+        this._morphAnimation = animation;
+        animation.finished.catch(() => {
+        }).then(() => {
+          if (this._morphToken !== token || this.open) return;
+          hideFloat(this.panel);
+          this.panel.removeAttribute("data-closing");
+          animation.cancel();
+          this._morphAnimation = null;
+        });
+      } else {
+        hideFloat(this.panel);
+        this.panel.removeAttribute("data-closing");
+      }
       emit(this, "ui-close");
     }
     toggle() {
@@ -634,7 +692,7 @@ var Omorphia = (() => {
         this.panel.addEventListener("click", (e) => {
           const it = e.target.closest(".ui-menu-item");
           if (!it || it.disabled || it.getAttribute("aria-disabled") === "true") return;
-          emit(this, "ui-select", { item: it, value: it.dataset.value ?? it.textContent.trim() });
+          emit(this, "ui-select", { item: it, value: it.dataset.value ?? it.getAttribute("value") ?? it.textContent.trim() });
           this.hide();
           this.focusTarget?.focus();
         });
@@ -1561,8 +1619,1200 @@ var Omorphia = (() => {
     });
   }
 
+  // src/js/components/form-controls.js
+  var valueOf = (el, name, fallback = "") => el.getAttribute(name) ?? fallback;
+  var truth = (el, name) => bool(el, name);
+  var hiddenInput = (type, name, value) => {
+    const input = h("input", { type, id: uid("ui-form-value"), name: name || "", value: value ?? "", tabindex: "-1", "aria-hidden": "true" });
+    input.hidden = true;
+    return input;
+  };
+  var UIInput = class extends HTMLElement {
+    static observedAttributes = ["type", "value", "placeholder", "name", "disabled", "readonly", "required", "clearable", "size", "label", "autocomplete", "icon"];
+    connectedCallback() {
+      if (this.input) return;
+      const initial = this.textContent;
+      const allowed = ["text", "email", "password", "search", "url", "tel", "number"];
+      const type = allowed.includes(valueOf(this, "type", "text")) ? valueOf(this, "type", "text") : "text";
+      this.input = h("input", {
+        class: "ui-input-control",
+        type,
+        id: this.id ? this.id + "-control" : uid("ui-input"),
+        name: valueOf(this, "name"),
+        placeholder: valueOf(this, "placeholder"),
+        autocomplete: valueOf(this, "autocomplete"),
+        required: truth(this, "required"),
+        disabled: truth(this, "disabled"),
+        readonly: truth(this, "readonly"),
+        "aria-label": valueOf(this, "label") || valueOf(this, "placeholder") || "Text input"
+      });
+      this.input.value = valueOf(this, "value", initial);
+      this.frame = h("div", { class: "ui-input-frame" });
+      this.iconNode = this.hasAttribute("icon") ? h("ui-icon", { name: this.getAttribute("icon") }) : null;
+      if (this.iconNode) this.frame.append(this.iconNode);
+      this.frame.append(this.input);
+      this.clearButton = h("button", { class: "ui-input-clear", type: "button", "aria-label": "Clear input", hidden: true }, h("ui-icon", { name: "x", size: "14" }));
+      this.clearButton.addEventListener("click", () => {
+        this.input.value = "";
+        this.sync();
+        this.input.focus();
+        this.emitValue("ui-input");
+        this.emitValue("ui-change");
+      });
+      this.frame.append(this.clearButton);
+      this.replaceChildren(this.frame);
+      this.input.addEventListener("input", () => {
+        this.sync();
+        this.emitValue("ui-input");
+      });
+      this.input.addEventListener("change", () => this.emitValue("ui-change"));
+      this.sync();
+    }
+    attributeChangedCallback(name) {
+      if (!this.input) return;
+      if (name === "value") this.input.value = this.getAttribute("value") || "";
+      if (name === "icon") this.syncIcon();
+      this.sync();
+    }
+    syncIcon() {
+      const name = this.getAttribute("icon");
+      if (name && !this.iconNode) {
+        this.iconNode = h("ui-icon", { name });
+        this.frame.prepend(this.iconNode);
+      } else if (!name && this.iconNode) {
+        this.iconNode.remove();
+        this.iconNode = null;
+      } else if (name && this.iconNode) this.iconNode.setAttribute("name", name);
+    }
+    sync() {
+      const allowed = ["text", "email", "password", "search", "url", "tel", "number"];
+      const type = valueOf(this, "type", "text");
+      if (allowed.includes(type) && this.input.type !== type) this.input.type = type;
+      const attrs = ["placeholder", "name", "autocomplete", "disabled", "readonly", "required", "aria-label"];
+      for (const key of attrs) {
+        const source = key === "aria-label" ? this.getAttribute("label") || this.getAttribute("placeholder") || "Text input" : this.getAttribute(key);
+        if (source == null || source === "false") this.input.removeAttribute(key);
+        else this.input.setAttribute(key, source === "" ? "" : source);
+      }
+      this.classList.toggle("is-disabled", this.input.disabled);
+      if (this.clearButton) {
+        this.clearButton.hidden = !this.input.value || !truth(this, "clearable");
+        this.clearButton.disabled = this.input.disabled;
+      }
+      const size = this.getAttribute("size");
+      this.frame.dataset.size = size === "sm" || size === "lg" ? size : "md";
+    }
+    emitValue(name) {
+      emit(this, name, { value: this.value, input: this.input });
+    }
+    get value() {
+      return this.input?.value ?? valueOf(this, "value");
+    }
+    set value(value) {
+      if (!this.input) this.setAttribute("value", value ?? "");
+      else {
+        this.input.value = value ?? "";
+        this.setAttribute("value", value ?? "");
+        this.sync();
+      }
+    }
+    get disabled() {
+      return !!this.input?.disabled;
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    focus(options) {
+      this.input?.focus(options);
+    }
+    select() {
+      this.input?.select();
+    }
+    checkValidity() {
+      return this.input?.checkValidity() ?? true;
+    }
+    reportValidity() {
+      return this.input?.reportValidity() ?? true;
+    }
+  };
+  define("ui-input", UIInput);
+  var UITextarea = class extends HTMLElement {
+    static observedAttributes = ["value", "placeholder", "name", "disabled", "readonly", "required", "rows", "maxlength", "resize", "label", "auto-grow"];
+    connectedCallback() {
+      if (this.textarea) return;
+      const initial = this.textContent;
+      this.textarea = h("textarea", {
+        class: "ui-textarea-control",
+        name: valueOf(this, "name"),
+        placeholder: valueOf(this, "placeholder"),
+        rows: valueOf(this, "rows", "3"),
+        maxlength: valueOf(this, "maxlength"),
+        disabled: truth(this, "disabled"),
+        readonly: truth(this, "readonly"),
+        required: truth(this, "required"),
+        "aria-label": valueOf(this, "label") || valueOf(this, "placeholder") || "Text area"
+      });
+      this.textarea.value = valueOf(this, "value", initial);
+      this.frame = h("div", { class: "ui-textarea-frame" }, this.textarea);
+      this.count = h("span", { class: "ui-textarea-count", "aria-live": "polite" });
+      this.append(this.frame, this.count);
+      this.textarea.addEventListener("input", () => {
+        this.sync();
+        emit(this, "ui-input", { value: this.value });
+      });
+      this.textarea.addEventListener("change", () => emit(this, "ui-change", { value: this.value }));
+      this.sync();
+    }
+    attributeChangedCallback(name) {
+      if (!this.textarea) return;
+      if (name === "value") this.textarea.value = this.getAttribute("value") || "";
+      this.sync();
+    }
+    sync() {
+      for (const key of ["placeholder", "name", "rows", "maxlength", "disabled", "readonly", "required"]) {
+        const v = this.getAttribute(key);
+        if (v == null || v === "false") this.textarea.removeAttribute(key);
+        else this.textarea.setAttribute(key, v);
+      }
+      this.textarea.setAttribute("aria-label", this.getAttribute("label") || this.getAttribute("placeholder") || "Text area");
+      this.dataset.resize = valueOf(this, "resize", "vertical");
+      if (truth(this, "auto-grow")) {
+        this.textarea.style.height = "auto";
+        this.textarea.style.height = Math.min(this.textarea.scrollHeight, 420) + "px";
+      }
+      const max = +(this.getAttribute("maxlength") || 0);
+      this.count.textContent = max ? this.textarea.value.length + " / " + max : "";
+      this.count.hidden = !max;
+    }
+    get value() {
+      return this.textarea?.value ?? valueOf(this, "value");
+    }
+    set value(value) {
+      if (!this.textarea) this.setAttribute("value", value ?? "");
+      else {
+        this.textarea.value = value ?? "";
+        this.setAttribute("value", value ?? "");
+        this.sync();
+      }
+    }
+    get disabled() {
+      return !!this.textarea?.disabled;
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    focus(options) {
+      this.textarea?.focus(options);
+    }
+    checkValidity() {
+      return this.textarea?.checkValidity() ?? true;
+    }
+    reportValidity() {
+      return this.textarea?.reportValidity() ?? true;
+    }
+  };
+  define("ui-textarea", UITextarea);
+  var UIChoice = class extends HTMLElement {
+    static observedAttributes = ["checked", "disabled", "name", "value", "label", "required"];
+    role = "checkbox";
+    connectedCallback() {
+      if (this.control) return;
+      const label = this.getAttribute("label") || this.textContent.trim();
+      this.control = h("button", { class: "ui-choice-control", type: "button", role: this.role, "aria-checked": "false", "aria-label": label || this.role, disabled: truth(this, "disabled") });
+      this.indicator = h("span", { class: "ui-choice-indicator", "aria-hidden": "true" });
+      this.text = h("span", { class: "ui-choice-label", text: label });
+      this.formValue = hiddenInput("hidden", "", valueOf(this, "value", "on"));
+      this.replaceChildren(this.control, this.text, this.formValue);
+      this.control.addEventListener("click", () => this.toggle());
+      this.control.addEventListener("keydown", (event) => this.onKey(event));
+      this.control.prepend(this.indicator);
+      this.sync();
+    }
+    attributeChangedCallback() {
+      if (this.control) this.sync();
+    }
+    get checked() {
+      return this.hasAttribute("checked");
+    }
+    set checked(value) {
+      this.toggleAttribute("checked", !!value);
+    }
+    get disabled() {
+      return this.hasAttribute("disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    toggle() {
+      if (this.disabled) return;
+      this.checked = !this.checked;
+      this.sync();
+      this.changed();
+    }
+    onKey(event) {
+      if ((event.key === " " || event.key === "Enter") && this.role !== "radio") {
+        event.preventDefault();
+        this.toggle();
+      } else if (this.role === "radio" && ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) {
+        event.preventDefault();
+        const name = this.getAttribute("name");
+        if (!name) return;
+        const scope = this.closest("form") || this.ownerDocument;
+        const group = [...scope.querySelectorAll("ui-radio")].filter((item) => item.getAttribute("name") === name && !item.disabled);
+        const at = group.indexOf(this);
+        const next = group[(at + (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) + group.length) % group.length];
+        if (next) {
+          next.toggle();
+          next.control.focus();
+        }
+      }
+    }
+    sync() {
+      this.control.setAttribute("aria-checked", String(this.checked));
+      this.control.setAttribute("aria-disabled", String(this.disabled));
+      this.control.setAttribute("aria-required", String(bool(this, "required")));
+      this.control.disabled = this.disabled;
+      this.control.tabIndex = this.disabled ? -1 : 0;
+      this.classList.toggle("is-checked", this.checked);
+      this.classList.toggle("is-disabled", this.disabled);
+      const label = this.getAttribute("label") || this.text.textContent || this.role;
+      this.control.setAttribute("aria-label", label);
+      this.formValue.name = this.checked ? this.getAttribute("name") || "" : "";
+      this.formValue.value = valueOf(this, "value", "on");
+      this.formValue.disabled = this.disabled;
+      if (this.text.textContent !== (this.getAttribute("label") || this.text.textContent)) this.text.textContent = this.getAttribute("label");
+    }
+    changed() {
+      emit(this, "ui-input", { checked: this.checked, value: valueOf(this, "value", "on") });
+      emit(this, "ui-change", { checked: this.checked, value: valueOf(this, "value", "on") });
+    }
+    focus(options) {
+      this.control?.focus(options);
+    }
+  };
+  var UICheckbox = class extends UIChoice {
+    role = "checkbox";
+  };
+  define("ui-checkbox", UICheckbox);
+  var UIRadio = class extends UIChoice {
+    role = "radio";
+    toggle() {
+      if (this.disabled || this.checked) return;
+      const name = this.getAttribute("name");
+      if (name) {
+        const scope = this.closest("form") || this.ownerDocument;
+        [...scope.querySelectorAll("ui-radio")].filter((item) => item !== this && item.getAttribute("name") === name).forEach((item) => {
+          item.checked = false;
+          item.sync();
+        });
+      }
+      this.checked = true;
+      this.sync();
+      this.changed();
+    }
+  };
+  define("ui-radio", UIRadio);
+  var UISwitch = class extends UIChoice {
+    role = "switch";
+  };
+  define("ui-switch", UISwitch);
+  var UIRange = class extends HTMLElement {
+    static observedAttributes = ["min", "max", "step", "value", "disabled", "name", "label"];
+    connectedCallback() {
+      if (this.track) return;
+      this.min = Number(valueOf(this, "min", "0"));
+      if (!Number.isFinite(this.min)) this.min = 0;
+      this.max = Number(valueOf(this, "max", "100"));
+      if (!Number.isFinite(this.max) || !(this.max > this.min)) this.max = this.min + 1;
+      this.step = Math.max(1e-6, Number(valueOf(this, "step", "1")) || 1);
+      this._value = this.clamp(Number(valueOf(this, "value", String(this.min))) || this.min);
+      this.track = h("div", { class: "ui-range-track", role: "slider", tabindex: truth(this, "disabled") ? -1 : 0, "aria-label": valueOf(this, "label", "Range"), "aria-valuemin": this.min, "aria-valuemax": this.max });
+      this.fill = h("span", { class: "ui-range-fill" });
+      this.thumb = h("span", { class: "ui-range-thumb", "aria-hidden": "true" });
+      this.hiddenValue = hiddenInput("hidden", valueOf(this, "name"), this._value);
+      this.track.append(this.fill, this.thumb);
+      this.replaceChildren(this.track, this.hiddenValue);
+      this.track.addEventListener("pointerdown", (e) => this.startDrag(e));
+      this.track.addEventListener("keydown", (e) => this.onKey(e));
+      this.sync();
+    }
+    attributeChangedCallback() {
+      if (this.track) this.sync();
+    }
+    clamp(value) {
+      const stepped = this.min + Math.round((value - this.min) / this.step) * this.step;
+      const decimals = Math.min(6, Math.max(0, (String(this.step).split(".")[1] || "").length));
+      const rounded = Number(stepped.toFixed(decimals));
+      return Math.min(this.max, Math.max(this.min, rounded));
+    }
+    setFromPointer(event) {
+      const rect = this.track.getBoundingClientRect();
+      if (!rect.width) return;
+      const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+      this.value = this.min + ratio * (this.max - this.min);
+      emit(this, "ui-input", { value: this.value });
+    }
+    startDrag(event) {
+      if (this.hasAttribute("disabled") || event.button !== 0) return;
+      this.track.focus();
+      this.setFromPointer(event);
+      const move = (e) => this.setFromPointer(e);
+      const end = () => {
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", end);
+        document.removeEventListener("pointercancel", end);
+        emit(this, "ui-change", { value: this.value });
+      };
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", end, { once: true });
+      document.addEventListener("pointercancel", end, { once: true });
+    }
+    onKey(event) {
+      let next = this.value;
+      if (event.key === "ArrowRight" || event.key === "ArrowUp") next += this.step;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next -= this.step;
+      else if (event.key === "PageUp") next += this.step * 10;
+      else if (event.key === "PageDown") next -= this.step * 10;
+      else if (event.key === "Home") next = this.min;
+      else if (event.key === "End") next = this.max;
+      else return;
+      event.preventDefault();
+      this.value = next;
+      emit(this, "ui-input", { value: this.value });
+      emit(this, "ui-change", { value: this.value });
+    }
+    sync() {
+      this.min = Number(valueOf(this, "min", "0"));
+      if (!Number.isFinite(this.min)) this.min = 0;
+      this.max = Number(valueOf(this, "max", "100"));
+      if (!Number.isFinite(this.max) || !(this.max > this.min)) this.max = this.min + 1;
+      this.step = Math.max(1e-6, Number(valueOf(this, "step", "1")) || 1);
+      if (this.hasAttribute("value")) {
+        const raw = Number(this.getAttribute("value"));
+        this._value = this.clamp(Number.isFinite(raw) ? raw : this.min);
+      } else this._value = this.clamp(this._value);
+      const ratio = (this._value - this.min) / (this.max - this.min);
+      this.style.setProperty("--ui-range-ratio", String(ratio));
+      this.track.setAttribute("aria-valuenow", String(this._value));
+      this.track.setAttribute("aria-disabled", String(this.hasAttribute("disabled")));
+      this.track.tabIndex = this.hasAttribute("disabled") ? -1 : 0;
+      this.hiddenValue.name = this.hasAttribute("disabled") ? "" : valueOf(this, "name");
+      this.hiddenValue.value = String(this._value);
+    }
+    get value() {
+      return this._value;
+    }
+    set value(value) {
+      this._value = this.clamp(Number(value) || 0);
+      this.setAttribute("value", String(this._value));
+      if (this.track) this.sync();
+    }
+    get disabled() {
+      return this.hasAttribute("disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    focus(options) {
+      this.track?.focus(options);
+    }
+  };
+  define("ui-range", UIRange);
+
+  // src/js/components/select.js
+  var UIOption = class extends HTMLElement {
+    static observedAttributes = ["value", "label", "description", "disabled", "selected", "icon"];
+    get value() {
+      return this.getAttribute("value") ?? this.textContent.trim();
+    }
+    get label() {
+      return this.getAttribute("label") || this.textContent.trim();
+    }
+    get disabled() {
+      return bool(this, "disabled");
+    }
+  };
+  define("ui-option", UIOption);
+  var UISelect = class extends HTMLElement {
+    static observedAttributes = ["value", "placeholder", "disabled", "multiple", "searchable", "name", "label", "placement", "required"];
+    connectedCallback() {
+      if (this.popover) return;
+      const children = [...this.children];
+      this.options = children.filter((child) => child.localName === "ui-option");
+      const selected = this.options.filter((option) => option.hasAttribute("selected")).map((option) => option.value);
+      this._value = this.hasAttribute("value") ? bool(this, "multiple") ? this.getAttribute("value").split(",").filter(Boolean) : this.getAttribute("value") : bool(this, "multiple") ? selected : selected[0] || "";
+      const trigger = h("button", { class: "ui-select-trigger", type: "button", slot: "trigger", "aria-label": this.getAttribute("label") || this.getAttribute("placeholder") || "Choose an option" });
+      this.trigger = trigger;
+      this.valueLabel = h("span", { class: "ui-select-value" });
+      trigger.append(this.valueLabel, h("ui-icon", { class: "ui-select-chevron", name: "chevron-down" }));
+      this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, trigger);
+      this.panelContent = h("div", { class: "ui-select-panel", role: "presentation" });
+      if (bool(this, "searchable")) {
+        this.search = h("ui-input", { class: "ui-select-search", placeholder: "Search options\u2026", label: "Filter options", "aria-label": "Filter options" });
+        this.search.addEventListener("ui-input", () => this.filter(this.search.value));
+        this.panelContent.append(this.search);
+      }
+      this.list = h("div", { class: "ui-select-list", role: "listbox", "aria-label": this.getAttribute("label") || "Options" });
+      this.formFields = h("span", { class: "ui-sr-only", "aria-hidden": "true" });
+      this.list.addEventListener("click", (event) => {
+        const item = event.target.closest("[data-ui-option-index]");
+        if (item) this.choose(this.options[Number(item.dataset.uiOptionIndex)]);
+      });
+      this.list.addEventListener("keydown", (event) => this.onListKey(event));
+      this.panelContent.append(this.list, ...this.options);
+      this.popover.append(this.panelContent);
+      this.popover.addEventListener("ui-open", () => {
+        this.renderOptions();
+        if (this.search) {
+          this.search.value = "";
+          this.filter("");
+          this.search.focus();
+        } else this.focusSelected();
+      });
+      this.popover.addEventListener("ui-close", () => {
+        if (this.search) this.search.value = "";
+      });
+      trigger.addEventListener("keydown", (event) => {
+        if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+          event.preventDefault();
+          this.popover.show();
+          if (!this.search) this.focusSelected(event.key === "ArrowUp" ? -1 : 1);
+        }
+      });
+      this.replaceChildren(this.popover, this.formFields);
+      this.sync();
+    }
+    attributeChangedCallback(name) {
+      if (!this.popover) return;
+      if (name === "value" || name === "multiple") this._value = this.multiple ? (this.getAttribute("value") || "").split(",").filter(Boolean) : this.getAttribute("value") || "";
+      this.sync();
+    }
+    get multiple() {
+      return bool(this, "multiple");
+    }
+    get disabled() {
+      return bool(this, "disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    get value() {
+      return this._value ?? (this.multiple ? [] : "");
+    }
+    set value(value) {
+      this._value = this.multiple ? Array.isArray(value) ? value.map(String) : value ? [String(value)] : [] : String(value ?? "");
+      this.setAttribute("value", this.multiple ? this._value.join(",") : this._value);
+      if (this.popover) this.sync();
+    }
+    get selectedOptions() {
+      return this.options.filter((option) => this.multiple ? this.value.includes(option.value) : this.value === option.value);
+    }
+    sync() {
+      if (!this.multiple && Array.isArray(this._value)) this._value = this._value[0] || "";
+      if (this.multiple && !Array.isArray(this._value)) this._value = this._value ? [String(this._value)] : [];
+      this.trigger.disabled = this.disabled;
+      this.trigger.setAttribute("aria-disabled", String(this.disabled));
+      this.trigger.setAttribute("aria-required", String(bool(this, "required")));
+      this.trigger.setAttribute("aria-haspopup", "listbox");
+      this.trigger.setAttribute("aria-expanded", String(this.popover.open));
+      this.list.setAttribute("aria-multiselectable", String(this.multiple));
+      this.renderLabel();
+      this.updateFormFields();
+      this.renderOptions();
+    }
+    renderLabel() {
+      const selected = this.selectedOptions;
+      this.valueLabel.replaceChildren();
+      if (!selected.length) this.valueLabel.textContent = this.getAttribute("placeholder") || "Select an option";
+      else if (this.multiple) {
+        selected.forEach((option) => this.valueLabel.append(h("span", { class: "ui-select-chip", text: option.label })));
+      } else this.valueLabel.textContent = selected[0].label;
+      this.trigger.classList.toggle("is-placeholder", !selected.length);
+    }
+    updateFormFields() {
+      const name = this.disabled ? "" : this.getAttribute("name") || "";
+      const values = this.multiple ? this.value : this.value ? [this.value] : [];
+      this.formFields.replaceChildren(...values.map((value) => h("input", { type: "hidden", id: uid("ui-select-value"), name, value })));
+    }
+    renderOptions() {
+      if (!this.list) return;
+      this.list.replaceChildren();
+      this.options.forEach((option, index) => {
+        const selected = this.multiple ? this.value.includes(option.value) : this.value === option.value;
+        const row = h("button", {
+          class: "ui-select-option",
+          type: "button",
+          role: "option",
+          "data-ui-option-index": String(index),
+          "aria-selected": String(selected),
+          "aria-disabled": String(option.disabled),
+          disabled: option.disabled
+        });
+        if (option.hasAttribute("icon")) row.append(h("ui-icon", { name: option.getAttribute("icon") }));
+        const content = h("span", { class: "ui-select-option-copy" }, h("span", { class: "ui-select-option-label", text: option.label }));
+        if (option.hasAttribute("description")) content.append(h("span", { class: "ui-select-option-desc", text: option.getAttribute("description") }));
+        row.append(content, h("ui-icon", { class: "ui-select-option-check", name: "check" }));
+        this.list.append(row);
+      });
+    }
+    filter(query) {
+      const q = String(query || "").trim().toLowerCase();
+      this.list.querySelectorAll("[data-ui-option-index]").forEach((row) => {
+        const option = this.options[Number(row.dataset.uiOptionIndex)];
+        row.hidden = !!q && !(option.label + " " + (option.getAttribute("description") || "")).toLowerCase().includes(q);
+      });
+    }
+    focusSelected(direction = 1) {
+      const rows = [...this.list.querySelectorAll("[data-ui-option-index]:not([hidden]):not(:disabled)")];
+      const selected = rows.find((row) => row.getAttribute("aria-selected") === "true");
+      (selected || (direction < 0 ? rows.at(-1) : rows[0]))?.focus();
+    }
+    onListKey(event) {
+      const rows = [...this.list.querySelectorAll("[data-ui-option-index]:not([hidden]):not(:disabled)")];
+      const at = rows.indexOf(this.ownerDocument.activeElement);
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        rows[(at + (event.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length]?.focus();
+      } else if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        (event.key === "Home" ? rows[0] : rows.at(-1))?.focus();
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        this.popover.hide();
+        this.trigger.focus();
+      } else if (event.key === "Tab") this.popover.hide();
+    }
+    choose(option) {
+      if (!option || option.disabled || this.disabled) return;
+      let value;
+      if (this.multiple) {
+        const values = new Set(this.value);
+        values.has(option.value) ? values.delete(option.value) : values.add(option.value);
+        value = [...values];
+      } else value = option.value;
+      this.value = value;
+      emit(this, "ui-input", { value: this.value, option });
+      emit(this, "ui-change", { value: this.value, option, selectedOptions: this.selectedOptions });
+      if (!this.multiple) {
+        this.popover.hide();
+        this.trigger.focus();
+      }
+    }
+    focus(options) {
+      this.trigger?.focus(options);
+    }
+    formResetCallback() {
+      this.value = this.getAttribute("value") || "";
+    }
+  };
+  define("ui-select", UISelect);
+
+  // src/js/components/date-time-picker.js
+  var pad = (value) => String(value).padStart(2, "0");
+  var isoDate = (date) => date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+  var parseDate = (value) => {
+    if (!value) return null;
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) return null;
+    const date = /* @__PURE__ */ new Date(0);
+    date.setHours(0, 0, 0, 0);
+    date.setFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
+  };
+  var dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || void 0, { year: "numeric", month: "short", day: "numeric" }).format(date);
+  var UIDatePicker = class extends HTMLElement {
+    static observedAttributes = ["value", "min", "max", "disabled", "placeholder", "locale", "week-start", "placement", "name", "label"];
+    connectedCallback() {
+      if (this.popover) return;
+      this._value = parseDate(this.getAttribute("value")) ? this.getAttribute("value") : "";
+      const initial = parseDate(this._value) || /* @__PURE__ */ new Date();
+      this.view = new Date(initial.getFullYear(), initial.getMonth(), 1);
+      this.trigger = h("button", { class: "ui-date-trigger", type: "button", slot: "trigger", "aria-haspopup": "dialog", "aria-label": this.getAttribute("label") || "Choose date" });
+      this.valueLabel = h("span", { class: "ui-date-value" });
+      this.trigger.append(h("ui-icon", { name: "calendar" }), this.valueLabel, h("ui-icon", { name: "chevron-down", class: "ui-date-chevron" }));
+      this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
+      this.calendar = h("div", { class: "ui-calendar", role: "dialog", "aria-label": "Choose a date" });
+      this.header = h("div", { class: "ui-calendar-head" });
+      this.prev = h("button", { class: "ui-calendar-nav", type: "button", "aria-label": "Previous month" }, h("ui-icon", { name: "chevron-left" }));
+      this.monthLabel = h("strong", { class: "ui-calendar-month" });
+      this.next = h("button", { class: "ui-calendar-nav", type: "button", "aria-label": "Next month" }, h("ui-icon", { name: "chevron-right" }));
+      this.header.append(this.prev, this.monthLabel, this.next);
+      this.weekdays = h("div", { class: "ui-calendar-weekdays", role: "row" });
+      this.days = h("div", { class: "ui-calendar-days", role: "grid", "aria-label": "Calendar days" });
+      this.footer = h("div", { class: "ui-calendar-footer" });
+      this.clearButton = h("button", { class: "ui-calendar-text-action", type: "button", text: "Clear" });
+      this.todayButton = h("button", { class: "ui-calendar-text-action", type: "button", text: "Today" });
+      this.footer.append(this.clearButton, this.todayButton);
+      this.calendar.append(this.header, this.weekdays, this.days, this.footer);
+      this.prev.addEventListener("click", () => this.changeMonth(-1));
+      this.next.addEventListener("click", () => this.changeMonth(1));
+      this.days.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-date]");
+        if (button && !button.disabled) this.select(button.dataset.date);
+      });
+      this.days.addEventListener("keydown", (event) => this.onDayKey(event));
+      this.clearButton.addEventListener("click", () => this.select(""));
+      this.todayButton.addEventListener("click", () => this.select(isoDate(/* @__PURE__ */ new Date())));
+      this.popover.addEventListener("ui-open", () => this.focusCurrentDay());
+      this.popover.append(this.calendar);
+      this.hiddenValue = h("input", { type: "hidden", id: uid("ui-date-value"), name: this.getAttribute("name") || "", value: this._value });
+      this.hiddenValue.hidden = true;
+      this.replaceChildren(this.popover, this.hiddenValue);
+      this.sync();
+    }
+    attributeChangedCallback() {
+      if (this.popover) this.sync();
+    }
+    get value() {
+      return this._value || "";
+    }
+    set value(value) {
+      const valid = parseDate(String(value || ""));
+      this._value = valid ? isoDate(valid) : "";
+      if (valid) this.view = new Date(valid.getFullYear(), valid.getMonth(), 1);
+      this.setAttribute("value", this._value);
+      if (this.calendar) this.sync();
+    }
+    get date() {
+      return parseDate(this.value);
+    }
+    focus(options) {
+      this.trigger?.focus(options);
+    }
+    get disabled() {
+      return this.hasAttribute("disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    isDisabled(date) {
+      const iso = isoDate(date);
+      const min = this.getAttribute("min"), max = this.getAttribute("max");
+      return min && iso < min || max && iso > max || this.disabled;
+    }
+    sync() {
+      const parsed = parseDate(this.getAttribute("value"));
+      if (this.hasAttribute("value")) this._value = parsed ? isoDate(parsed) : "";
+      this.trigger.disabled = this.disabled;
+      this.trigger.setAttribute("aria-disabled", String(this.disabled));
+      this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute("locale")) : this.getAttribute("placeholder") || "Choose date";
+      this.trigger.classList.toggle("is-placeholder", !this.value);
+      this.trigger.setAttribute("aria-expanded", String(this.popover.open));
+      this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
+      this.hiddenValue.value = this.value;
+      this.renderCalendar();
+    }
+    renderCalendar() {
+      const year = this.view.getFullYear(), month = this.view.getMonth();
+      this.monthLabel.textContent = new Intl.DateTimeFormat(this.getAttribute("locale") || void 0, { month: "long", year: "numeric" }).format(this.view);
+      const weekStart = Math.min(6, Math.max(0, Number(this.getAttribute("week-start") || 0)));
+      const base = new Date(year, month, 1);
+      const offset = (base.getDay() - weekStart + 7) % 7;
+      const start = new Date(year, month, 1 - offset);
+      const formatter = new Intl.DateTimeFormat(this.getAttribute("locale") || void 0, { weekday: "short" });
+      this.weekdays.replaceChildren(...Array.from({ length: 7 }, (_, i) => {
+        const day = new Date(2024, 0, 7 + (weekStart + i) % 7);
+        return h("span", { role: "columnheader", text: formatter.format(day) });
+      }));
+      const items = [];
+      for (let i = 0; i < 42; i++) {
+        const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+        const iso = isoDate(date), outside = date.getMonth() !== month, selected = iso === this.value;
+        const button = h("button", {
+          class: "ui-calendar-day" + (outside ? " is-outside" : "") + (selected ? " is-selected" : ""),
+          type: "button",
+          role: "gridcell",
+          "data-date": iso,
+          "aria-label": dateLabel(date, this.getAttribute("locale")),
+          "aria-selected": String(selected),
+          "aria-current": iso === isoDate(/* @__PURE__ */ new Date()) ? "date" : null,
+          disabled: this.isDisabled(date),
+          tabindex: selected ? "0" : "-1"
+        }, String(date.getDate()));
+        items.push(button);
+      }
+      this.days.replaceChildren(...items);
+    }
+    changeMonth(amount) {
+      this.view = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
+      this.renderCalendar();
+    }
+    focusCurrentDay() {
+      const target = this.days.querySelector('[data-date="' + (this.value || isoDate(/* @__PURE__ */ new Date())) + '"]:not(:disabled)') || this.days.querySelector("button:not(:disabled)");
+      target?.focus();
+    }
+    onDayKey(event) {
+      const current = parseDate(event.target.dataset.date);
+      if (!current) return;
+      let next = null;
+      if (event.key === "ArrowLeft") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 1);
+      else if (event.key === "ArrowRight") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
+      else if (event.key === "ArrowUp") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 7);
+      else if (event.key === "ArrowDown") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 7);
+      else if (event.key === "Home") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - (current.getDay() - Number(this.getAttribute("week-start") || 0) + 7) % 7);
+      else if (event.key === "End") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + (6 - (current.getDay() - Number(this.getAttribute("week-start") || 0) + 7) % 7));
+      else if (event.key === "PageUp") next = new Date(current.getFullYear(), current.getMonth() - (event.shiftKey ? 12 : 1), current.getDate());
+      else if (event.key === "PageDown") next = new Date(current.getFullYear(), current.getMonth() + (event.shiftKey ? 12 : 1), current.getDate());
+      else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        this.select(event.target.dataset.date);
+        return;
+      } else return;
+      event.preventDefault();
+      if (next.getMonth() !== this.view.getMonth() || next.getFullYear() !== this.view.getFullYear()) this.view = new Date(next.getFullYear(), next.getMonth(), 1);
+      this.renderCalendar();
+      this.days.querySelector('[data-date="' + isoDate(next) + '"]:not(:disabled)')?.focus();
+    }
+    select(value) {
+      const date = parseDate(value);
+      if (date && this.isDisabled(date)) return;
+      this._value = date ? isoDate(date) : "";
+      this.setAttribute("value", this._value);
+      if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+      this.sync();
+      emit(this, "ui-input", { value: this.value, date: this.date });
+      emit(this, "ui-change", { value: this.value, date: this.date });
+      if (date || !value) {
+        this.popover.hide();
+        this.trigger.focus();
+      }
+    }
+  };
+  define("ui-date-picker", UIDatePicker);
+  var parseTime = (value) => {
+    const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value || "");
+    return match ? { hour: Number(match[1]), minute: Number(match[2]) } : { hour: 9, minute: 0 };
+  };
+  var UITimePicker = class extends HTMLElement {
+    static observedAttributes = ["value", "disabled", "placeholder", "format", "step", "placement", "label", "name"];
+    connectedCallback() {
+      if (this.popover) return;
+      this._time = parseTime(this.getAttribute("value"));
+      this.trigger = h("button", { class: "ui-time-trigger", type: "button", slot: "trigger", "aria-haspopup": "dialog", "aria-label": this.getAttribute("label") || "Choose time" });
+      this.valueLabel = h("span", { class: "ui-time-value" });
+      this.trigger.append(h("ui-icon", { name: "clock" }), this.valueLabel, h("ui-icon", { name: "chevron-down" }));
+      this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
+      this.panel = h("div", { class: "ui-time-panel", role: "dialog", "aria-label": "Choose time" });
+      this.columns = h("div", { class: "ui-time-columns" });
+      this.hourList = h("div", { class: "ui-time-list", role: "listbox", "aria-label": "Hours" });
+      this.minuteList = h("div", { class: "ui-time-list", role: "listbox", "aria-label": "Minutes" });
+      this.period = h("button", { class: "ui-time-period", type: "button", hidden: true });
+      this.columns.append(this.hourList, h("span", { class: "ui-time-separator", text: ":" }), this.minuteList, this.period);
+      this.panel.append(h("div", { class: "ui-time-title", text: "Select a time" }), this.columns);
+      this.popover.append(this.panel);
+      this.hourList.addEventListener("click", (event) => {
+        const item = event.target.closest("[data-hour]");
+        if (item) this.setPart("hour", Number(item.dataset.hour));
+      });
+      this.minuteList.addEventListener("click", (event) => {
+        const item = event.target.closest("[data-minute]");
+        if (item) this.setPart("minute", Number(item.dataset.minute));
+      });
+      this.hourList.addEventListener("keydown", (event) => this.onListKey(event));
+      this.minuteList.addEventListener("keydown", (event) => this.onListKey(event));
+      this.period.addEventListener("click", () => {
+        this._time.hour = (this._time.hour + 12) % 24;
+        this.commit();
+      });
+      this.popover.addEventListener("ui-open", () => this.focusTime());
+      this.hiddenValue = h("input", { type: "hidden", id: uid("ui-time-value"), name: this.getAttribute("name") || "", value: this.value });
+      this.hiddenValue.hidden = true;
+      this.replaceChildren(this.popover, this.hiddenValue);
+      this.sync();
+    }
+    attributeChangedCallback() {
+      if (this.popover) this.sync();
+    }
+    get value() {
+      const time = this._time || parseTime(this.getAttribute("value"));
+      return pad(time.hour) + ":" + pad(time.minute);
+    }
+    set value(value) {
+      this._time = parseTime(value);
+      this.setAttribute("value", this.value);
+      if (this.popover) this.sync();
+    }
+    get disabled() {
+      return this.hasAttribute("disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    focus(options) {
+      this.trigger?.focus(options);
+    }
+    get is12Hour() {
+      return this.getAttribute("format") === "12h";
+    }
+    sync() {
+      if (this.hasAttribute("value")) this._time = parseTime(this.getAttribute("value"));
+      this.trigger.disabled = this.disabled;
+      this.trigger.setAttribute("aria-disabled", String(this.disabled));
+      const hour = this._time.hour, displayHour = this.is12Hour ? (hour + 11) % 12 + 1 : hour;
+      this.valueLabel.textContent = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ":" + pad(this._time.minute) + (this.is12Hour ? hour < 12 ? " AM" : " PM" : "");
+      this.period.hidden = !this.is12Hour;
+      this.period.textContent = hour < 12 ? "AM" : "PM";
+      this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
+      this.hiddenValue.value = this.value;
+      const step = Math.min(30, Math.max(1, Number(this.getAttribute("step") || 5)));
+      const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
+      this.hourList.replaceChildren(...hours.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-hour": String(this.is12Hour ? n % 12 : n), "aria-selected": String(displayHour === n) }, this.is12Hour ? String(n) : pad(n))));
+      const minutes = [];
+      for (let n = 0; n < 60; n += step) minutes.push(n);
+      if (!minutes.includes(this._time.minute)) minutes.push(this._time.minute);
+      minutes.sort((a, b) => a - b);
+      this.minuteList.replaceChildren(...minutes.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-minute": String(n), "aria-selected": String(this._time.minute === n) }, pad(n))));
+    }
+    onListKey(event) {
+      const rows = [...event.currentTarget.querySelectorAll("button")];
+      const at = rows.indexOf(event.target);
+      let next = null;
+      if (event.key === "ArrowDown") next = rows[(at + 1) % rows.length];
+      else if (event.key === "ArrowUp") next = rows[(at - 1 + rows.length) % rows.length];
+      else if (event.key === "Home") next = rows[0];
+      else if (event.key === "End") next = rows.at(-1);
+      if (next) {
+        event.preventDefault();
+        next.focus();
+        next.scrollIntoView?.({ block: "nearest" });
+      }
+    }
+    setPart(part, value) {
+      if (part === "hour") {
+        if (this.is12Hour) {
+          const pm = this._time.hour >= 12;
+          this._time.hour = value % 12 + (pm ? 12 : 0);
+        } else this._time.hour = value;
+      } else this._time.minute = value;
+      this.commit();
+    }
+    commit() {
+      this.setAttribute("value", this.value);
+      this.sync();
+      emit(this, "ui-input", { value: this.value });
+      emit(this, "ui-change", { value: this.value });
+    }
+    focusTime() {
+      this.hourList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: "center" });
+      this.minuteList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: "center" });
+    }
+  };
+  define("ui-time-picker", UITimePicker);
+
+  // src/js/components/drawer.js
+  var drawers = /* @__PURE__ */ new Set();
+  var previousOverflow = "";
+  var UIDrawer = class extends HTMLElement {
+    static observedAttributes = ["open", "heading", "placement", "size", "persistent"];
+    connectedCallback() {
+      if (this.panel) {
+        this.sync();
+        if (bool(this, "open")) this.show();
+        else this.hidden = true;
+        return;
+      }
+      const children = [...this.childNodes];
+      const headerSlot = children.filter((node) => node.nodeType === 1 && node.getAttribute("slot") === "header");
+      const footerSlot = children.filter((node) => node.nodeType === 1 && node.getAttribute("slot") === "footer");
+      const bodyNodes = children.filter((node) => !headerSlot.includes(node) && !footerSlot.includes(node));
+      this.backdrop = h("div", { class: "ui-drawer-backdrop", "aria-hidden": "true" });
+      this.panel = h("section", { class: "ui-drawer-panel", role: "dialog", "aria-modal": "true", tabindex: "-1", "aria-labelledby": uid("ui-drawer-title") });
+      this.header = h("header", { class: "ui-drawer-header" });
+      this.heading = h("h2", { class: "ui-drawer-title", id: this.panel.getAttribute("aria-labelledby"), text: this.getAttribute("heading") || "" });
+      this.closeButton = h("ui-button", { variant: "subtle", icon: "x", label: "Close drawer", size: "sm" });
+      this.closeButton.addEventListener("click", () => this.close("dismiss"));
+      this.header.append(...headerSlot, this.heading, this.closeButton);
+      this.body = h("div", { class: "ui-drawer-body" }, bodyNodes);
+      this.footer = h("footer", { class: "ui-drawer-footer" }, footerSlot);
+      this.panel.append(this.header, this.body, this.footer);
+      this.append(this.backdrop, this.panel);
+      this.backdrop.addEventListener("click", () => {
+        if (!bool(this, "persistent")) this.close("backdrop");
+      });
+      this.addEventListener("keydown", (event) => this.onKey(event));
+      this.sync();
+      if (bool(this, "open")) this.show();
+      else this.hidden = true;
+    }
+    attributeChangedCallback(name) {
+      if (!this.panel) return;
+      if (name === "open") {
+        if (bool(this, "open")) this.show();
+        else this.close("attribute");
+      } else this.sync();
+    }
+    sync() {
+      this.heading.textContent = this.getAttribute("heading") || this.heading.textContent;
+      this.dataset.placement = ["left", "right", "top", "bottom"].includes(this.getAttribute("placement")) ? this.getAttribute("placement") : "right";
+      this.dataset.size = this.getAttribute("size") || "md";
+      this.closeButton.hidden = bool(this, "persistent");
+    }
+    get open() {
+      return this.dataset.state === "open";
+    }
+    set open(value) {
+      value ? this.show() : this.close();
+    }
+    show() {
+      if (this.open || !this.panel) return;
+      clearTimeout(this._closeTimer);
+      this._previousFocus = this.ownerDocument.activeElement;
+      if (!drawers.size) {
+        previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+      }
+      drawers.add(this);
+      this.hidden = false;
+      this.dataset.state = "open";
+      this.setAttribute("open", "");
+      requestAnimationFrame(() => {
+        if (!this.open) return;
+        const target = this.panel.querySelector('[autofocus],ui-button:not([disabled]),ui-input:not([disabled]),ui-textarea:not([disabled]),ui-select:not([disabled]),ui-date-picker:not([disabled]),ui-time-picker:not([disabled]),ui-checkbox:not([disabled]),ui-radio:not([disabled]),ui-switch:not([disabled]),ui-range:not([disabled]),ui-accordion-item:not([disabled]),[href],[tabindex]:not([tabindex="-1"])');
+        (target || this.panel).focus?.({ preventScroll: true });
+      });
+      emit(this, "ui-open");
+    }
+    close(reason = "") {
+      if (!this.panel || !this.dataset.state || this.dataset.state === "closing") return;
+      this.dataset.state = "closing";
+      this.removeAttribute("open");
+      drawers.delete(this);
+      if (!drawers.size) document.body.style.overflow = previousOverflow;
+      clearTimeout(this._closeTimer);
+      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      this._closeTimer = setTimeout(() => {
+        if (this.dataset.state !== "closing") return;
+        delete this.dataset.state;
+        this.hidden = true;
+        this._previousFocus?.isConnected && this._previousFocus.focus?.({ preventScroll: true });
+        emit(this, "ui-close", { reason });
+      }, reduced ? 0 : 240);
+    }
+    toggle() {
+      this.open ? this.close() : this.show();
+    }
+    onKey(event) {
+      if (event.key === "Escape" && !bool(this, "persistent")) {
+        event.preventDefault();
+        this.close("escape");
+        return;
+      }
+      if (event.key !== "Tab" || !this.open) return;
+      const focusable = [...this.panel.querySelectorAll('ui-button:not([disabled]),ui-input:not([disabled]),ui-textarea:not([disabled]),ui-select:not([disabled]),ui-date-picker:not([disabled]),ui-time-picker:not([disabled]),ui-checkbox:not([disabled]),ui-radio:not([disabled]),ui-switch:not([disabled]),ui-range:not([disabled]),ui-accordion-item:not([disabled]),[href],[tabindex]:not([tabindex="-1"])')].filter((node) => !node.hidden && node.getAttribute("aria-hidden") !== "true");
+      if (!focusable.length) {
+        event.preventDefault();
+        this.panel.focus();
+        return;
+      }
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !this.panel.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !this.panel.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    disconnectedCallback() {
+      clearTimeout(this._closeTimer);
+      if (drawers.delete(this) && !drawers.size) document.body.style.overflow = previousOverflow;
+      delete this.dataset.state;
+      this.hidden = true;
+      this._previousFocus = null;
+    }
+  };
+  define("ui-drawer", UIDrawer);
+
+  // src/js/components/accordion.js
+  var UIAccordionItem = class extends HTMLElement {
+    static observedAttributes = ["open", "heading", "disabled", "value"];
+    connectedCallback() {
+      if (this.trigger) return;
+      const content = [...this.childNodes];
+      this.trigger = h("button", { class: "ui-accordion-trigger", type: "button", "aria-expanded": "false", "aria-controls": uid("ui-accordion-panel") });
+      this.heading = h("span", { class: "ui-accordion-heading", text: this.getAttribute("heading") || "" });
+      this.chevron = icon("chevron-down");
+      this.trigger.append(this.heading, this.chevron);
+      this.panel = h("div", { class: "ui-accordion-panel", id: this.trigger.getAttribute("aria-controls"), role: "region", "aria-label": this.getAttribute("heading") || "Accordion content" });
+      this.inner = h("div", { class: "ui-accordion-inner" }, content);
+      this.panel.append(this.inner);
+      this.replaceChildren(this.trigger, this.panel);
+      this.trigger.addEventListener("click", () => this.toggle());
+      this.trigger.addEventListener("keydown", (event) => this.onKey(event));
+      this.sync();
+      queueMicrotask(() => this.closest("ui-accordion")?.sync());
+    }
+    attributeChangedCallback() {
+      if (this.trigger) this.sync();
+      queueMicrotask(() => this.closest("ui-accordion")?.sync());
+    }
+    get open() {
+      return bool(this, "open");
+    }
+    set open(value) {
+      this.toggleAttribute("open", !!value);
+    }
+    get disabled() {
+      return bool(this, "disabled");
+    }
+    set disabled(value) {
+      this.toggleAttribute("disabled", !!value);
+    }
+    get value() {
+      return this.getAttribute("value") || this.getAttribute("heading") || "";
+    }
+    sync() {
+      const heading = this.getAttribute("heading");
+      if (heading != null) this.heading.textContent = heading;
+      this.trigger.disabled = this.disabled;
+      this.trigger.setAttribute("aria-expanded", String(this.open));
+      this.trigger.setAttribute("aria-disabled", String(this.disabled));
+      this.panel.setAttribute("aria-hidden", String(!this.open));
+      this.inner.inert = !this.open;
+      this.dataset.state = this.open ? "open" : "closed";
+      this.panel.dataset.state = this.open ? "open" : "closed";
+    }
+    toggle() {
+      if (this.disabled) return;
+      if (!this.open) this.closest("ui-accordion")?._beforeOpen(this);
+      this.open = !this.open;
+      this.sync();
+      emit(this, "ui-change", { value: this.value, open: this.open, item: this });
+      this.closest("ui-accordion")?._itemChanged(this);
+    }
+    onKey(event) {
+      const root = this.closest("ui-accordion");
+      const items = root ? root.items.filter((item) => !item.disabled) : [this];
+      const at = items.indexOf(this);
+      let target = null;
+      if (event.key === "ArrowDown") target = items[(at + 1) % items.length];
+      else if (event.key === "ArrowUp") target = items[(at - 1 + items.length) % items.length];
+      else if (event.key === "Home") target = items[0];
+      else if (event.key === "End") target = items.at(-1);
+      if (target) {
+        event.preventDefault();
+        target.trigger.focus();
+      }
+    }
+    focus(options) {
+      this.trigger?.focus(options);
+    }
+    show() {
+      if (!this.open && !this.disabled) this.toggle();
+    }
+    hide() {
+      if (this.open) this.toggle();
+    }
+  };
+  define("ui-accordion-item", UIAccordionItem);
+  var UIAccordion = class extends HTMLElement {
+    static observedAttributes = ["multiple", "value"];
+    connectedCallback() {
+      if (!this._observer) {
+        this._observer = new MutationObserver(() => this.sync());
+        this._observer.observe(this, { childList: true });
+      }
+      this.sync();
+    }
+    disconnectedCallback() {
+      this._observer?.disconnect();
+    }
+    attributeChangedCallback() {
+      if (this.isConnected) this.sync();
+    }
+    get items() {
+      return [...this.children].filter((child) => child.localName === "ui-accordion-item");
+    }
+    get multiple() {
+      return bool(this, "multiple");
+    }
+    _beforeOpen(item) {
+      if (!this.multiple) this.items.forEach((other) => {
+        if (other !== item && other.open) {
+          other.open = false;
+          other.sync();
+        }
+      });
+    }
+    _itemChanged(item) {
+      if (!this.multiple) {
+        if (item.open) this.setAttribute("value", item.value);
+        else if (this.getAttribute("value") === item.value) this.removeAttribute("value");
+      }
+      emit(this, "ui-change", { value: this.multiple ? this.items.filter((entry) => entry.open).map((entry) => entry.value) : item.open ? item.value : "", item, open: item.open });
+    }
+    sync() {
+      const items = this.items;
+      if (this.multiple) return;
+      const wanted = this.getAttribute("value");
+      let kept = false;
+      items.forEach((item) => {
+        if (wanted != null && item.value === wanted) {
+          item.open = true;
+          kept = true;
+        } else if (item.open && kept) item.open = false;
+        else if (item.open && wanted != null && item.value !== wanted) item.open = false;
+        if (item.trigger) item.sync();
+      });
+      if (wanted == null) {
+        const first = items.find((item) => item.open);
+        if (first) {
+          first.open = true;
+          items.filter((item) => item !== first).forEach((item) => {
+            item.open = false;
+            if (item.trigger) item.sync();
+          });
+        }
+      }
+    }
+  };
+  define("ui-accordion", UIAccordion);
+
+  // src/js/components/menu-item.js
+  var UIMenuItem = class extends HTMLElement {
+    static observedAttributes = ["value", "label", "icon", "shortcut", "disabled", "destructive"];
+    connectedCallback() {
+      if (this.labelNode) return;
+      const label = this.getAttribute("label") || this.textContent.trim();
+      this.classList.add("ui-menu-item");
+      this.setAttribute("role", "menuitem");
+      this.tabIndex = -1;
+      this.labelNode = h("span", { class: "ui-menu-item-label", text: label });
+      this.replaceChildren(
+        this.hasAttribute("icon") ? icon(this.getAttribute("icon")) : null,
+        this.labelNode,
+        this.hasAttribute("shortcut") ? h("span", { class: "ui-menu-shortcut", text: this.getAttribute("shortcut") }) : null
+      );
+      this.addEventListener("keydown", (event) => {
+        if (this.hasAttribute("disabled")) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          this.click();
+        }
+      });
+      this.sync();
+    }
+    attributeChangedCallback() {
+      if (this.labelNode) this.sync();
+    }
+    sync() {
+      const disabled = this.hasAttribute("disabled");
+      this.setAttribute("aria-disabled", String(disabled));
+      this.tabIndex = -1;
+      this.classList.toggle("ui-menu-item--danger", this.hasAttribute("destructive"));
+      if (this.labelNode && this.hasAttribute("label")) this.labelNode.textContent = this.getAttribute("label");
+    }
+    get value() {
+      return this.getAttribute("value") ?? this.getAttribute("label") ?? this.textContent.trim();
+    }
+    get disabled() {
+      return this.hasAttribute("disabled");
+    }
+  };
+  define("ui-menu-item", UIMenuItem);
+
   // src/js/index.js
-  var version = true ? "1.1.7" : "dev";
+  var version = true ? "1.2.0" : "dev";
   var theme = {
     get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
     set(mode, el = document.documentElement) {
