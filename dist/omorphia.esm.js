@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.6 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.1.7 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -1517,7 +1517,7 @@ if (typeof document !== "undefined" && !window.__omorphiaToggle) {
 }
 
 // src/js/index.js
-var version = true ? "1.1.6" : "dev";
+var version = true ? "1.1.7" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {
