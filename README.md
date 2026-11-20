@@ -36,7 +36,7 @@
 <h2 align="center" id="quick-copy-ai-prompt">Quick copy AI prompt</h2>
 
 > [!IMPORTANT]
-> **AI agents must read the repository instructions before they start.** This prompt is the quick entry point. The full workflow is in [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md).
+> **AI agents must read the repository instructions before they start.** This prompt is the quick entry point. The mandatory component inventory is in [`AI/COMPONENT-CATALOG.md`](AI/COMPONENT-CATALOG.md). The full workflow is in [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md).
 
 Copy the prompt below into your AI coding agent. Use the code block copy control. It directs the agent to both Omorphia and the Modernimal design system.
 
@@ -47,11 +47,15 @@ Omorphia repository: https://github.com/aabhro/Omorphia
 Use this exact repository as the source of truth. Inspect its README, AGENTS.md, AI/AGENT-PROMPT.md, source, tests, and build configuration before making changes.
 
 MANDATORY BEFORE YOU CODE:
+0. Read AI/COMPONENT-CATALOG.md in full. It is the verified inventory of Omorphia's real elements, attributes, events, methods, slots, and CSS primitives.
 1. Read the complete Omorphia AGENTS.md and AI/AGENT-PROMPT.md. Follow them as required project instructions.
 2. Inspect the existing project, its architecture, features, dependencies, source files, and tests before proposing changes.
 3. Read the full Modernimal Stylesheet from https://github.com/aabhro/Stylesheets/blob/main/Styles/Modernimal%20Stylesheet.md. Do not rely on summaries.
 4. Inspect https://github.com/aabhro/Stylesheets/blob/main/Components/Modernimal.html before creating UI components.
 5. Read the Stylesheets motion/README.md, motion/SKILL.md, motion/catalog.md, motion/tokens.css, motion/patterns.css, and motion/motion.js. Use motion/demo.html to verify patterns when needed. These references are mandatory, not optional inspiration.
+
+COMPONENT-FIRST RULE (NON-NEGOTIABLE):
+Before writing UI markup, identify each requirement and map it to an exact Omorphia element or class-based primitive. Inspect that component's source in src/js/ and CSS in src/css/, then follow the matching index.html example. Do not guess tag names, attributes, methods, events, or slots. Do not create a home-made Button, Modal, Dropdown, Tabs, Search, Toast, or Sidebar when Omorphia already provides it. Classes such as .ui-input, .ui-select, .ui-card, and .ui-alert belong on native HTML. If no built-in match exists, mark it NO BUILT-IN COMPONENT and use native HTML/classes first. Only add custom UI after proving the exact gap. Before delivery, audit every <ui-...> tag against the catalog and source.
 
 DESIGN CHOICE:
 For a new app, meaningful UI feature, or substantial redesign, first ask which direction to use unless I have already specified it: Modernimal (recommended), another named style from my Stylesheets repository, the existing project style, or a custom direction based on my references. Summarize the proposed design and ask what I want changed. Wait for approval before substantial implementation. For a focused bug fix or documentation-only task, preserve the existing style and do not ask unnecessary questions.
@@ -68,7 +72,7 @@ Inspect the final diff. Run npm run build and npm test when working in the Omorp
 The [Stylesheets repository](https://github.com/aabhro/Stylesheets) is public. Agents can inspect every linked reference directly. For complete local access, run `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special permissions or prior checkout are required.
 ~~~
 
-For the full checklist and agent-specific setup, see [`AGENTS.md`](AGENTS.md) and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md). Modernimal lives in the separate [Stylesheets repository](https://github.com/aabhro/Stylesheets).
+For the component inventory and agent setup, see [`AI/COMPONENT-CATALOG.md`](AI/COMPONENT-CATALOG.md), [`AGENTS.md`](AGENTS.md), and [`AI/AGENT-PROMPT.md`](AI/AGENT-PROMPT.md). Modernimal lives in the separate [Stylesheets repository](https://github.com/aabhro/Stylesheets).
 
 <h2 align="center" id="overview"><img src="assets/icons/info.svg" width="18" height="18" alt="">&nbsp; Overview</h2>
 
