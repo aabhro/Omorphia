@@ -6,8 +6,7 @@
 
 /* 1. Declare the gradient on every element that can carry the effect (resolved per element, so hover/state overrides work). */
 :is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-check-input, .ui-radio-input, .ui-switch-track, .ui-range,
-    .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble, .ui-toast, .ui-alert, .ui-badge, .ui-avatar, .ui-command, .ui-search-panel,
-    .ui-sidebar-panel, .ui-tabs-list, .ui-page-btn, .ui-collapsible, .ui-progress, .ui-kbd-edge) {
+    .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble, .ui-toast, .ui-command, .ui-search-panel, .ui-kbd-edge) {
   --_tl: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-tl-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
   --_br: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-br-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
   --_base: color-mix(in srgb, var(--ui-edge-color) calc(var(--ui-edge-base-alpha) * 100%), transparent);
@@ -19,11 +18,11 @@
 
 /* 2. Pseudo-element elements: mask the gradient down to the border ring. */
 :is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
-    .ui-toast, .ui-alert, .ui-badge, .ui-avatar, .ui-command, .ui-search-panel, .ui-sidebar-panel, .ui-tabs-list, .ui-page-btn, .ui-collapsible, .ui-progress) {
+    .ui-toast, .ui-command, .ui-search-panel) {
   position: relative;
 }
 :is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
-    .ui-toast, .ui-alert, .ui-badge, .ui-avatar, .ui-command, .ui-search-panel, .ui-sidebar-panel, .ui-tabs-list, .ui-page-btn, .ui-collapsible, .ui-progress)::before {
+    .ui-toast, .ui-command, .ui-search-panel)::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: var(--ui-edge-width);
   border-radius: inherit; background: var(--_edge); pointer-events: none;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -35,7 +34,7 @@
 .ui-command, .ui-modal-panel { position: fixed; }
 
 /* 3. Hover brightens the lights (interactive surfaces only). */
-:is(.ui-btn:not(:disabled), .ui-card--interactive, .ui-page-btn:not(:disabled), .ui-edge--interactive):hover { --ui-edge-intensity: calc(var(--ui-edge-hover-boost) * 1); }
+:is(.ui-btn:not(:disabled), .ui-card--interactive, .ui-edge--interactive):hover { --ui-edge-intensity: calc(var(--ui-edge-hover-boost) * 1); }
 :is(.ui-input, .ui-textarea, .ui-select):focus-within { --ui-edge-intensity: 2; --ui-edge-color: var(--ui-accent); }
 
 /* 4. Elements where a pseudo-element is impossible: paint the gradient as a border-box background. */
