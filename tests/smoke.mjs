@@ -60,19 +60,31 @@ await t('decorative perimeter outlines are omitted', () => {
   assert.match(buttons, /\.ui-btn:focus-visible\{outline:none/);
   assert.doesNotMatch(base, /\.ui-summary\):focus-visible/);
 });
-await t('README uses a minimal logo and title masthead', () => {
+await t('README surfaces the quick AI prompt and keeps its structure valid', () => {
   const readme = readFileSync('README.md', 'utf8');
-  const header = readme.slice(0, readme.indexOf('## Overview'));
-  assert.ok(header.startsWith('<p align="center">'));
-  assert.ok(header.includes('assets/logo.svg'));
-  assert.ok(header.includes('<h1 align="center">Omorphia</h1>'));
-  assert.doesNotMatch(header, /readme-cover\\.svg|img\\.shields\\.io|<hr|<div|background/i);
-  assert.doesNotMatch(readme, /<details\\s+open/i);
+  const promptStart = readme.indexOf('id="quick-copy-ai-prompt"');
+  const overviewStart = readme.indexOf('id="overview"');
+  assert.ok(readme.startsWith('<div align="center">'), 'README keeps its current centered masthead');
+  assert.ok(promptStart > 0 && promptStart < overviewStart, 'quick-copy prompt appears before the overview');
+  const prompt = readme.slice(promptStart, overviewStart);
+  assert.ok(prompt.includes('AGENTS.md'), 'quick prompt links to mandatory repository instructions');
+  assert.ok(prompt.includes('AI/AGENT-PROMPT.md'), 'quick prompt links to the full agent prompt');
+  assert.ok(prompt.includes('Modernimal Stylesheet'), 'quick prompt references the selected design system');
+  assert.ok(prompt.includes('Components/Modernimal.html'), 'quick prompt references the component library');
+  assert.ok(prompt.includes('motion/SKILL.md') && prompt.includes('motion/catalog.md'), 'quick prompt references the motion system');
+  assert.ok(prompt.includes('~~~text') && prompt.includes('~~~'), 'quick prompt has a copyable text block');
+  assert.doesNotMatch(readme, /<details\s+open/i);
   let depth = 0;
   for (const line of readme.split(String.fromCharCode(10))) {
     if (line.trim() === '<details>') depth++;
-    if (line.startsWith('~~~')) assert.ok(depth > 0, 'every fenced example is inside collapsed details');
-    if (line.trim() === '</details>') depth--;
+    if (line.startsWith('~~~')) {
+      const inQuickPrompt = readme.indexOf(line) >= promptStart && readme.indexOf(line) < overviewStart;
+      assert.ok(depth > 0 || inQuickPrompt, 'fenced examples are inside a collapsed detail or the quick-copy prompt');
+    }
+    if (line.trim() === '</details>') {
+      depth--;
+      assert.ok(depth >= 0, 'details sections close in order');
+    }
   }
   assert.equal(depth, 0, 'all collapsible README sections are closed');
 });
