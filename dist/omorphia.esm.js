@@ -64,6 +64,71 @@ function highlight(text, ranges = []) {
   return frag;
 }
 var hasPopover = () => typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
+var floatLayer = null;
+var floatSequence = 0;
+function getFloatLayer() {
+  if (floatLayer?.isConnected) return floatLayer;
+  floatLayer = document.querySelector("[data-ui-floating-layer]");
+  if (!floatLayer) {
+    floatLayer = document.createElement("div");
+    floatLayer.setAttribute("data-ui-floating-layer", "");
+    Object.assign(floatLayer.style, {
+      position: "fixed",
+      inset: "0",
+      zIndex: "1800",
+      pointerEvents: "none",
+      isolation: "isolate",
+      overflow: "visible"
+    });
+    (document.body || document.documentElement).append(floatLayer);
+  }
+  return floatLayer;
+}
+function portalFloat(el) {
+  if (el._uiFloatMode && el.parentNode === floatLayer) {
+    el.style.zIndex = String(++floatSequence);
+    return;
+  }
+  const inherited = [];
+  if (typeof getComputedStyle === "function") {
+    const computed = getComputedStyle(el);
+    for (let i = 0; i < computed.length; i++) {
+      const name = computed[i];
+      if (!name.startsWith("--")) continue;
+      const value = computed.getPropertyValue(name);
+      if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
+    }
+  }
+  if (el.parentNode && !el._uiFloatPlaceholder) {
+    el._uiFloatPlaceholder = document.createComment("ui-float-origin");
+    el.parentNode.insertBefore(el._uiFloatPlaceholder, el);
+  }
+  const layer = getFloatLayer();
+  if (el.parentNode !== layer) layer.append(el);
+  el._uiFloatSavedVars = inherited.map(([name, value, oldValue, priority]) => {
+    el.style.setProperty(name, value);
+    return [name, oldValue, priority];
+  });
+  if (el._uiFloatSavedZ == null) el._uiFloatSavedZ = el.style.zIndex;
+  el.style.zIndex = String(++floatSequence);
+  el._uiFloatMode = "portal";
+}
+function restoreFloat(el) {
+  const marker = el._uiFloatPlaceholder;
+  if (marker?.parentNode) marker.parentNode.insertBefore(el, marker);
+  else el.remove();
+  marker?.remove();
+  el._uiFloatPlaceholder = null;
+  for (const [name, value, priority] of el._uiFloatSavedVars || []) {
+    if (value) el.style.setProperty(name, value, priority);
+    else el.style.removeProperty(name);
+  }
+  el._uiFloatSavedVars = null;
+  if (el._uiFloatSavedZ != null) el.style.zIndex = el._uiFloatSavedZ;
+  else el.style.removeProperty("z-index");
+  el._uiFloatSavedZ = null;
+  el._uiFloatMode = null;
+}
 function floatEl(el) {
   el.classList.add("ui-float");
   if (hasPopover()) el.setAttribute("popover", "manual");
@@ -71,21 +136,25 @@ function floatEl(el) {
 }
 function showFloat(el) {
   el.setAttribute("data-open", "");
-  if (hasPopover()) {
+  portalFloat(el);
+  if (hasPopover() && el.hasAttribute("popover")) {
     try {
       if (!el.matches(":popover-open")) el.showPopover();
+      el._uiFloatMode = "native-portal";
     } catch (_) {
+      el.removeAttribute("popover");
     }
   }
 }
 function hideFloat(el) {
   el.removeAttribute("data-open");
-  if (hasPopover()) {
+  if (el._uiFloatMode === "native-portal") {
     try {
       if (el.matches(":popover-open")) el.hidePopover();
     } catch (_) {
     }
   }
+  if (el._uiFloatMode === "portal" || el._uiFloatMode === "native-portal") restoreFloat(el);
 }
 function morphSurface(anchor, surface, opening = true) {
   if (!anchor || !surface || typeof surface.animate !== "function") return null;
@@ -112,37 +181,50 @@ function inheritTheme(from, to) {
   else to.removeAttribute("data-ui-theme");
 }
 function place(anchor, floating, { placement = "bottom", offset = 8, matchWidth = false } = {}) {
+  if (!anchor || !floating) return;
   const a = anchor.getBoundingClientRect();
-  const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  const vw = Math.max(1, document.documentElement.clientWidth || window.innerWidth);
+  const vh = Math.max(1, document.documentElement.clientHeight || window.innerHeight);
+  const pad2 = 8;
   floating.style.minWidth = matchWidth ? `${a.width}px` : "";
-  if (matchWidth) floating.style.width = `${a.width}px`;
+  floating.style.width = matchWidth ? `${a.width}px` : "";
+  floating.style.maxWidth = `${Math.max(120, vw - pad2 * 2)}px`;
+  floating.style.inset = "auto";
+  floating.style.right = "auto";
+  floating.style.bottom = "auto";
+  floating.style.maxHeight = "";
+  floating.style.overflowY = "";
   floating.style.left = "0px";
   floating.style.top = "0px";
   const f = floating.getBoundingClientRect();
-  const [side, align = "center"] = placement.split("-");
-  const pos = (s) => {
-    let x, y;
-    if (s === "top" || s === "bottom") {
-      y = s === "top" ? a.top - f.height - offset : a.bottom + offset;
-      x = align === "start" ? a.left : align === "end" ? a.right - f.width : a.left + (a.width - f.width) / 2;
-    } else {
-      x = s === "left" ? a.left - f.width - offset : a.right + offset;
-      y = align === "start" ? a.top : align === "end" ? a.bottom - f.height : a.top + (a.height - f.height) / 2;
-    }
-    return { x, y, s };
-  };
-  const over = (p2) => p2.y < 4 || p2.y + f.height > vh - 4 || p2.x < 4 || p2.x + f.width > vw - 4;
+  const [requestedSide, align = "center"] = placement.split("-");
   const opposite = { top: "bottom", bottom: "top", left: "right", right: "left" };
-  let p = pos(side);
-  if (over(p)) {
-    const q = pos(opposite[side]);
-    if (!over(q) || (side === "top" || side === "bottom" ? q.y >= 4 && q.y + f.height <= vh - 4 : true)) p = q;
+  let side = ["top", "bottom", "left", "right"].includes(requestedSide) ? requestedSide : "bottom";
+  const verticalRoom = (value) => value === "bottom" ? vh - a.bottom - offset - pad2 : a.top - offset - pad2;
+  const horizontalRoom = (value) => value === "right" ? vw - a.right - offset - pad2 : a.left - offset - pad2;
+  if (side === "top" || side === "bottom") {
+    if (f.height > verticalRoom(side) && verticalRoom(opposite[side]) > verticalRoom(side)) side = opposite[side];
+  } else if (f.width > horizontalRoom(side) && horizontalRoom(opposite[side]) > horizontalRoom(side)) {
+    side = opposite[side];
   }
-  p.x = Math.max(4, Math.min(p.x, vw - f.width - 4));
-  p.y = Math.max(4, Math.min(p.y, vh - f.height - 4));
-  floating.style.left = `${Math.round(p.x)}px`;
-  floating.style.top = `${Math.round(p.y)}px`;
-  floating.setAttribute("data-placement", p.s);
+  const verticalSide = side === "top" || side === "bottom" ? side : a.top > vh - a.bottom ? "top" : "bottom";
+  const availableHeight = Math.max(80, Math.floor(verticalRoom(verticalSide)));
+  const maxHeight = Math.min(vh - pad2 * 2, availableHeight);
+  floating.style.maxHeight = `${maxHeight}px`;
+  if (f.height > maxHeight) floating.style.overflowY = "auto";
+  let x, y;
+  if (side === "top" || side === "bottom") {
+    y = side === "top" ? a.top - f.height - offset : a.bottom + offset;
+    x = align === "start" ? a.left : align === "end" ? a.right - f.width : a.left + (a.width - f.width) / 2;
+  } else {
+    x = side === "left" ? a.left - f.width - offset : a.right + offset;
+    y = align === "start" ? a.top : align === "end" ? a.bottom - f.height : a.top + (a.height - f.height) / 2;
+  }
+  x = Math.max(pad2, Math.min(x, vw - f.width - pad2));
+  y = Math.max(pad2, Math.min(y, vh - Math.min(f.height, maxHeight) - pad2));
+  floating.style.left = `${Math.round(x)}px`;
+  floating.style.top = `${Math.round(y)}px`;
+  floating.setAttribute("data-placement", side);
 }
 function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
   const down = (e) => {
@@ -2353,7 +2435,7 @@ var UITimePicker = class extends HTMLElement {
     this.minuteList.addEventListener("keydown", (event) => this.onListKey(event));
     this.period.addEventListener("click", () => {
       this._time.hour = (this._time.hour + 12) % 24;
-      this.commit();
+      this.commit("period");
     });
     this.popover.addEventListener("ui-open", () => this.focusTime());
     this.hiddenValue = h("input", { type: "hidden", id: uid("ui-time-value"), name: this.getAttribute("name") || "", value: this.value });
@@ -2389,6 +2471,7 @@ var UITimePicker = class extends HTMLElement {
     if (this.hasAttribute("value")) this._time = parseTime(this.getAttribute("value"));
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
+    this.trigger.setAttribute("aria-expanded", String(this.popover.open));
     const hour = this._time.hour, displayHour = this.is12Hour ? (hour + 11) % 12 + 1 : hour;
     this.valueLabel.textContent = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ":" + pad(this._time.minute) + (this.is12Hour ? hour < 12 ? " AM" : " PM" : "");
     this.period.hidden = !this.is12Hour;
@@ -2397,12 +2480,12 @@ var UITimePicker = class extends HTMLElement {
     this.hiddenValue.value = this.value;
     const step = Math.min(30, Math.max(1, Number(this.getAttribute("step") || 5)));
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
-    this.hourList.replaceChildren(...hours.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-hour": String(this.is12Hour ? n % 12 : n), "aria-selected": String(displayHour === n) }, this.is12Hour ? String(n) : pad(n))));
+    this.hourList.replaceChildren(...hours.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-hour": String(this.is12Hour ? n % 12 : n), "aria-selected": String(displayHour === n), tabindex: displayHour === n ? "0" : "-1" }, this.is12Hour ? String(n) : pad(n))));
     const minutes = [];
     for (let n = 0; n < 60; n += step) minutes.push(n);
     if (!minutes.includes(this._time.minute)) minutes.push(this._time.minute);
     minutes.sort((a, b) => a - b);
-    this.minuteList.replaceChildren(...minutes.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-minute": String(n), "aria-selected": String(this._time.minute === n) }, pad(n))));
+    this.minuteList.replaceChildren(...minutes.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-minute": String(n), "aria-selected": String(this._time.minute === n), tabindex: this._time.minute === n ? "0" : "-1" }, pad(n))));
   }
   onListKey(event) {
     const rows = [...event.currentTarget.querySelectorAll("button")];
@@ -2416,6 +2499,9 @@ var UITimePicker = class extends HTMLElement {
       event.preventDefault();
       next.focus();
       next.scrollIntoView?.({ block: "nearest" });
+    } else if ((event.key === "Enter" || event.key === " ") && rows[at]) {
+      event.preventDefault();
+      rows[at].click();
     }
   }
   setPart(part, value) {
@@ -2425,17 +2511,21 @@ var UITimePicker = class extends HTMLElement {
         this._time.hour = value % 12 + (pm ? 12 : 0);
       } else this._time.hour = value;
     } else this._time.minute = value;
-    this.commit();
+    this.commit(part);
   }
-  commit() {
+  commit(focusPart = "hour") {
     this.setAttribute("value", this.value);
     this.sync();
+    this.focusTime(focusPart);
     emit(this, "ui-input", { value: this.value });
     emit(this, "ui-change", { value: this.value });
   }
-  focusTime() {
-    this.hourList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: "center" });
-    this.minuteList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: "center" });
+  focusTime(part = "hour") {
+    const hour = this.hourList.querySelector('[aria-selected="true"]');
+    const minute = this.minuteList.querySelector('[aria-selected="true"]');
+    (part === "minute" ? minute : hour)?.focus?.({ preventScroll: true });
+    hour?.scrollIntoView?.({ block: "center" });
+    minute?.scrollIntoView?.({ block: "center" });
   }
 };
 define("ui-time-picker", UITimePicker);
