@@ -28,12 +28,6 @@
   </p>
 </div>
 
-<div align="center">
-  <a href="https://aabhro.github.io/Omorphia/">
-    <img src="assets/omorphia-concept.webp" width="464" alt="Generated visual concept for the Omorphia website">
-  </a>
-  <p><sub>Generated visual concept · The live demo shows the current component showcase.</sub></p>
-</div>
 
 ---
 
@@ -382,7 +376,6 @@ Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. 
 | Path | Purpose |
 |:--|:--|
 | [index.html](index.html) | Component showcase · [Live demo](https://aabhro.github.io/Omorphia/) |
-| [assets/omorphia-concept.webp](assets/omorphia-concept.webp) | Generated website visual concept |
 | [assets/omorphia-mark-preview.webp](assets/omorphia-mark-preview.webp) | Generated white logo preview |
 | [src/css/](src/css/) | Source tokens, base styles, modules, and illumination |
 | [src/js/](src/js/) | Custom elements, icon system, and public API |
@@ -392,7 +385,7 @@ Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. 
 | [showcase/](showcase/) | Showcase-specific styles and behavior |
 | [tests/](tests/) | Smoke tests and showcase checks |
 | [scripts/](scripts/) | Build and icon generation scripts |
-| [assets/](assets/) | Logo, concept artwork, and README icons |
+| [assets/](assets/) | Logo and README icons |
 | [LICENSE](LICENSE) | MIT license |
 
 <h2 align="center" id="browser-support"><img src="assets/icons/info.svg" width="18" height="18" alt=""> Browser support</h2>
