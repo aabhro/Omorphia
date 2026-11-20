@@ -175,6 +175,10 @@ export function place(anchor, floating, { placement = 'bottom', offset = 8, matc
   floating.style.minWidth = matchWidth ? `${a.width}px` : '';
   floating.style.width = matchWidth ? `${a.width}px` : '';
   floating.style.maxWidth = `${Math.max(120, vw - pad * 2)}px`;
+  // Native popovers default to inset: 0; clear all four edges before assigning viewport coordinates.
+  floating.style.inset = 'auto';
+  floating.style.right = 'auto';
+  floating.style.bottom = 'auto';
   floating.style.maxHeight = '';
   floating.style.overflowY = '';
   floating.style.left = '0px';
