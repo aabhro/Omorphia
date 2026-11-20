@@ -23,7 +23,7 @@ assert.ok(d.querySelectorAll('ui-date-picker').length >= 1, 'date picker demo re
 assert.ok(d.querySelectorAll('ui-time-picker').length >= 1, 'time picker demo renders');
 assert.ok(d.querySelector('#settings-drawer')?.matches('ui-drawer'), 'drawer demo renders');
 assert.ok(d.querySelectorAll('ui-accordion ui-accordion-item').length >= 2, 'accordion demo renders');
-const codePanels = [...d.querySelectorAll('.demo-code')];
+const codePanels = [...d.querySelectorAll('ui-accordion.demo-code')];
 assert.ok(codePanels.length >= 25 && codePanels.every((panel) => panel.firstElementChild?.matches('ui-accordion-item')), 'example code disclosures use the accordion component');
 assert.equal(d.querySelector('#settings-drawer').hidden, true, 'drawer starts closed');
 const datePicker = d.querySelector('#date-demo');
