@@ -47,7 +47,7 @@ export function highlight(text, ranges = []) {
   return frag;
 }
 
-/* Floating surfaces use the native top layer when available, with a body portal fallback. */
+/* Floating surfaces are portalled out of clipped ancestors, then promoted to the native top layer when available. */
 const hasPopover = () => typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
 let floatLayer = null;
 let floatSequence = 0;
@@ -68,7 +68,7 @@ function getFloatLayer() {
 }
 
 function portalFloat(el) {
-  if (el._uiFloatMode === 'portal' && el.parentNode === floatLayer) {
+  if (el._uiFloatMode && el.parentNode === floatLayer) {
     el.style.zIndex = String(++floatSequence);
     return;
   }
@@ -121,25 +121,22 @@ export function floatEl(el) {
 }
 export function showFloat(el) {
   el.setAttribute('data-open', '');
+  portalFloat(el);
   if (hasPopover() && el.hasAttribute('popover')) {
     try {
       if (!el.matches(':popover-open')) el.showPopover();
-      el._uiFloatMode = 'native';
-      return;
+      el._uiFloatMode = 'native-portal';
     } catch (_) {
       el.removeAttribute('popover');
     }
   }
-  portalFloat(el);
 }
 export function hideFloat(el) {
   el.removeAttribute('data-open');
-  if (el._uiFloatMode === 'native') {
+  if (el._uiFloatMode === 'native-portal') {
     try { if (el.matches(':popover-open')) el.hidePopover(); } catch (_) {}
-    el._uiFloatMode = null;
-    return;
   }
-  if (el._uiFloatMode === 'portal') restoreFloat(el);
+  if (el._uiFloatMode === 'portal' || el._uiFloatMode === 'native-portal') restoreFloat(el);
 }
 
 /* Morph a floating surface from the control that opened it. Uses geometry, not a generic fade. */

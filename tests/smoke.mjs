@@ -431,5 +431,39 @@ await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   d.body.insertAdjacentHTML('beforeend', '<button data-ui-toggle="#sb" id="tg">t</button>'); d.getElementById('tg').click(); assert.ok(sb.collapsed);
 });
 await t('theme helper', () => { E.theme.set('light'); assert.equal(d.documentElement.getAttribute('data-ui-theme'), 'light'); E.theme.toggle(); assert.equal(E.theme.get(), 'dark'); });
+await t('native popovers are portalled before entering the top layer', () => {
+  const proto = w.HTMLElement.prototype;
+  const originalPopover = Object.getOwnPropertyDescriptor(proto, 'popover');
+  const originalShow = proto.showPopover;
+  const originalHide = proto.hidePopover;
+  const originalMatches = w.Element.prototype.matches;
+  try {
+    Object.defineProperty(proto, 'popover', { configurable: true, get() { return this.getAttribute('popover'); }, set(value) { this.setAttribute('popover', value); } });
+    proto.showPopover = function () { this.setAttribute('data-native-popover-open', ''); };
+    proto.hidePopover = function () { this.removeAttribute('data-native-popover-open'); };
+    w.Element.prototype.matches = function (selector) {
+      if (selector === ':popover-open') return this.hasAttribute('data-native-popover-open');
+      return originalMatches.call(this, selector);
+    };
+    const c = mount('<ui-popover><button slot="trigger">Native top layer</button><p>Panel</p></ui-popover>');
+    const popover = c.firstChild;
+    popover.show();
+    assert.equal(popover._uiFloatMode, 'native-portal');
+    assert.equal(popover.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.equal(popover.panel.hasAttribute('data-native-popover-open'), true);
+    popover.hide();
+    assert.equal(popover.panel.parentNode, popover, 'closed native surfaces return to their original DOM location');
+    assert.equal(popover.panel.hasAttribute('data-native-popover-open'), false);
+  } finally {
+    if (originalPopover) Object.defineProperty(proto, 'popover', originalPopover);
+    else delete proto.popover;
+    if (originalShow) proto.showPopover = originalShow;
+    else delete proto.showPopover;
+    if (originalHide) proto.hidePopover = originalHide;
+    else delete proto.hidePopover;
+    w.Element.prototype.matches = originalMatches;
+  }
+});
+
 await t('no console errors or warnings during run', () => assert.deepEqual(errors, []));
 console.log(`\n${passed} passed`);
