@@ -453,7 +453,7 @@ await t('native popovers are portalled before entering the top layer', () => {
     const c = mount('<ui-popover><button slot="trigger">Native top layer</button><p>Panel</p></ui-popover>');
     const popover = c.firstChild;
     popover.show();
-    assert.equal(popover._uiFloatMode, 'native-portal');
+    assert.equal(popover.panel._uiFloatMode, 'native-portal');
     assert.equal(popover.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
     assert.equal(popover.panel.hasAttribute('data-native-popover-open'), true);
     popover.hide();
