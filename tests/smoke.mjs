@@ -25,14 +25,18 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
 });
 await t('command palette has no exterior border', () => {
   const advanced = readFileSync('src/css/advanced.css', 'utf8');
-  assert.match(advanced, /\\.ui-command\\{[^}]*border:0/);
+  const start = advanced.indexOf('.ui-command{');
+  const rule = advanced.slice(start, advanced.indexOf('}', start));
+  assert.ok(start >= 0 && rule.includes('border:0'), 'command palette has no outer border');
 });
 await t('showcase code blocks follow the active theme', () => {
   const css = readFileSync('showcase/showcase.css', 'utf8');
-  assert.match(css, /\\.demo-code pre \\{[^}]*background: var\\(--ui-bg-inset\\)/);
-  assert.match(css, /\\.fx-code \\{[^}]*background: var\\(--ui-bg-inset\\)/);
-  assert.doesNotMatch(css, /\\.demo-code pre \\{[^}]*background:\\s*#0a0a0a/);
-  assert.doesNotMatch(css, /\\.fx-code \\{[^}]*background:\\s*#0a0a0a/);
+  for (const selector of ['.demo-code pre {', '.fx-code {']) {
+    const start = css.indexOf(selector);
+    const rule = css.slice(start, css.indexOf('}', start));
+    assert.ok(start >= 0 && rule.includes('background: var(--ui-bg-inset)'), selector + ' uses the active theme surface');
+    assert.ok(rule.includes('color: var(--ui-text)'), selector + ' uses the active theme text');
+  }
 });
 await t('decorative perimeter outlines are omitted', () => {
   const edge = readFileSync('src/css/edge.css', 'utf8');
@@ -58,17 +62,19 @@ await t('decorative perimeter outlines are omitted', () => {
 });
 await t('README uses a minimal logo and title masthead', () => {
   const readme = readFileSync('README.md', 'utf8');
-  assert.match(readme, /^<p align="center">\\s*<img src="assets\\/logo\\.svg"/);
-  assert.match(readme, /<h1 align="center">Omorphia<\\/h1>/);
-  assert.doesNotMatch(readme, /readme-cover\\.svg|img\\.shields\\.io/);
-  assert.doesNotMatch(readme.slice(0, readme.indexOf('## Overview')), /background|<hr|<div/);
+  const header = readme.slice(0, readme.indexOf('## Overview'));
+  assert.ok(header.startsWith('<p align="center">'));
+  assert.ok(header.includes('assets/logo.svg'));
+  assert.ok(header.includes('<h1 align="center">Omorphia</h1>'));
+  assert.doesNotMatch(header, /readme-cover\\.svg|img\\.shields\\.io|<hr|<div|background/i);
   assert.doesNotMatch(readme, /<details\\s+open/i);
   let depth = 0;
-  for (const line of readme.split('\\n')) {
+  for (const line of readme.split(String.fromCharCode(10))) {
     if (line.trim() === '<details>') depth++;
     if (line.startsWith('~~~')) assert.ok(depth > 0, 'every fenced example is inside collapsed details');
     if (line.trim() === '</details>') depth--;
   }
+  assert.equal(depth, 0, 'all collapsible README sections are closed');
 });
 await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');

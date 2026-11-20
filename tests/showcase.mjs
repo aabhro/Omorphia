@@ -22,8 +22,11 @@ const packageVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
 assert.ok(d.body.innerHTML.includes(`@v${packageVersion}/dist/omorphia.min.js`), 'showcase CDN example matches the package version');
 assert.ok(d.getElementById('fx-css-output')?.textContent.includes('--ui-edge-tl-alpha'), 'live configuration emits CSS');
 const showcaseCss = readFileSync('showcase/showcase.css', 'utf8');
-assert.match(showcaseCss, /\\.demo-code pre \\{[^}]*background: var\\(--ui-bg-inset\\)/, 'demo code panel is theme-aware');
-assert.match(showcaseCss, /\\.fx-code \\{[^}]*background: var\\(--ui-bg-inset\\)/, 'generated CSS panel is theme-aware');
+for (const selector of ['.demo-code pre {', '.fx-code {']) {
+  const start = showcaseCss.indexOf(selector);
+  const rule = showcaseCss.slice(start, showcaseCss.indexOf('}', start));
+  assert.ok(start >= 0 && rule.includes('background: var(--ui-bg-inset)'), selector + ' follows the active theme');
+}
 const palette = d.querySelector('ui-command-palette');
 assert.ok(palette, 'command palette host exists');
 assert.equal(palette.dialog.parentElement, d.body, 'command dialog lives outside its display:none host');
