@@ -49,8 +49,8 @@ Omorphia is a small, dependency-free UI library for websites. It uses native cus
 Use a pinned release for production.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/omorphia.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard">
@@ -67,10 +67,10 @@ Custom elements upgrade automatically, including elements inserted later.
   <summary><strong>ES module installation</strong> · Import the complete API</summary>
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/omorphia.min.css">
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -86,9 +86,9 @@ Custom elements upgrade automatically, including elements inserted later.
   <summary><strong>Individual CSS modules</strong> · Load only the styles you need</summary>
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.4/dist/css/feedback.min.css">
 ~~~
 
 The complete stylesheet is <code>dist/omorphia.min.css</code>. Generated integrity hashes are listed in <a href="dist/sri.json"><code>dist/sri.json</code></a>.

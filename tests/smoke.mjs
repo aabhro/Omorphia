@@ -115,6 +115,42 @@ await t('command palette: open, filter+highlight, keyboard, callback, empty/no-r
   p.input.value = 'cr'; p.input.dispatchEvent(new w.Event('input')); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); assert.equal(ran, 1); assert.ok(!p.isOpen);
   p.setAttribute('hotkey', 'meta+k'); d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })); assert.ok(p.isOpen); p.removeAttribute('hotkey'); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(p.active, 1); p.close(); off();
 });
+await t('command palette shortcut parsing, routing, and lifecycle', () => {
+  const host = mount('<ui-command-palette id="first" hotkey="mod+k"></ui-command-palette><ui-command-palette id="second" hotkey="ctrl+shift+k"></ui-command-palette><ui-command-palette id="disabled" hotkey="none"></ui-command-palette>');
+  const [first, second, disabled] = host.children;
+  const press = (target, init) => {
+    const event = new w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
+    target.dispatchEvent(event);
+    return event;
+  };
+
+  const ctrlK = press(d, { key: 'k', code: 'KeyK', ctrlKey: true });
+  assert.ok(first.isOpen, 'mod+k opens the first matching palette');
+  assert.ok(!second.isOpen && !disabled.isOpen, 'one shortcut press opens only one palette');
+  assert.ok(ctrlK.defaultPrevented, 'matched shortcuts prevent browser defaults');
+
+  const repeat = press(d, { key: 'k', code: 'KeyK', ctrlKey: true, repeat: true });
+  assert.ok(first.isOpen, 'auto-repeat does not toggle the palette closed');
+  assert.equal(repeat.defaultPrevented, false, 'auto-repeat is left untouched');
+
+  first.close();
+  press(d, { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true });
+  assert.ok(second.isOpen, 'explicit ctrl+shift+k combinations are supported');
+  second.close();
+
+  const composing = press(d, { key: 'k', code: 'KeyK', ctrlKey: true, isComposing: true });
+  assert.ok(!first.isOpen && !second.isOpen, 'IME composition is not treated as a shortcut');
+  assert.equal(composing.defaultPrevented, false, 'composition events are left untouched');
+
+  const legacy = new w.KeyboardEvent('keydown', { key: 'Unidentified', keyCode: 75, ctrlKey: true });
+  assert.equal(first.matches_hotkey(legacy), true, 'legacy keyCode fallback works when key/code are unavailable');
+
+  host.remove();
+  const after = mount('<ui-command-palette></ui-command-palette>').firstChild;
+  press(d, { key: 'k', code: 'KeyK', ctrlKey: true });
+  assert.ok(after.isOpen, 'shortcut listener is restored after all palettes disconnect');
+  after.remove();
+});
 await t('ui-search: local data, keyboard select, clear, async source states', async () => {
   const c = mount('<ui-search autocomplete debounce="0" placeholder="Find"></ui-search>'); const s = c.firstChild; s.data = ['Apple', 'Apricot', 'Banana', { label: 'Blueberry', description: 'fruit' }];
   let sel, cleared = 0; s.addEventListener('ui-select', (e) => (sel = e.detail.value)); s.addEventListener('ui-clear', () => cleared++);

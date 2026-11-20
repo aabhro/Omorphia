@@ -21,11 +21,14 @@ assert.ok(d.getElementById('fx-css-output')?.textContent.includes('--ui-edge-tl-
 const palette = d.querySelector('ui-command-palette');
 const notes = d.getElementById('i-t');
 assert.ok(notes, 'Notes textarea is present in the demo');
-notes.addEventListener('keydown', (event) => event.stopPropagation());
+let targetHandlerReached = false;
+notes.addEventListener('keydown', (event) => { targetHandlerReached = true; event.stopPropagation(); });
+notes.focus();
 const shortcut = new dom.window.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true });
 notes.dispatchEvent(shortcut);
 assert.ok(palette.isOpen, 'Ctrl+K opens the command palette from the Notes demo field');
 assert.ok(shortcut.defaultPrevented, 'Ctrl+K is prevented from triggering browser UI');
+assert.equal(targetHandlerReached, false, 'the capture shortcut is handled before focused controls');
 palette.close();
 palette.open(); assert.ok(d.querySelectorAll('.ui-command .ui-option').length >= 11, 'palette lists commands');
 assert.deepEqual(errs, [], 'console clean');
