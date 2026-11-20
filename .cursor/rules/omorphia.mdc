@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Mandatory Omorphia rules
 
+Canonical repository: https://github.com/aabhro/Omorphia
+
 Before taking action, read the root `AGENTS.md` and the full `AI/AGENT-PROMPT.md`.
 
 For UI, component, styling, or showcase work, read the complete Modernimal stylesheet in the public `aabhro/Stylesheets` repository, inspect `Components/Modernimal.html`, and inspect the mandatory `motion/` references. Read files directly from GitHub or clone with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special access is required. Retry temporary fetch failures through public raw URLs or a fresh clone before reporting a limitation. Never silently skip required files.
