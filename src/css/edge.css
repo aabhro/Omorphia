@@ -5,24 +5,24 @@
 @property --ui-edge-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 
 /* 1. Declare the gradient on every element that can carry the effect (resolved per element, so hover/state overrides work). */
-:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-check-input, .ui-radio-input, .ui-switch-track, .ui-range,
+:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-input-frame, .ui-textarea-frame, .ui-select-trigger, .ui-date-trigger, .ui-time-trigger, .ui-choice-indicator, .ui-check-input, .ui-radio-input, .ui-switch-track, .ui-range,
     .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble, .ui-toast, .ui-command, .ui-search-panel, .ui-kbd-edge) {
   --_tl: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-tl-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
   --_br: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-br-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
   --_base: color-mix(in srgb, var(--ui-edge-color) calc(var(--ui-edge-base-alpha) * 100%), transparent);
   --_edge:
-    linear-gradient(to bottom right, var(--_tl) 0%, transparent var(--ui-edge-tl-reach)),
-    linear-gradient(to top left, var(--_br) 0%, transparent var(--ui-edge-br-reach)),
+    radial-gradient(115% 145% at 0% 0%, var(--_tl) 0%, transparent 64%),
+    radial-gradient(120% 150% at 100% 100%, var(--_br) 0%, transparent 60%),
     linear-gradient(var(--_base), var(--_base));
 }
 
 /* 2. Pseudo-element elements: mask the gradient down to the border ring. */
-:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
+:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-input-frame, .ui-textarea-frame, .ui-select-trigger, .ui-date-trigger, .ui-time-trigger, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
     .ui-toast, .ui-command, .ui-search-panel) {
   position: relative;
 }
 :is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
-    .ui-toast, .ui-command, .ui-search-panel)::before {
+    .ui-toast, .ui-command, .ui-search-panel, .ui-input-frame, .ui-textarea-frame, .ui-select-trigger, .ui-date-trigger, .ui-time-trigger)::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: var(--ui-edge-width);
   border-radius: inherit; background: var(--_edge); pointer-events: none;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -64,3 +64,9 @@
 @media (max-resolution: 1.25dppx), (max-width: 420px) {
   :root, [data-ui-theme] { --ui-edge-width: 1.25px; }
 }
+
+
+/* Shared fallback layer: no ancestor clipping and no equal-z-index popover collisions. */
+.ui-float { pointer-events: auto; }
+.ui-float[data-open] { visibility: visible; }
+[data-ui-floating-layer] { position: fixed; inset: 0; z-index: 1800; pointer-events: none; isolation: isolate; overflow: visible; }

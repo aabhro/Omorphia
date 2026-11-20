@@ -215,6 +215,28 @@ await t('custom date picker handles calendar selection, limits, and hidden form 
   assert.equal(changed, '2026-11-21');
   assert.equal(picker.hiddenValue.value, '2026-11-21');
 });
+await t('floating surfaces share a clipped-layer escape hatch and stack by open order', () => {
+  const c = mount('<ui-popover id="first"><button slot="trigger">First</button><p>First panel</p></ui-popover><ui-popover id="second"><button slot="trigger">Second</button><p>Second panel</p></ui-popover>');
+  const first = c.querySelector('#first'), second = c.querySelector('#second');
+  first.show();
+  second.show();
+  assert.equal(first.open, true);
+  assert.equal(second.open, true);
+  assert.ok(first.panel.isConnected && second.panel.isConnected);
+  for (const panel of [first.panel, second.panel]) {
+    assert.equal(panel.style.right, 'auto', 'the right inset is cleared');
+    assert.equal(panel.style.bottom, 'auto', 'the bottom inset is cleared');
+    assert.ok(panel.style.left.endsWith('px') && panel.style.top.endsWith('px'), 'panel is placed with explicit viewport coordinates');
+  }
+  if (first._uiFloatMode === 'portal' && second._uiFloatMode === 'portal') {
+    assert.equal(first.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.equal(second.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.ok(Number(second.panel.style.zIndex) > Number(first.panel.style.zIndex), 'the newest fallback surface is stacked above older surfaces');
+  }
+  second.hide();
+  first.hide();
+});
+
 await t('custom time picker supports 12-hour mode and hidden form value', () => {
   const c = mount('<ui-time-picker id="time" name="time" value="14:30" format="12h" step="5"></ui-time-picker>');
   const picker = c.firstChild;
@@ -291,9 +313,12 @@ await t('directional border illumination remains part of the build', () => {
   assert.match(css, /--ui-edge-tl-alpha/);
   assert.match(css, /--ui-edge-br-alpha/);
   assert.match(css, /max-resolution:\s*1\.25dppx/);
-  assert.match(css, /linear-gradient\(to bottom right/);
-  assert.match(css, /linear-gradient\(to top left/);
+  assert.match(css, /radial-gradient\(115% 145% at 0% 0%/, 'primary spotlight stays at the top-left corner');
+  assert.match(css, /radial-gradient\(120% 150% at 100% 100%/, 'secondary spotlight stays dimmer at the bottom-right corner');
   assert.match(css, /-webkit-mask-composite:\s*xor/);
+  assert.match(css, /radial-gradient\(115% 145% at 0% 0%/, 'spotlight illumination stays concentrated at the leading corner');
+  const tokens = readFileSync('src/css/tokens.css', 'utf8');
+  assert.match(tokens, /--ui-edge-base-alpha:0;/, 'the uniform outline wash stays disabled');
 });
 await t('ui-icon renders bundled Lucide svg', () => { const c = mount('<ui-icon name="search"></ui-icon><ui-icon name="home"></ui-icon>'); assert.equal(c.querySelectorAll('svg path, svg circle').length > 1, true); assert.ok(c.querySelectorAll('svg').length === 2); });
 await t('ui-button variants, loading, disabled, icon-only', async () => {
@@ -411,5 +436,39 @@ await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   d.body.insertAdjacentHTML('beforeend', '<button data-ui-toggle="#sb" id="tg">t</button>'); d.getElementById('tg').click(); assert.ok(sb.collapsed);
 });
 await t('theme helper', () => { E.theme.set('light'); assert.equal(d.documentElement.getAttribute('data-ui-theme'), 'light'); E.theme.toggle(); assert.equal(E.theme.get(), 'dark'); });
+await t('native popovers are portalled before entering the top layer', () => {
+  const proto = w.HTMLElement.prototype;
+  const originalPopover = Object.getOwnPropertyDescriptor(proto, 'popover');
+  const originalShow = proto.showPopover;
+  const originalHide = proto.hidePopover;
+  const originalMatches = w.Element.prototype.matches;
+  try {
+    Object.defineProperty(proto, 'popover', { configurable: true, get() { return this.getAttribute('popover'); }, set(value) { this.setAttribute('popover', value); } });
+    proto.showPopover = function () { this.setAttribute('data-native-popover-open', ''); };
+    proto.hidePopover = function () { this.removeAttribute('data-native-popover-open'); };
+    w.Element.prototype.matches = function (selector) {
+      if (selector === ':popover-open') return this.hasAttribute('data-native-popover-open');
+      return originalMatches.call(this, selector);
+    };
+    const c = mount('<ui-popover><button slot="trigger">Native top layer</button><p>Panel</p></ui-popover>');
+    const popover = c.firstChild;
+    popover.show();
+    assert.equal(popover.panel._uiFloatMode, 'native-portal');
+    assert.equal(popover.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.equal(popover.panel.hasAttribute('data-native-popover-open'), true);
+    popover.hide();
+    assert.equal(popover.panel.parentNode, popover, 'closed native surfaces return to their original DOM location');
+    assert.equal(popover.panel.hasAttribute('data-native-popover-open'), false);
+  } finally {
+    if (originalPopover) Object.defineProperty(proto, 'popover', originalPopover);
+    else delete proto.popover;
+    if (originalShow) proto.showPopover = originalShow;
+    else delete proto.showPopover;
+    if (originalHide) proto.hidePopover = originalHide;
+    else delete proto.hidePopover;
+    w.Element.prototype.matches = originalMatches;
+  }
+});
+
 await t('no console errors or warnings during run', () => assert.deepEqual(errors, []));
 console.log(`\n${passed} passed`);
