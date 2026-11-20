@@ -6,6 +6,8 @@
 
 These instructions apply to coding agents, autonomous agents, pair-programming assistants, and AI tools editing this repository.
 
+**Canonical repository:** https://github.com/aabhro/Omorphia. Treat this repository and its current default branch as the source of truth.
+
 ## Mandatory reading
 
 1. Read this file and the complete `AI/AGENT-PROMPT.md` before planning or editing.
