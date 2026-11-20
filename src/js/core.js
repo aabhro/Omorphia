@@ -47,8 +47,73 @@ export function highlight(text, ranges = []) {
   return frag;
 }
 
-/* Floating layer: top layer via the Popover API when available, class-based fallback otherwise. */
+/* Floating surfaces use the native top layer when available, with a body portal fallback. */
 const hasPopover = () => typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
+let floatLayer = null;
+let floatSequence = 0;
+
+function getFloatLayer() {
+  if (floatLayer?.isConnected) return floatLayer;
+  floatLayer = document.querySelector('[data-ui-floating-layer]');
+  if (!floatLayer) {
+    floatLayer = document.createElement('div');
+    floatLayer.setAttribute('data-ui-floating-layer', '');
+    Object.assign(floatLayer.style, {
+      position: 'fixed', inset: '0', zIndex: '1800',
+      pointerEvents: 'none', isolation: 'isolate', overflow: 'visible'
+    });
+    (document.body || document.documentElement).append(floatLayer);
+  }
+  return floatLayer;
+}
+
+function portalFloat(el) {
+  if (el._uiFloatMode === 'portal' && el.parentNode === floatLayer) {
+    el.style.zIndex = String(++floatSequence);
+    return;
+  }
+  const inherited = [];
+  if (typeof getComputedStyle === 'function') {
+    const computed = getComputedStyle(el);
+    for (let i = 0; i < computed.length; i++) {
+      const name = computed[i];
+      if (!name.startsWith('--')) continue;
+      const value = computed.getPropertyValue(name);
+      if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
+    }
+  }
+  if (el.parentNode && !el._uiFloatPlaceholder) {
+    el._uiFloatPlaceholder = document.createComment('ui-float-origin');
+    el.parentNode.insertBefore(el._uiFloatPlaceholder, el);
+  }
+  const layer = getFloatLayer();
+  if (el.parentNode !== layer) layer.append(el);
+  el._uiFloatSavedVars = inherited.map(([name, value, oldValue, priority]) => {
+    el.style.setProperty(name, value);
+    return [name, oldValue, priority];
+  });
+  if (el._uiFloatSavedZ == null) el._uiFloatSavedZ = el.style.zIndex;
+  el.style.zIndex = String(++floatSequence);
+  el._uiFloatMode = 'portal';
+}
+
+function restoreFloat(el) {
+  const marker = el._uiFloatPlaceholder;
+  if (marker?.parentNode) marker.parentNode.insertBefore(el, marker);
+  else el.remove();
+  marker?.remove();
+  el._uiFloatPlaceholder = null;
+  for (const [name, value, priority] of el._uiFloatSavedVars || []) {
+    if (value) el.style.setProperty(name, value, priority);
+    else el.style.removeProperty(name);
+  }
+  el._uiFloatSavedVars = null;
+  if (el._uiFloatSavedZ != null) el.style.zIndex = el._uiFloatSavedZ;
+  else el.style.removeProperty('z-index');
+  el._uiFloatSavedZ = null;
+  el._uiFloatMode = null;
+}
+
 export function floatEl(el) {
   el.classList.add('ui-float');
   if (hasPopover()) el.setAttribute('popover', 'manual');
@@ -56,12 +121,27 @@ export function floatEl(el) {
 }
 export function showFloat(el) {
   el.setAttribute('data-open', '');
-  if (hasPopover()) { try { if (!el.matches(':popover-open')) el.showPopover(); } catch (_) {} }
+  if (hasPopover() && el.hasAttribute('popover')) {
+    try {
+      if (!el.matches(':popover-open')) el.showPopover();
+      el._uiFloatMode = 'native';
+      return;
+    } catch (_) {
+      el.removeAttribute('popover');
+    }
+  }
+  portalFloat(el);
 }
 export function hideFloat(el) {
   el.removeAttribute('data-open');
-  if (hasPopover()) { try { if (el.matches(':popover-open')) el.hidePopover(); } catch (_) {} }
+  if (el._uiFloatMode === 'native') {
+    try { if (el.matches(':popover-open')) el.hidePopover(); } catch (_) {}
+    el._uiFloatMode = null;
+    return;
+  }
+  if (el._uiFloatMode === 'portal') restoreFloat(el);
 }
+
 /* Morph a floating surface from the control that opened it. Uses geometry, not a generic fade. */
 export function morphSurface(anchor, surface, opening = true) {
   if (!anchor || !surface || typeof surface.animate !== 'function') return null;
@@ -88,23 +168,54 @@ export function inheritTheme(from, to) {
   if (t) to.setAttribute('data-ui-theme', t); else to.removeAttribute('data-ui-theme');
 }
 
-/* Position `floating` next to `anchor`. placement: top|bottom|left|right + -start|-end. Flips and clamps to viewport. */
+/* Position a floating surface against the viewport, flipping only when the requested side lacks room. */
 export function place(anchor, floating, { placement = 'bottom', offset = 8, matchWidth = false } = {}) {
-  const a = anchor.getBoundingClientRect(); const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
-  floating.style.minWidth = matchWidth ? `${a.width}px` : ''; if (matchWidth) floating.style.width = `${a.width}px`;
-  floating.style.left = '0px'; floating.style.top = '0px';
-  const f = floating.getBoundingClientRect(); const [side, align = 'center'] = placement.split('-');
-  const pos = (s) => {
-    let x, y;
-    if (s === 'top' || s === 'bottom') { y = s === 'top' ? a.top - f.height - offset : a.bottom + offset; x = align === 'start' ? a.left : align === 'end' ? a.right - f.width : a.left + (a.width - f.width) / 2; }
-    else { x = s === 'left' ? a.left - f.width - offset : a.right + offset; y = align === 'start' ? a.top : align === 'end' ? a.bottom - f.height : a.top + (a.height - f.height) / 2; }
-    return { x, y, s };
-  };
-  const over = (p) => p.y < 4 || p.y + f.height > vh - 4 || p.x < 4 || p.x + f.width > vw - 4;
+  if (!anchor || !floating) return;
+  const a = anchor.getBoundingClientRect();
+  const vw = Math.max(1, document.documentElement.clientWidth || window.innerWidth);
+  const vh = Math.max(1, document.documentElement.clientHeight || window.innerHeight);
+  const pad = 8;
+  floating.style.minWidth = matchWidth ? `${a.width}px` : '';
+  floating.style.width = matchWidth ? `${a.width}px` : '';
+  floating.style.maxWidth = `${Math.max(120, vw - pad * 2)}px`;
+  floating.style.maxHeight = '';
+  floating.style.overflowY = '';
+  floating.style.left = '0px';
+  floating.style.top = '0px';
+  const f = floating.getBoundingClientRect();
+  const [requestedSide, align = 'center'] = placement.split('-');
   const opposite = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
-  let p = pos(side); if (over(p)) { const q = pos(opposite[side]); if (!over(q) || (side === 'top' || side === 'bottom' ? (q.y >= 4 && q.y + f.height <= vh - 4) : true)) p = q; }
-  p.x = Math.max(4, Math.min(p.x, vw - f.width - 4)); p.y = Math.max(4, Math.min(p.y, vh - f.height - 4));
-  floating.style.left = `${Math.round(p.x)}px`; floating.style.top = `${Math.round(p.y)}px`; floating.setAttribute('data-placement', p.s);
+  let side = ['top', 'bottom', 'left', 'right'].includes(requestedSide) ? requestedSide : 'bottom';
+  const verticalRoom = (value) => value === 'bottom' ? vh - a.bottom - offset - pad : a.top - offset - pad;
+  const horizontalRoom = (value) => value === 'right' ? vw - a.right - offset - pad : a.left - offset - pad;
+
+  if (side === 'top' || side === 'bottom') {
+    if (f.height > verticalRoom(side) && verticalRoom(opposite[side]) > verticalRoom(side)) side = opposite[side];
+  } else if (f.width > horizontalRoom(side) && horizontalRoom(opposite[side]) > horizontalRoom(side)) {
+    side = opposite[side];
+  }
+
+  const verticalSide = side === 'top' || side === 'bottom'
+    ? side
+    : (a.top > vh - a.bottom ? 'top' : 'bottom');
+  const availableHeight = Math.max(80, Math.floor(verticalRoom(verticalSide)));
+  const maxHeight = Math.min(vh - pad * 2, availableHeight);
+  floating.style.maxHeight = `${maxHeight}px`;
+  if (f.height > maxHeight) floating.style.overflowY = 'auto';
+
+  let x, y;
+  if (side === 'top' || side === 'bottom') {
+    y = side === 'top' ? a.top - f.height - offset : a.bottom + offset;
+    x = align === 'start' ? a.left : align === 'end' ? a.right - f.width : a.left + (a.width - f.width) / 2;
+  } else {
+    x = side === 'left' ? a.left - f.width - offset : a.right + offset;
+    y = align === 'start' ? a.top : align === 'end' ? a.bottom - f.height : a.top + (a.height - f.height) / 2;
+  }
+  x = Math.max(pad, Math.min(x, vw - f.width - pad));
+  y = Math.max(pad, Math.min(y, vh - Math.min(f.height, maxHeight) - pad));
+  floating.style.left = `${Math.round(x)}px`;
+  floating.style.top = `${Math.round(y)}px`;
+  floating.setAttribute('data-placement', side);
 }
 
 /* Close handlers while open: outside pointerdown, Escape, reposition on scroll/resize. */

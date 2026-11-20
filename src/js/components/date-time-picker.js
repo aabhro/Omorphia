@@ -176,7 +176,7 @@ export class UITimePicker extends HTMLElement {
     this.minuteList.addEventListener('click', (event) => { const item = event.target.closest('[data-minute]'); if (item) this.setPart('minute', Number(item.dataset.minute)); });
     this.hourList.addEventListener('keydown', (event) => this.onListKey(event));
     this.minuteList.addEventListener('keydown', (event) => this.onListKey(event));
-    this.period.addEventListener('click', () => { this._time.hour = (this._time.hour + 12) % 24; this.commit(); });
+    this.period.addEventListener('click', () => { this._time.hour = (this._time.hour + 12) % 24; this.commit('period'); });
     this.popover.addEventListener('ui-open', () => this.focusTime());
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-time-value'), name: this.getAttribute('name') || '', value: this.value });
     this.hiddenValue.hidden = true;
@@ -194,6 +194,7 @@ export class UITimePicker extends HTMLElement {
     if (this.hasAttribute('value')) this._time = parseTime(this.getAttribute('value'));
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
+    this.trigger.setAttribute('aria-expanded', String(this.popover.open));
     const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
     this.valueLabel.textContent = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ':' + pad(this._time.minute) + (this.is12Hour ? (hour < 12 ? ' AM' : ' PM') : '');
     this.period.hidden = !this.is12Hour;
@@ -202,12 +203,12 @@ export class UITimePicker extends HTMLElement {
     this.hiddenValue.value = this.value;
     const step = Math.min(30, Math.max(1, Number(this.getAttribute('step') || 5)));
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
-    this.hourList.replaceChildren(...hours.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-hour': String(this.is12Hour ? n % 12 : n), 'aria-selected': String(displayHour === n) }, this.is12Hour ? String(n) : pad(n))));
+    this.hourList.replaceChildren(...hours.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-hour': String(this.is12Hour ? n % 12 : n), 'aria-selected': String(displayHour === n), tabindex: displayHour === n ? '0' : '-1' }, this.is12Hour ? String(n) : pad(n))));
     const minutes = [];
     for (let n = 0; n < 60; n += step) minutes.push(n);
     if (!minutes.includes(this._time.minute)) minutes.push(this._time.minute);
     minutes.sort((a, b) => a - b);
-    this.minuteList.replaceChildren(...minutes.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-minute': String(n), 'aria-selected': String(this._time.minute === n) }, pad(n))));
+    this.minuteList.replaceChildren(...minutes.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-minute': String(n), 'aria-selected': String(this._time.minute === n), tabindex: this._time.minute === n ? '0' : '-1' }, pad(n))));
   }
   onListKey(event) {
     const rows = [...event.currentTarget.querySelectorAll('button')];
@@ -218,6 +219,10 @@ export class UITimePicker extends HTMLElement {
     else if (event.key === 'Home') next = rows[0];
     else if (event.key === 'End') next = rows.at(-1);
     if (next) { event.preventDefault(); next.focus(); next.scrollIntoView?.({ block: 'nearest' }); }
+    else if ((event.key === 'Enter' || event.key === ' ') && rows[at]) {
+      event.preventDefault();
+      rows[at].click();
+    }
   }
   setPart(part, value) {
     if (part === 'hour') {
@@ -226,17 +231,21 @@ export class UITimePicker extends HTMLElement {
         this._time.hour = (value % 12) + (pm ? 12 : 0);
       } else this._time.hour = value;
     } else this._time.minute = value;
-    this.commit();
+    this.commit(part);
   }
-  commit() {
+  commit(focusPart = 'hour') {
     this.setAttribute('value', this.value);
     this.sync();
+    this.focusTime(focusPart);
     emit(this, 'ui-input', { value: this.value });
     emit(this, 'ui-change', { value: this.value });
   }
-  focusTime() {
-    this.hourList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: 'center' });
-    this.minuteList.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: 'center' });
+  focusTime(part = 'hour') {
+    const hour = this.hourList.querySelector('[aria-selected="true"]');
+    const minute = this.minuteList.querySelector('[aria-selected="true"]');
+    (part === 'minute' ? minute : hour)?.focus?.({ preventScroll: true });
+    hour?.scrollIntoView?.({ block: 'center' });
+    minute?.scrollIntoView?.({ block: 'center' });
   }
 }
 define('ui-time-picker', UITimePicker);

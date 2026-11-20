@@ -215,6 +215,23 @@ await t('custom date picker handles calendar selection, limits, and hidden form 
   assert.equal(changed, '2026-11-21');
   assert.equal(picker.hiddenValue.value, '2026-11-21');
 });
+await t('floating surfaces share a clipped-layer escape hatch and stack by open order', () => {
+  const c = mount('<ui-popover id="first"><button slot="trigger">First</button><p>First panel</p></ui-popover><ui-popover id="second"><button slot="trigger">Second</button><p>Second panel</p></ui-popover>');
+  const first = c.querySelector('#first'), second = c.querySelector('#second');
+  first.show();
+  second.show();
+  assert.equal(first.open, true);
+  assert.equal(second.open, true);
+  assert.ok(first.panel.isConnected && second.panel.isConnected);
+  if (first._uiFloatMode === 'portal' && second._uiFloatMode === 'portal') {
+    assert.equal(first.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.equal(second.panel.parentElement, d.querySelector('[data-ui-floating-layer]'));
+    assert.ok(Number(second.panel.style.zIndex) > Number(first.panel.style.zIndex), 'the newest fallback surface is stacked above older surfaces');
+  }
+  second.hide();
+  first.hide();
+});
+
 await t('custom time picker supports 12-hour mode and hidden form value', () => {
   const c = mount('<ui-time-picker id="time" name="time" value="14:30" format="12h" step="5"></ui-time-picker>');
   const picker = c.firstChild;
@@ -294,6 +311,9 @@ await t('directional border illumination remains part of the build', () => {
   assert.match(css, /linear-gradient\(to bottom right/);
   assert.match(css, /linear-gradient\(to top left/);
   assert.match(css, /-webkit-mask-composite:\s*xor/);
+  assert.match(css, /radial-gradient\(115% 145% at 0% 0%/, 'spotlight illumination stays concentrated at the leading corner');
+  const tokens = readFileSync('src/css/tokens.css', 'utf8');
+  assert.match(tokens, /--ui-edge-base-alpha:0;/, 'the uniform outline wash stays disabled');
 });
 await t('ui-icon renders bundled Lucide svg', () => { const c = mount('<ui-icon name="search"></ui-icon><ui-icon name="home"></ui-icon>'); assert.equal(c.querySelectorAll('svg path, svg circle').length > 1, true); assert.ok(c.querySelectorAll('svg').length === 2); });
 await t('ui-button variants, loading, disabled, icon-only', async () => {
