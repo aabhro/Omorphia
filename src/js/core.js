@@ -82,6 +82,8 @@ function portalFloat(el) {
       if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
     }
   }
+  // Keep the floating parent relationship so child popovers do not dismiss their owner.
+  el._uiFloatParent = el.parentElement?.closest('.ui-float[data-open]') || null;
   if (el.parentNode && !el._uiFloatPlaceholder) {
     el._uiFloatPlaceholder = document.createComment('ui-float-origin');
     el.parentNode.insertBefore(el._uiFloatPlaceholder, el);
@@ -111,6 +113,7 @@ function restoreFloat(el) {
   if (el._uiFloatSavedZ != null) el.style.zIndex = el._uiFloatSavedZ;
   else el.style.removeProperty('z-index');
   el._uiFloatSavedZ = null;
+  el._uiFloatParent = null;
   el._uiFloatMode = null;
 }
 
@@ -203,17 +206,18 @@ export function place(anchor, floating, { placement = 'bottom', offset = 8, matc
   const maxHeight = Math.min(vh - pad * 2, availableHeight);
   floating.style.maxHeight = `${maxHeight}px`;
   if (f.height > maxHeight) floating.style.overflowY = 'auto';
+  const finalRect = floating.getBoundingClientRect();
 
   let x, y;
   if (side === 'top' || side === 'bottom') {
-    y = side === 'top' ? a.top - f.height - offset : a.bottom + offset;
-    x = align === 'start' ? a.left : align === 'end' ? a.right - f.width : a.left + (a.width - f.width) / 2;
+    y = side === 'top' ? a.top - finalRect.height - offset : a.bottom + offset;
+    x = align === 'start' ? a.left : align === 'end' ? a.right - finalRect.width : a.left + (a.width - finalRect.width) / 2;
   } else {
-    x = side === 'left' ? a.left - f.width - offset : a.right + offset;
-    y = align === 'start' ? a.top : align === 'end' ? a.bottom - f.height : a.top + (a.height - f.height) / 2;
+    x = side === 'left' ? a.left - finalRect.width - offset : a.right + offset;
+    y = align === 'start' ? a.top : align === 'end' ? a.bottom - finalRect.height : a.top + (a.height - finalRect.height) / 2;
   }
-  x = Math.max(pad, Math.min(x, vw - f.width - pad));
-  y = Math.max(pad, Math.min(y, vh - Math.min(f.height, maxHeight) - pad));
+  x = Math.max(pad, Math.min(x, vw - finalRect.width - pad));
+  y = Math.max(pad, Math.min(y, vh - Math.min(finalRect.height, maxHeight) - pad));
   floating.style.left = `${Math.round(x)}px`;
   floating.style.top = `${Math.round(y)}px`;
   floating.setAttribute('data-placement', side);
@@ -221,7 +225,19 @@ export function place(anchor, floating, { placement = 'bottom', offset = 8, matc
 
 /* Close handlers while open: outside pointerdown, Escape, reposition on scroll/resize. */
 export function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
-  const down = (e) => { if (!floating.contains(e.target) && !anchor.contains(e.target)) onClose('outside'); };
+  const insideChildFloat = (target) => {
+    const layer = getFloatLayer();
+    return [...layer.querySelectorAll('.ui-float[data-open]')].some((panel) => {
+      if (!panel.contains(target)) return false;
+      for (let parent = panel._uiFloatParent; parent; parent = parent._uiFloatParent) {
+        if (parent === floating) return true;
+      }
+      return false;
+    });
+  };
+  const down = (e) => {
+    if (!floating.contains(e.target) && !anchor.contains(e.target) && !insideChildFloat(e.target)) onClose('outside');
+  };
   const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose('escape'); } };
   const move = () => reposition();
   document.addEventListener('pointerdown', down, true); if (escape) document.addEventListener('keydown', key, true);
