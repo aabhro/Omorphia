@@ -288,14 +288,22 @@ Also available: <code>&lt;ui-tooltip&gt;</code>, <code>&lt;ui-modal&gt;</code>, 
 
 ### Date and time pickers
 
+<details>
+<summary>Example</summary>
+
 ~~~html
 <ui-date-picker name="release-date" label="Release date" value="2026-11-20"></ui-date-picker>
 <ui-time-picker name="maintenance-time" label="Maintenance time" value="14:30" format="12h" step="5"></ui-time-picker>
 ~~~
 
+</details>
+
 Both pickers render custom interactive panels and store predictable values. Dates use `YYYY-MM-DD`. Times use 24-hour `HH:MM` values even when displayed in 12-hour format.
 
 ### Drawer and accordion
+
+<details>
+<summary>Example</summary>
 
 ~~~html
 <ui-drawer id="settings" heading="Settings" placement="right" size="md">
@@ -311,6 +319,8 @@ Both pickers render custom interactive panels and store predictable values. Date
   <ui-accordion-item heading="Advanced" value="advanced">Advanced details.</ui-accordion-item>
 </ui-accordion>
 ~~~
+
+</details>
 
 The drawer handles focus, Escape, backdrop dismissal, scroll locking, and focus restoration. Accordions use smooth height morphing and support single or multiple open panels.
 
