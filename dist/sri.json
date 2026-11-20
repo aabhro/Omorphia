@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
   "files": {
-    "edgelit.min.css": "sha384-P39cu/yIvLLKVOyZMZcP6nav9pHZOnBAn4NjZusXOHRe2wXQ5+KMzgif3akNeeZl",
-    "edgelit.min.js": "sha384-+Ves6lrY5Xsp2zJE4HJ9fWeNeZQkDjOhQ3OivFidUCX0x6C9nbl/1xuyBWf5/BgW",
-    "edgelit.esm.min.js": "sha384-hoXCcCUcSbQ9wAHq7qKy0U2MFfZwzSroxVaR++lPVnq6e/ErPis75xDO1W7vmDYR"
+    "edgelit.min.css": "sha384-0Kc8/HeTp8yJ7jqQx4ImVhVrQCJoS9E1fTkXnsD96Fg7Fi6uqnetcAdczdafJ1yc",
+    "edgelit.min.js": "sha384-OpODw5QhGPqdwKs3qwzJmydU4cfdfwdBkIIgB2gGzZV4/BlH4A76r050vxifwp4A",
+    "edgelit.esm.min.js": "sha384-jnFD9HALfG+wjtpLjHav3KeSQC2Vfs0fZSJftg8GEKWDAAZOr0gERepQXP+Tfej1"
   }
 }

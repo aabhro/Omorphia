@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { join, basename } from 'node:path';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-const banner = `/*! Edgelit v${pkg.version} | MIT | https://github.com/YOUR_USERNAME/edgelit */`;
+const banner = `/*! Edgelit v${pkg.version} | MIT | https://github.com/aabhro/edgelit */`;
 rmSync('dist', { recursive: true, force: true }); mkdirSync('dist/css', { recursive: true });
 const read = (f) => readFileSync(`src/css/${f}.css`, 'utf8');
 

@@ -16,7 +16,7 @@ Edgelit.commands.register([
     .map(([label, id]) => ({ id: 'go-' + id, label, group: 'Go to section', icon: 'arrow-right', onSelect: () => document.getElementById(id).scrollIntoView() })),
   { id: 'theme', label: 'Toggle light / dark theme', group: 'Actions', icon: 'sun', keywords: ['appearance', 'mode'], shortcut: 'T', onSelect: () => Edgelit.theme.toggle() },
   { id: 'toast', label: 'Show a notification', group: 'Actions', icon: 'bell', onSelect: () => Edgelit.toast({ title: 'Command ran', description: 'Triggered from the palette.', variant: 'success' }) },
-  { id: 'gh', label: 'Open the GitHub repository', group: 'Links', icon: 'external-link', href: 'https://github.com/YOUR_USERNAME/edgelit', target: '_blank' },
+  { id: 'gh', label: 'Open the GitHub repository', group: 'Links', icon: 'external-link', href: 'https://github.com/aabhro/edgelit', target: '_blank' },
 ]);
 
 // Dropdown demo: listen for the ui-select event

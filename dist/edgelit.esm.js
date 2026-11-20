@@ -1,4 +1,4 @@
-/*! Edgelit v1.0.0 | MIT | https://github.com/YOUR_USERNAME/edgelit */
+/*! Edgelit v1.0.0 | MIT | https://github.com/aabhro/edgelit */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";

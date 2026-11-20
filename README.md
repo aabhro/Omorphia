@@ -8,13 +8,13 @@ Dependency-free UI components and a stylesheet for any website, served from a CD
 - **Themeable.** Dark by default, light and auto modes, every colour/radius/duration is a CSS variable.
 - **Safe to drop in.** Every class is `ui-` prefixed, no bare-element selectors, no global resets.
 
-**Live showcase:** `https://YOUR_USERNAME.github.io/edgelit/`
+**Live showcase:** `https://aabhro.github.io/edgelit/`
 
 ## Quick start
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/edgelit.min.css">
-<script src="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/edgelit.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
@@ -29,22 +29,22 @@ Always use an exact version in production. It maps to a Git tag (`v1.0.0`), and 
 
 | Style | URL |
 |---|---|
-| Exact (recommended) | `https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/edgelit.min.css` |
-| Latest 1.x patch | `…/edgelit@1.0/dist/…` or `…@1/dist/…` (convenient, not immutable) |
+| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.css` |
+| Latest 1.x patch | `…/edgelit@v1.0/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
 | Branch (development only) | `…/edgelit@main/dist/…` (cached up to 12 h) |
 
 Subresource Integrity hashes for each release are in [`dist/sri.json`](dist/sri.json):
 
 ```html
-<script src="…/edgelit@1.0.0/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
+<script src="…/edgelit@v1.0.0/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
 ```
 
 Other GitHub-backed CDNs serve the same files:
 
 ```
-https://raw.githack.com/YOUR_USERNAME/edgelit/1.0.0/dist/edgelit.min.js
-https://cdn.statically.io/gh/YOUR_USERNAME/edgelit/1.0.0/dist/edgelit.min.js
-https://YOUR_USERNAME.github.io/edgelit/dist/edgelit.min.js      (GitHub Pages)
+https://raw.githack.com/aabhro/edgelit/v1.0.0/dist/edgelit.min.js
+https://cdn.statically.io/gh/aabhro/edgelit/v1.0.0/dist/edgelit.min.js
+https://aabhro.github.io/edgelit/dist/edgelit.min.js      (GitHub Pages)
 ```
 
 If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.0.0/dist/edgelit.min.js` also works.
@@ -66,8 +66,8 @@ If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.0.0/dist/edgelit.
 <link rel="stylesheet" href="…/dist/css/button.min.css">
 <link rel="stylesheet" href="…/dist/css/feedback.min.css">
 <script type="module">
-  import { toast } from 'https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/esm/components/toast.js';
-  import 'https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/esm/components/button.js'; // registers <ui-button>
+  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/esm/components/toast.js';
+  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/esm/components/button.js'; // registers <ui-button>
   toast({ title: 'Loaded only what I need', variant: 'success' });
 </script>
 ```
@@ -201,7 +201,7 @@ Current Chrome, Edge, Safari 16.4+ and Firefox (needs `color-mix()`, `:has()`, `
 ## Develop and contribute
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/edgelit && cd edgelit
+git clone https://github.com/aabhro/edgelit && cd edgelit
 npm install
 npm run build      # regenerates dist/ (icons, CSS, IIFE, ESM, per-component modules, SRI)
 npm test           # jsdom smoke tests against the built bundle + the showcase page

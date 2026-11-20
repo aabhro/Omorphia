@@ -15,7 +15,7 @@
     "cdn",
     "lucide"
   ],
-  "author": "",
+  "author": "aabhro",
   "license": "MIT",
   "devDependencies": {
     "esbuild": "^0.28.2",
@@ -31,6 +31,6 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_USERNAME/edgelit.git"
+    "url": "git+https://github.com/aabhro/edgelit.git"
   }
 }

@@ -1,4 +1,4 @@
-/*! Edgelit v1.0.0 | MIT | https://github.com/YOUR_USERNAME/edgelit */
+/*! Edgelit v1.0.0 | MIT | https://github.com/aabhro/edgelit */
 var Edgelit = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
