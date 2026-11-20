@@ -308,8 +308,8 @@ await t('directional border illumination remains part of the build', () => {
   assert.match(css, /--ui-edge-tl-alpha/);
   assert.match(css, /--ui-edge-br-alpha/);
   assert.match(css, /max-resolution:\s*1\.25dppx/);
-  assert.match(css, /linear-gradient\(to bottom right/);
-  assert.match(css, /linear-gradient\(to top left/);
+  assert.match(css, /radial-gradient\(115% 145% at 0% 0%/, 'primary spotlight stays at the top-left corner');
+  assert.match(css, /radial-gradient\(120% 150% at 100% 100%/, 'secondary spotlight stays dimmer at the bottom-right corner');
   assert.match(css, /-webkit-mask-composite:\s*xor/);
   assert.match(css, /radial-gradient\(115% 145% at 0% 0%/, 'spotlight illumination stays concentrated at the leading corner');
   const tokens = readFileSync('src/css/tokens.css', 'utf8');
