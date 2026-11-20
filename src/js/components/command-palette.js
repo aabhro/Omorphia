@@ -34,14 +34,27 @@ export class UICommandPalette extends HTMLElement {
       this.list.addEventListener('click', (e) => { const o = e.target.closest('.ui-option'); if (o) this.run(this.view[+o.dataset.i]); });
       this.append(this.dialog);
     }
-    this._hk = (e) => { if (this.matches_hotkey(e)) { e.preventDefault(); this.toggle(); } };
-    document.addEventListener('keydown', this._hk);
+    this._hk = (e) => {
+      if (e.repeat || e.isComposing || !this.matches_hotkey(e)) return;
+      e.preventDefault();
+      this.toggle();
+    };
+    // Capture before focused inputs and nested widgets can stop the event.
+    document.addEventListener('keydown', this._hk, true);
   }
-  disconnectedCallback() { document.removeEventListener('keydown', this._hk); if (this.dialog?.open) this.dialog.close(); }
+  disconnectedCallback() { document.removeEventListener('keydown', this._hk, true); if (this.dialog?.open) this.dialog.close(); }
   matches_hotkey(e) {
-    const parts = (this.getAttribute('hotkey') || 'mod+k').toLowerCase().split('+'); const key = parts.pop();
-    const mod = parts.includes('mod') ? (e.metaKey || e.ctrlKey) : (e.ctrlKey === parts.includes('ctrl') && e.metaKey === parts.includes('meta'));
-    return mod && e.altKey === parts.includes('alt') && e.shiftKey === parts.includes('shift') && e.key.toLowerCase() === key;
+    const parts = (this.getAttribute('hotkey') || 'mod+k').toLowerCase().split('+').map((part) => part.trim()).filter(Boolean);
+    const key = parts.pop();
+    const mod = parts.includes('mod');
+    const wantsCtrl = parts.includes('ctrl') || (mod && !isMac());
+    const wantsMeta = parts.includes('meta') || (mod && isMac());
+    const keyMatches = e.key?.toLowerCase() === key || (key?.length === 1 && e.code?.toLowerCase() === 'key' + key);
+    return !!key && keyMatches &&
+      e.ctrlKey === wantsCtrl &&
+      e.metaKey === wantsMeta &&
+      e.altKey === parts.includes('alt') &&
+      e.shiftKey === parts.includes('shift');
   }
   register(cmds) { const list = [].concat(cmds); list.forEach((c) => { if (!c.id) c.id = uid('cmd'); }); this.own.push(...list); return () => (this.own = this.own.filter((c) => !list.includes(c))); }
   get commands() { return this.own; } set commands(v) { this.own = [].concat(v || []); }
@@ -73,7 +86,7 @@ export class UICommandPalette extends HTMLElement {
       const none = !this.all().length;
       this.list.append(h('div', { class: 'ui-empty' }, icon(none ? 'command' : 'search'),
         h('p', { class: 'ui-empty-title' }, none ? 'No commands yet' : `No results for “${q.trim()}”`),
-        h('p', { class: 'ui-empty-desc' }, none ? 'Add commands with Edgelit.commands.register() or <ui-command> elements.' : 'Check the spelling or try a broader term.')));
+        h('p', { class: 'ui-empty-desc' }, none ? 'Add commands with Omorfia.commands.register() or <ui-command> elements.' : 'Check the spelling or try a broader term.')));
       this.input.removeAttribute('aria-activedescendant'); return;
     }
     let group;

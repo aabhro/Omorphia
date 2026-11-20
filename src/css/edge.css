@@ -1,11 +1,11 @@
-/* Edgelit — signature border illumination.
+/* Omorfia — signature border illumination.
    Two light sources on a physical edge: a primary at the top-left, a dimmer one at the bottom-right.
    Painted only in the border box (masked), following border-radius. No full outline, no glow. */
 
 @property --ui-edge-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 
 /* 1. Declare the gradient on every element that can carry the effect (resolved per element, so hover/state overrides work). */
-:is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-check-input, .ui-radio-input, .ui-switch-track, .ui-range,
+:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-check-input, .ui-radio-input, .ui-switch-track, .ui-range,
     .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble, .ui-toast, .ui-command, .ui-search-panel, .ui-kbd-edge) {
   --_tl: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-tl-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
   --_br: color-mix(in srgb, var(--ui-edge-color) min(100%, calc(var(--ui-edge-br-alpha) * var(--ui-edge-intensity) * 100%)), transparent);
@@ -17,11 +17,11 @@
 }
 
 /* 2. Pseudo-element elements: mask the gradient down to the border ring. */
-:is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
+:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
     .ui-toast, .ui-command, .ui-search-panel) {
   position: relative;
 }
-:is(.ui-edge, .ui-btn, .ui-card, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
+:is(.ui-edge, .ui-btn, .ui-input, .ui-textarea, .ui-select, .ui-modal-panel, .ui-menu, .ui-popover-panel, .ui-tooltip-bubble,
     .ui-toast, .ui-command, .ui-search-panel)::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: var(--ui-edge-width);
   border-radius: inherit; background: var(--_edge); pointer-events: none;
@@ -34,7 +34,7 @@
 .ui-command, .ui-modal-panel { position: fixed; }
 
 /* 3. Hover brightens the lights (interactive surfaces only). */
-:is(.ui-btn:not(:disabled), .ui-card--interactive, .ui-edge--interactive):hover { --ui-edge-intensity: calc(var(--ui-edge-hover-boost) * 1); }
+:is(.ui-btn:not(:disabled)--interactive, .ui-edge--interactive):hover { --ui-edge-intensity: calc(var(--ui-edge-hover-boost) * 1); }
 :is(.ui-input, .ui-textarea, .ui-select):focus-within { --ui-edge-intensity: 2; --ui-edge-color: var(--ui-accent); }
 
 /* 4. Elements where a pseudo-element is impossible: paint the gradient as a border-box background. */
@@ -58,3 +58,9 @@
 .ui-edge--soft { --ui-edge-intensity: 0.6; }
 .ui-edge--none::before { display: none; }
 .ui-edge--accent { --ui-edge-color: var(--ui-accent); }
+
+
+/* A slightly wider ring is more reliable on low-density and compact displays. */
+@media (max-resolution: 1.25dppx), (max-width: 420px) {
+  :root, [data-ui-theme] { --ui-edge-width: 1.25px; }
+}

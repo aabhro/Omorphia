@@ -1,219 +1,344 @@
-# Edgelit
+<div align="center">
+  <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/layers-3.svg" width="42" height="42" alt="Omorfia icon">
+  <h1>Omorfia</h1>
+  <p><strong>Quietly considered interface components.</strong></p>
+  <p>A dependency-free UI library with native custom elements, practical components, and restrained directional border illumination.</p>
+  <p><a href="https://aabhro.github.io/edgelit/"><strong>Open the live showcase</strong></a> &nbsp;·&nbsp; <a href="https://github.com/aabhro/Edgelit">Source repository</a></p>
+  <p>
+    <img src="https://img.shields.io/github/v/tag/aabhro/Edgelit?label=release&style=flat" alt="Latest release">
+    <img src="https://img.shields.io/github/actions/workflow/status/aabhro/Edgelit/ci.yml?branch=main&label=checks&style=flat" alt="Build status">
+    <img src="https://img.shields.io/github/license/aabhro/Edgelit?style=flat" alt="MIT license">
+  </p>
+</div>
 
-Dependency-free UI components and a stylesheet for any website, served from a CDN. One CSS file, one JS file, native custom elements, Lucide icons built in — and a signature **border illumination**: light that catches the top-left edge of every surface and fades away, with a dimmer reflection at the bottom-right.
+---
 
-- **No build step for users.** Two tags, no npm, no cloning.
-- **Vanilla everything.** Semantic HTML, modern CSS, native Web Components, about 15 kB gzipped JS (76 icons included) and 9 kB gzipped CSS.
-- **Accessible.** Real `<button>`, `<dialog>`, `<details>`; ARIA roles, roving focus, keyboard support, `prefers-reduced-motion`.
-- **Themeable.** Dark by default, light and auto modes, every colour/radius/duration is a CSS variable.
-- **Safe to drop in.** Every class is `ui-` prefixed, no bare-element selectors, no global resets.
+<div align="center">
+  <a href="#overview"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/info.svg" width="15" height="15" alt=""> Overview</a>
+  &nbsp;·&nbsp; <a href="#quick-start"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/rocket.svg" width="15" height="15" alt=""> Quick start</a>
+  &nbsp;·&nbsp; <a href="#components"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/layout-grid.svg" width="15" height="15" alt=""> Components</a>
+  &nbsp;·&nbsp; <a href="#illumination"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/sun.svg" width="15" height="15" alt=""> Illumination</a>
+  &nbsp;·&nbsp; <a href="#theming"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/palette.svg" width="15" height="15" alt=""> Theming</a>
+  &nbsp;·&nbsp; <a href="#development"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/code-2.svg" width="15" height="15" alt=""> Development</a>
+</div>
 
-**Live showcase:** `https://aabhro.github.io/edgelit/`
+## Overview
+
+Omorfia provides reusable interface elements without requiring a framework, runtime dependency, or build step in the consuming project.
+
+- **Small integration surface:** one CSS file and one JavaScript file.
+- **Native foundations:** semantic HTML, custom elements, and native browser dialogs.
+- **Useful interaction:** keyboard navigation, accessible states, and responsive navigation.
+- **Lucide icons:** common icons are bundled. Additional names load on demand.
+- **Scoped theming:** CSS variables work globally or inside a component subtree.
+- **Progressive enhancement:** CSS-only elements work without JavaScript where possible.
+
+The library keeps its original <code>ui-</code> custom-element and class prefixes for compatibility. Existing integrations using the <code>Edgelit</code> global continue to work as an alias.
 
 ## Quick start
 
+<details open>
+  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/package.svg" width="15" height="15" alt=""> CDN setup</strong> · CSS and classic JavaScript</summary>
+
+Use a pinned release in production. GitHub's code block toolbar provides a copy action.
+
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
-<ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
-<ui-command-palette></ui-command-palette>   <!-- Ctrl K / ⌘K -->
+<ui-tooltip content="Copy to clipboard">
+  <ui-button icon="copy">Copy</ui-button>
+</ui-tooltip>
+<ui-command-palette></ui-command-palette>
 ```
 
-Custom elements upgrade automatically, including ones inserted later with `innerHTML` or `appendChild`. Add `data-ui-theme="dark | light | auto"` to `<html>` (or any container). Dark is the default.
+Custom elements upgrade automatically, including elements inserted later. Dark mode is the default.
 
-### Pin a version
+</details>
 
-Always use an exact version in production. It maps to a Git tag (`v1.1.1`), and jsDelivr caches it permanently.
+<details>
+  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/pin.svg" width="15" height="15" alt=""> Pin a release</strong> · Stable production assets</summary>
 
-| Style | URL |
+Use an exact version such as <code>v1.1.2</code>. A release tag gives you a stable asset URL.
+
+| Asset | Path |
 |---|---|
-| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.css` |
-| Latest 1.x patch | `…/edgelit@v1.1/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
-| Branch (development only) | `…/edgelit@main/dist/…` (cached up to 12 h) |
+| CSS | <code>dist/omorfia.min.css</code> |
+| Classic JS | <code>dist/omorfia.min.js</code> |
+| ES module | <code>dist/omorfia.esm.min.js</code> |
 
-Subresource Integrity hashes for each release are in [`dist/sri.json`](dist/sri.json):
+Generated Subresource Integrity hashes are available in <a href="dist/sri.json"><code>dist/sri.json</code></a>.
+
+</details>
+
+<details>
+  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/blocks.svg" width="15" height="15" alt=""> ES modules</strong> · Import only what you use</summary>
 
 ```html
-<script src="…/edgelit@v1.1.1/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
-```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/feedback.min.css">
 
-Other GitHub-backed CDNs serve the same files:
-
-```
-https://raw.githack.com/aabhro/edgelit/v1.1.1/dist/edgelit.min.js
-https://cdn.statically.io/gh/aabhro/edgelit/v1.1.1/dist/edgelit.min.js
-https://aabhro.github.io/edgelit/dist/edgelit.min.js      (GitHub Pages)
-```
-
-If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.1.0/dist/edgelit.min.js` also works.
-
-### Files
-
-| File | Use |
-|---|---|
-| `dist/edgelit.min.css` / `edgelit.css` | Complete stylesheet (minified / readable) |
-| `dist/edgelit.min.js` / `edgelit.js` | Classic script, defines the global `Edgelit` |
-| `dist/edgelit.esm.min.js` / `edgelit.esm.js` | ES module bundle |
-| `dist/css/core.min.css` + `dist/css/<module>.min.css` | Modular CSS: `core` (tokens, base, illumination) plus `button`, `forms`, `nav`, `feedback`, `containers`, `advanced` |
-| `dist/esm/components/<name>.js` | One ES module per component, with shared chunks |
-
-### ES modules and individual components
-
-```html
-<link rel="stylesheet" href="…/dist/css/core.min.css">
-<link rel="stylesheet" href="…/dist/css/button.min.css">
-<link rel="stylesheet" href="…/dist/css/feedback.min.css">
 <script type="module">
-  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/esm/components/toast.js';
-  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/esm/components/button.js'; // registers <ui-button>
-  toast({ title: 'Loaded only what I need', variant: 'success' });
+  import * as Omorfia from 'https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.esm.min.js';
+  Omorfia.toast({ title: 'Ready', variant: 'success' });
 </script>
 ```
 
-Or everything as a module: `import { toast, theme } from '…/dist/edgelit.esm.min.js'`.
+For individual component modules, see the component list below.
 
-Component modules: `button`, `tooltip`, `toast`, `modal`, `popover` (popover + dropdown), `tabs`, `pagination`, `command-palette`, `search`, `sidebar`, plus `icons`. Pair each with the CSS modules listed in its section below.
+</details>
 
 ## Components
 
-CSS-only components work with just the stylesheet. Custom elements need the script.
+The CSS is split into focused modules. The complete stylesheet includes every module.
 
-### Buttons — `<ui-button>` or `.ui-btn`
-CSS: `button`. Attributes: `variant` (`primary` `secondary` `subtle` `destructive`), `size` (`sm` `md` `lg`), `icon`, `icon-end` (Lucide name), `loading`, `disabled`, `type`, `label` (required when there's no text), `block`. Properties: `loading`, `disabled`. Methods: `focus()`, `click()`. Native forms work: a `type="submit"` button submits its form.
-Classes: `ui-btn ui-btn--primary|secondary|subtle|destructive`, `ui-btn--sm|lg|icon`, `is-loading`, `ui-btn-group`.
+| Module | Includes |
+|---|---|
+| <code>core</code> | Tokens, base styles, and border illumination |
+| <code>button</code> | Buttons and button groups |
+| <code>forms</code> | Inputs, selects, checkboxes, switches, and search |
+| <code>nav</code> | Breadcrumbs, navigation links, tabs, and pagination |
+| <code>feedback</code> | Tooltips, alerts, badges, status, progress, and toast styles |
+| <code>containers</code> | Cards, avatars, dialogs, popovers, and collapsibles |
+| <code>advanced</code> | Command palette, search panels, and side navigation |
 
-### Inputs
-CSS: `forms`. Text controls are wrappers so the illumination follows their shape:
+### Buttons
+
+<details>
+  <summary><strong>View implementation</strong></summary>
 
 ```html
-<div class="ui-field" data-state="error">  <!-- error | success -->
-  <label class="ui-label" for="e">Email</label>
-  <div class="ui-input"><ui-icon name="mail"></ui-icon><input id="e" aria-invalid="true"></div>
-  <p class="ui-hint">Used for receipts.</p><p class="ui-error-text">Enter a valid email.</p>
+<ui-button variant="primary" icon="save">Save</ui-button>
+<ui-button variant="secondary">Cancel</ui-button>
+<ui-button variant="subtle" icon="ellipsis" label="More options"></ui-button>
+```
+
+Variants: <code>primary</code>, <code>secondary</code>, <code>subtle</code>, and <code>destructive</code>. Sizes: <code>sm</code>, <code>md</code>, and <code>lg</code>.
+
+</details>
+
+### Forms
+
+<details>
+  <summary><strong>View implementation</strong></summary>
+
+```html
+<div class="ui-field">
+  <label class="ui-label" for="project-name">Project name</label>
+  <div class="ui-input">
+    <ui-icon name="folder"></ui-icon>
+    <input id="project-name" name="project-name" placeholder="Untitled project">
+  </div>
+  <p class="ui-hint">Choose a name for this workspace.</p>
 </div>
 ```
-Also `.ui-textarea`, `.ui-select`, `.ui-check` / `.ui-radio` (`.ui-check-input`, `.ui-radio-input`), `.ui-switch` (`.ui-switch-input` + `.ui-switch-track`), `.ui-range` (set `--_pct` for the filled track), sizes `.ui-input--sm|lg`. `.ui-search` is below.
+
+Also available: <code>.ui-textarea</code>, <code>.ui-select</code>, <code>.ui-check</code>, <code>.ui-radio</code>, <code>.ui-switch</code>, and <code>.ui-range</code>.
+
+</details>
 
 ### Navigation
-CSS: `nav`. `.ui-crumbs` / `.ui-crumb` breadcrumbs, `.ui-nav` / `.ui-nav-link`, side navigation (see Sidebar).
 
-| Element | Attributes | Events / API |
-|---|---|---|
-| `<ui-tabs>` containing `<ui-tab label value icon disabled>` | `value` | `ui-change {value, tab}`, `.value`, `.select(v)`; ←/→/Home/End |
-| `<ui-pagination>` | `total`, `page`, `siblings`, `label` | `ui-change {page}`, `.page` |
-| `<ui-dropdown>` (first child or `slot="trigger"` is the trigger; `<button>`, `<a>`, `<hr>` become items) | `placement` | `ui-select {item, value}` (`data-value` or text), `ui-open`, `ui-close`, `.show()` `.hide()` `.toggle()`; ↑/↓/Home/End/type-ahead |
+<details>
+  <summary><strong>View implementation</strong></summary>
 
-### Feedback and information
-CSS: `feedback`.
-- `<ui-tooltip content placement delay>` wraps its target; shows on hover and focus, `Esc` dismisses, wires `aria-describedby`.
-- `Edgelit.toast({ title, description, variant, duration, action })` → `{ dismiss }`. Variants: `success` `danger` `warning` `info` `neutral`. `duration: 0` keeps it open. Pauses on hover. Position: `Edgelit.config.toastPosition = 'top-right'` (`top|bottom-left|center|right`).
-- `.ui-alert ui-alert--info|success|warning|danger`, `.ui-badge ui-badge--accent|success|warning|danger|info`, `.ui-status ui-status--online|away|busy|live`, `.ui-progress` (set `--value: 0–100`; `ui-progress--indeterminate`), `.ui-spinner`, `.ui-skeleton` (`--circle`, `--title`, `--block`).
+```html
+<ui-tabs value="overview">
+  <ui-tab label="Overview" value="overview">Overview panel</ui-tab>
+  <ui-tab label="Activity" value="activity">Activity panel</ui-tab>
+</ui-tabs>
 
-### Containers and layout
-CSS: `containers`, `base`. `.ui-card` (+ `-header`, `-body`, `-footer`, `ui-card--interactive`), `.ui-divider` (optionally labelled, `--vertical`), `.ui-avatar` (`--sm|lg|xl|square`, `data-status`), `.ui-avatar-group`, `details.ui-collapsible > summary.ui-summary`, layout utilities `.ui-stack`, `.ui-row`, `.ui-grid`, `.ui-container`, `.ui-gap-1…6`.
+<ui-pagination total="24" page="1"></ui-pagination>
 
-- `<ui-modal heading size="sm|lg" persistent open>` — body is the content; `<div slot="footer">` holds actions. Built on `<dialog>` (focus trap, `Esc`, inert background). API: `.show()` `.close(value)` `.toggle()`, `.open`. Events: `ui-open`, `ui-before-close` (cancelable), `ui-close {returnValue}`.
-- `Edgelit.confirm({ title, message, confirmLabel, cancelLabel, destructive })` → `Promise<boolean>`.
-- `<ui-popover placement>` — same trigger convention as the dropdown; arbitrary content; `.show()` `.hide()`, `ui-open`, `ui-close`.
+<ui-dropdown>
+  <button slot="trigger">Actions</button>
+  <button data-value="rename">Rename</button>
+  <button data-value="duplicate">Duplicate</button>
+</ui-dropdown>
+```
 
-### Command palette — `<ui-command-palette>`
-CSS: `advanced`. Opens with **Ctrl+K** and **⌘K**, closes with `Esc`, ↑/↓ navigate, `Enter` runs. Fuzzy search with highlighted matches, a no-commands state and a no-results state. Attributes: `hotkey` (default `mod+k`), `placeholder`.
+Tabs support arrow keys, Home, and End. Dropdown menus support arrow-key navigation, Home, End, and type-ahead.
+
+</details>
+
+### Feedback and overlays
+
+<details>
+  <summary><strong>View implementation</strong></summary>
 
 ```js
-Edgelit.commands.register([        // global — every palette sees these
-  { id: 'new', label: 'New project', group: 'Actions', icon: 'plus', shortcut: 'N', onSelect: (cmd) => createProject() },
-  { id: 'docs', label: 'Documentation', group: 'Links', icon: 'book-open', href: '/docs', keywords: ['help'] },
+Omorfia.toast({
+  title: 'Changes saved',
+  description: 'Your work is up to date.',
+  variant: 'success'
+});
+
+const confirmed = await Omorfia.confirm({
+  title: 'Delete project?',
+  message: 'This action cannot be undone.',
+  confirmLabel: 'Delete',
+  destructive: true
+});
+```
+
+Available elements include <code>&lt;ui-tooltip&gt;</code>, <code>&lt;ui-modal&gt;</code>, <code>&lt;ui-popover&gt;</code>, and <code>&lt;ui-dropdown&gt;</code>.
+
+</details>
+
+### Command palette
+
+Press <kbd>Ctrl</kbd> + <kbd>K</kbd> on Windows and Linux, or <kbd>⌘</kbd> + <kbd>K</kbd> on macOS. Use the arrow keys to move, Enter to run, and Escape to close.
+
+<details>
+  <summary><strong>Register commands</strong></summary>
+
+```js
+Omorfia.commands.register([
+  {
+    id: 'new-project',
+    label: 'New project',
+    group: 'Actions',
+    icon: 'plus',
+    shortcut: 'N',
+    onSelect: () => createProject()
+  },
+  {
+    id: 'docs',
+    label: 'Open documentation',
+    group: 'Links',
+    icon: 'book-open',
+    href: '/docs'
+  }
 ]);
-document.querySelector('ui-command-palette').register({ label: 'Only on this palette', onSelect() {} });
 ```
-Declarative: `<ui-command label="Go home" href="/" group="Navigate" icon="house" shortcut="G H" onselect="…">` inside the palette. A command is `{ id, label, group?, description?, icon?, keywords?, shortcut?, href?, target?, onSelect?, disabled? }`. Methods: `open()` `close()` `toggle()`. Events: `ui-open`, `ui-close`, `ui-command {command}`. `Edgelit.commands.unregister(id)`, `.list()`, `.clear()`.
 
-### Search — `<ui-search>`
-CSS: `forms` + `advanced`. Attributes: `placeholder`, `value`, `name`, `label`, `autocomplete` (enable suggestions), `min-chars` (1), `debounce` (150), `max` (8), `loading`, `empty-text`, `loading-text`.
+Commands can be registered globally or on one palette. The component also supports declarative <code>&lt;ui-command&gt;</code> elements.
+
+</details>
+
+### Search and side navigation
+
+<details>
+  <summary><strong>Search suggestions</strong></summary>
 
 ```js
-const s = document.querySelector('ui-search');
-s.data = ['Apple', { label: 'Mango', description: 'Fruit', icon: 'star', keywords: ['tropical'] }]; // local filtering
-s.suggestions = ['Mango'];                                          // shown when the field is empty and focused
-s.source = async (query, signal) => (await fetch(`/api?q=${query}`, { signal })).json(); // async; stale requests aborted
-s.renderItem = (item, { query }) => { const b = document.createElement('b'); b.textContent = item.label; return b; };
-s.addEventListener('ui-select', (e) => console.log(e.detail.item));
-```
-Events: `ui-input {value}`, `ui-select {item, value}`, `ui-submit {value}`, `ui-clear`. Keys: ↑/↓, `Enter`, `Esc` closes then clears, `Tab`. Has a clear button, loading spinner, empty and error states. `renderItem` must return a Node or plain text (never HTML strings).
+const search = document.querySelector('ui-search');
 
-### Side menu — `<ui-sidebar>`
-CSS: `advanced`.
+search.data = [
+  { label: 'Apple', description: 'Fruit', icon: 'apple' },
+  { label: 'Mango', description: 'Fruit', icon: 'leaf' }
+];
+
+search.addEventListener('ui-select', (event) => {
+  console.log(event.detail.item);
+});
+```
+
+The search component supports local data, asynchronous sources, loading states, keyboard selection, and custom item rendering.
+
+</details>
+
+<details>
+  <summary><strong>Responsive side navigation</strong></summary>
 
 ```html
-<ui-sidebar id="nav" heading="Acme" collapsible width="260px" breakpoint="768">
+<ui-sidebar heading="Workspace" collapsible breakpoint="768">
   <ui-sidebar-item icon="house" href="/" active>Home</ui-sidebar-item>
-  <ui-sidebar-item icon="folder" expanded>Projects
-    <ui-sidebar-item href="/a">Atlas</ui-sidebar-item>
+  <ui-sidebar-item icon="folder">Projects
+    <ui-sidebar-item href="/atlas">Atlas</ui-sidebar-item>
+    <ui-sidebar-item href="/meridian">Meridian</ui-sidebar-item>
   </ui-sidebar-item>
-  <div slot="footer">…</div>
 </ui-sidebar>
-<ui-button data-ui-toggle="#nav" icon="menu" label="Menu"></ui-button>
 ```
-Attributes: `collapsed`, `collapsible` (adds a collapse button), `width` (or `--ui-sidebar-width`), `position="left|right"`, `fixed` (pin to the viewport edge), `breakpoint` (px, default 768; below it the sidebar is an off-canvas drawer with scrim, `open` attribute), `heading`, `label`. Items: `icon`, `href`, `active`, `expanded`, `disabled`, nested items make a group. Methods: `toggle()` `collapse()` `expand()` `openMobile()` `closeMobile()`. Events: `ui-select {item, href}` (cancelable), `ui-toggle {collapsed, open}`. Keys: ↑/↓/Home/End, →/← expand or collapse groups. Collapsed mode shows icons with `title` tooltips. Tune with `--ui-sidebar-width`, `--ui-sidebar-collapsed-width`, `--ui-sidebar-radius`.
 
-### Icons
-Lucide icons are bundled (76 common ones) so they render with no extra request: `<ui-icon name="search" size="20" stroke="1.5" label="Search">`. Any other Lucide icon name loads automatically from jsDelivr on first use. Use `Edgelit.icons.register('brand', '<path d="…"/>')` for your own, `Edgelit.icons.has(name)`, and `Edgelit.icon(name, size)` to create elements. Icons inherit `currentColor`; size with `--ui-icon-size`.
+On narrow viewports the sidebar becomes an off-canvas drawer. It supports nested groups, collapse, keyboard navigation, and active states.
 
-## Visual system
+</details>
 
-Edgelit uses a restrained near-black canvas, proportional interface typography, low-contrast separators, text-led controls, and minimal surfaces. Floating panels stay opaque `#0a0a0a` in both themes. Related actions share a single group, and active tabs use a fine underline instead of a filled strip.
+## Illumination
 
-## Border illumination
+Omorfia keeps its signature directional light. The primary highlight starts near the top-left edge. A dimmer reflection sits near the bottom-right. The effect is masked into the border ring instead of drawing a bright outline around every element.
 
-Add `ui-edge` to any element, or use any built-in component. The effect is a masked gradient painted only in the border ring (a 1px `::before`), so it follows `border-radius` and never creates a full outline or glow.
+Apply it to a surface with <code>ui-edge</code>:
 
 ```html
-<div class="ui-edge" style="border-radius:16px; --ui-edge-tl-alpha:.6; --ui-edge-tl-reach:60%">…</div>
+<div class="ui-edge" style="border-radius: 8px">
+  A softly illuminated surface
+</div>
 ```
 
-| Variable | Default (dark) | Meaning |
-|---|---|---|
-| `--ui-edge-color` | `#f5f5f5` | Light colour (dark ink in light theme) |
-| `--ui-edge-tl-alpha` | `0.5` | Top-left light strength |
-| `--ui-edge-br-alpha` | `0.14` | Bottom-right light strength (keep dimmer) |
-| `--ui-edge-tl-reach` / `--ui-edge-br-reach` | `52%` / `42%` | How far each light travels along the edges |
-| `--ui-edge-base-alpha` | `0.05` | Faint resting edge; `0` removes it |
-| `--ui-edge-width` | `1px` | Ring thickness |
-| `--ui-edge-intensity` | `1` | Multiplier for both lights |
-| `--ui-edge-hover-boost` | `1.5` | Intensity multiplier on interactive hover |
+| Variable | Default | Purpose |
+|---|---:|---|
+| <code>--ui-edge-tl-alpha</code> | <code>.5</code> | Top-left strength |
+| <code>--ui-edge-br-alpha</code> | <code>.14</code> | Bottom-right strength |
+| <code>--ui-edge-tl-reach</code> | <code>52%</code> | Top-left reach |
+| <code>--ui-edge-br-reach</code> | <code>42%</code> | Bottom-right reach |
+| <code>--ui-edge-base-alpha</code> | <code>.05</code> | Resting edge strength |
+| <code>--ui-edge-width</code> | <code>1px</code> | Ring thickness |
+| <code>--ui-edge-intensity</code> | <code>1</code> | Overall intensity |
+| <code>--ui-edge-hover-boost</code> | <code>1.45</code> | Interactive hover multiplier |
 
-Modifiers: `ui-edge--soft`, `ui-edge--strong`, `ui-edge--accent`, `ui-edge--none`, `ui-edge--animated` (slow sweep of the light, disabled under `prefers-reduced-motion`). Inputs, textareas and selects use wrapper elements because `<input>` cannot have pseudo-elements; checkboxes, radios, switches and range thumbs paint the same gradient as a border-box background.
+Modifiers: <code>ui-edge--soft</code>, <code>ui-edge--strong</code>, <code>ui-edge--accent</code>, <code>ui-edge--none</code>, and <code>ui-edge--animated</code>. Animation respects <code>prefers-reduced-motion</code>.
+
+The showcase includes a live configuration panel with presets and copyable CSS.
 
 ## Theming
 
+Override tokens on <code>:root</code> or scope them to any container.
+
 ```css
-:root {                       /* or any container */
-  --ui-accent: #f5f5f5;  --ui-accent-hover: #d4d4d4;  --ui-accent-contrast: #0a0a0a;
-  --ui-bg: #0a0a0a;  --ui-surface: #0a0a0a;  --ui-overlay: #0a0a0a;  --ui-text: #f5f5f5;
-  --ui-radius: 6px;  --ui-radius-lg: 10px;
+:root {
+  --ui-bg: #0a0a0a;
+  --ui-surface: #0a0a0a;
+  --ui-overlay: #0a0a0a;
+  --ui-text: #f5f5f5;
+  --ui-accent: #f5f5f5;
+  --ui-radius: 6px;
   --ui-font: "Geist", system-ui, sans-serif;
-  --ui-duration: 120ms;
 }
 ```
-Token groups: surfaces (`--ui-bg`, `-inset`, `-surface`, `-surface-2/3`, `-overlay`), text (`--ui-text`, `-muted`, `-faint`), accent and status (`--ui-accent|danger|success|warning|info` with `-soft`), shape (`--ui-radius-sm|radius|radius-lg`), depth (`--ui-shadow-sm|md|lg`), motion (`--ui-duration-fast|duration|ease`), type scale (`--ui-text-xs…3xl`), spacing (`--ui-space-1…8`), controls (`--ui-h-sm|md|lg`, `--ui-icon-*`). Switch themes with `Edgelit.theme.set('light' | 'dark' | 'auto')` or the attribute. Scoped themes work too: `<section data-ui-theme="light">`.
+
+Set a theme through the attribute:
+
+```html
+<html data-ui-theme="dark">
+<section data-ui-theme="light">A separately themed section</section>
+```
+
+Or use the JavaScript helper:
+
+```js
+Omorfia.theme.set('dark');  // dark, light, or auto
+Omorfia.theme.toggle();
+```
+
+Menus, dialogs, toasts, and other floating panels keep an opaque near-black surface for consistent contrast.
 
 ## Browser support
-Current Chrome, Edge, Safari 16.4+ and Firefox (needs `color-mix()`, `:has()`, `<dialog>`, CSS masks). The Popover API is used for top-layer overlays where available, with a fixed-position fallback.
 
-## Develop and contribute
+Targets current Chrome, Edge, Safari 16.4+, and Firefox. The library uses modern browser features including custom elements, <code>color-mix()</code>, CSS masks, <code>:has()</code>, and native dialogs. Floating panels use the Popover API where available and a fixed-position fallback elsewhere.
+
+## Development
+
+<details>
+  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/terminal.svg" width="15" height="15" alt=""> Build and test locally</strong></summary>
 
 ```bash
-git clone https://github.com/aabhro/edgelit && cd edgelit
+git clone https://github.com/aabhro/Edgelit.git
+cd Edgelit
 npm install
-npm run build      # regenerates dist/ (icons, CSS, IIFE, ESM, per-component modules, SRI)
-npm test           # jsdom smoke tests against the built bundle + the showcase page
-open index.html    # the showcase consumes ./dist, the same files the CDN serves
+npm run build
+npm test
 ```
-Source lives in `src/css/*.css` (one file per area) and `src/js/components/*.js` (one file per component). Guidelines: keep the `ui-` prefix; no element selectors outside component scope; use tokens, never hard-coded colours; proportional fonts only for UI text and nothing under 12px; every interactive component needs keyboard support and ARIA; add a test and a showcase demo for anything new; **commit the rebuilt `dist/`** (the CDN serves it from git and CI checks it is current).
 
-Releasing: bump `version` in `package.json` and `package-lock.json`, run `npm run build && npm test`, then push to `main`. CI refreshes the committed `dist/` output and creates the matching `vX.Y.Z` tag. jsDelivr serves the pinned tag after it is pushed.
+The showcase is <code>index.html</code>. Source styles live in <code>src/css/</code>, component logic lives in <code>src/js/</code>, and showcase-only wiring lives in <code>showcase/</code>.
+
+The build regenerates the complete and modular CSS, classic and ESM bundles, component modules, compatibility filenames, and the SRI manifest. The generated <code>dist/</code> directory is committed because it is served directly from the repository.
+
+</details>
 
 ## License
-MIT
+
+MIT. See <a href="LICENSE">LICENSE</a>.

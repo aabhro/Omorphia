@@ -13,6 +13,9 @@ for (const s of ['type', 'buttons', 'inputs', 'navigation', 'feedback', 'contain
 const missing = [...d.querySelectorAll('ui-icon')].filter((i) => !i.querySelector('svg')).map((i) => i.getAttribute('name'));
 assert.deepEqual(missing, [], 'all icons render from the bundle: ' + missing);
 assert.ok(d.querySelector('#search-local').data.length > 10); assert.ok(d.getElementById('actions-menu').panel);
+assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration presets render');
+assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
+assert.ok(d.getElementById('fx-css-output')?.textContent.includes('--ui-edge-tl-alpha'), 'live configuration emits CSS');
 d.querySelector('ui-command-palette').open(); assert.ok(d.querySelectorAll('.ui-command .ui-option').length >= 11, 'palette lists commands');
 assert.deepEqual(errs, [], 'console clean');
 console.log(`showcase OK — ${demos.length} demos, ${d.querySelectorAll('ui-icon svg').length} icons rendered`);

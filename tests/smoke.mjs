@@ -8,15 +8,15 @@ const w = dom.window; const errors = [];
 w.console.error = (...a) => errors.push(a.join(' ')); w.console.warn = (...a) => errors.push(a.join(' '));
 w.Element.prototype.scrollIntoView = () => {}; // jsdom lacks it
 w.fetch = async () => ({ ok: false });
-w.eval(readFileSync('dist/edgelit.min.js', 'utf8'));
-const E = w.Edgelit, d = w.document; const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
+w.eval(readFileSync('dist/omorfia.min.js', 'utf8'));
+const E = w.Omorfia, d = w.document; const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 let passed = 0; const t = async (name, fn) => { await fn(); passed++; console.log('  ✓', name); };
 const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; d.body.append(c); return c; };
 
-await t('exports global API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
+await t('exports global API', () => { assert.equal(w.Edgelit, E, 'legacy global alias'); assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
 await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
 await t('Modernimal neutral theme and opaque overlay defaults', () => {
-  const css = readFileSync('dist/edgelit.css', 'utf8');
+  const css = readFileSync('dist/omorfia.css', 'utf8');
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
   assert.match(css, /--ui-text:\s*#f5f5f5/);
   assert.match(css, /--ui-overlay:\s*#0a0a0a/);
@@ -25,9 +25,12 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
 });
 await t('decorative perimeter outlines are omitted', () => {
   const edge = readFileSync('src/css/edge.css', 'utf8');
-  for (const selector of ['.ui-alert', '.ui-badge', '.ui-avatar', '.ui-sidebar-panel', '.ui-tabs-list', '.ui-page-btn', '.ui-collapsible', '.ui-progress']) {
+  for (const selector of ['.ui-alert', '.ui-badge', '.ui-card', '.ui-avatar', '.ui-sidebar-panel', '.ui-tabs-list', '.ui-page-btn', '.ui-collapsible', '.ui-progress']) {
     assert.equal(edge.includes(selector), false, selector);
   }
+  const containers = readFileSync('src/css/containers.css', 'utf8');
+  assert.match(containers, /\.ui-card\{[^}]*border:0;border-radius:0/);
+  assert.match(containers, /\.ui-avatar\{[^}]*border-radius:4px/);
   const base = readFileSync('src/css/base.css', 'utf8');
   const buttons = readFileSync('src/css/button.css', 'utf8');
   assert.match(base, /\.ui-summary:focus-visible\s*\{[^}]*outline:\s*none/);
@@ -79,6 +82,13 @@ await t('toast appears, stacks, dismisses', async () => { const a = E.toast({ ti
 await t('command palette: open, filter+highlight, keyboard, callback, empty/no-results', async () => {
   const c = mount('<ui-command-palette></ui-command-palette>'); const p = c.firstChild; assert.ok(p.dialog);
   p.open(); assert.ok(d.querySelector('.ui-empty-title').textContent.includes('No commands yet')); p.close();
+  const focused = d.createElement('input'); d.body.append(focused);
+  focused.addEventListener('keydown', (e) => e.stopPropagation());
+  const shortcut = new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true });
+  focused.dispatchEvent(shortcut);
+  assert.ok(p.isOpen, 'Ctrl+K works while focus is inside a control');
+  assert.ok(shortcut.defaultPrevented, 'the browser shortcut is prevented');
+  p.close(); focused.remove();
   let ran = 0; const off = E.commands.register([{ id: 'a', label: 'Create project', group: 'Actions', onSelect: () => ran++ }, { id: 'b', label: 'Open settings', group: 'Go to', icon: 'settings', href: '#x' }]);
   d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true })); assert.ok(p.isOpen); assert.equal(p.list.querySelectorAll('.ui-option').length, 2);
   p.input.value = 'proj'; p.input.dispatchEvent(new w.Event('input')); assert.equal(p.list.querySelectorAll('.ui-option').length, 1); assert.equal(p.list.querySelector('mark').textContent, 'proj');

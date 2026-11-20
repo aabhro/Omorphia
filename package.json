@@ -1,8 +1,8 @@
 {
-  "name": "edgelit",
-  "version": "1.1.1",
+  "name": "omorfia",
+  "version": "1.1.2",
   "description": "Dependency-free, CDN-first UI components and stylesheet with directional border illumination.",
-  "main": "dist/edgelit.min.js",
+  "main": "dist/omorfia.min.js",
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
@@ -22,8 +22,8 @@
     "jsdom": "^31.0.1",
     "lucide-static": "^1.77.0"
   },
-  "module": "dist/edgelit.esm.min.js",
-  "style": "dist/edgelit.min.css",
+  "module": "dist/omorfia.esm.min.js",
+  "style": "dist/omorfia.min.css",
   "files": [
     "dist",
     "src"
