@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.5 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.1.6 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -912,8 +912,9 @@ var UICommandPalette = class extends HTMLElement {
         const option = event.target.closest(".ui-option");
         if (option) this.run(this.view[Number(option.dataset.i)]);
       });
-      this.append(this.dialog);
     }
+    const portal = this.ownerDocument.body || this.ownerDocument.documentElement;
+    if (this.dialog.parentNode !== portal) portal.append(this.dialog);
     connectPalette(this);
   }
   disconnectedCallback() {
@@ -922,6 +923,7 @@ var UICommandPalette = class extends HTMLElement {
       this._prev = null;
       this.close();
     }
+    this.dialog?.remove();
   }
   get disabled() {
     return this.hasAttribute("disabled");
@@ -1515,7 +1517,7 @@ if (typeof document !== "undefined" && !window.__omorphiaToggle) {
 }
 
 // src/js/index.js
-var version = true ? "1.1.5" : "dev";
+var version = true ? "1.1.6" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {

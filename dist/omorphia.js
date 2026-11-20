@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.5 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.1.6 | MIT | https://github.com/aabhro/Omorphia */
 var Omorphia = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -957,8 +957,9 @@ var Omorphia = (() => {
           const option = event.target.closest(".ui-option");
           if (option) this.run(this.view[Number(option.dataset.i)]);
         });
-        this.append(this.dialog);
       }
+      const portal = this.ownerDocument.body || this.ownerDocument.documentElement;
+      if (this.dialog.parentNode !== portal) portal.append(this.dialog);
       connectPalette(this);
     }
     disconnectedCallback() {
@@ -967,6 +968,7 @@ var Omorphia = (() => {
         this._prev = null;
         this.close();
       }
+      this.dialog?.remove();
     }
     get disabled() {
       return this.hasAttribute("disabled");
@@ -1560,7 +1562,7 @@ var Omorphia = (() => {
   }
 
   // src/js/index.js
-  var version = true ? "1.1.5" : "dev";
+  var version = true ? "1.1.6" : "dev";
   var theme = {
     get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
     set(mode, el = document.documentElement) {
