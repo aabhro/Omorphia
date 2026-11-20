@@ -9,6 +9,10 @@ Canonical repository: https://github.com/aabhro/Omorphia
 
 Before taking action, read the root `AGENTS.md` and the full `AI/AGENT-PROMPT.md`.
 
+For every UI task, read `AI/COMPONENT-CATALOG.md` in full before writing markup. Make a component map from each UI requirement to the exact existing Omorphia element or CSS primitive. Inspect the matching `src/js/` implementation, `src/css/` styles, and `index.html` example.
+
+**Never invent `<ui-*>` tags or guess APIs. Never recreate a button, modal, dropdown, tabs, search, toast, or sidebar that Omorphia already provides.** CSS classes such as `.ui-input`, `.ui-select`, `.ui-card`, and `.ui-alert` are applied to native HTML. If no built-in match exists, mark the gap and prefer native HTML/classes. Audit every custom tag before delivery.
+
 For UI, component, styling, or showcase work, read the complete Modernimal stylesheet in the public `aabhro/Stylesheets` repository, inspect `Components/Modernimal.html`, and inspect the mandatory `motion/` references. Read files directly from GitHub or clone with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special access is required. Retry temporary fetch failures through public raw URLs or a fresh clone before reporting a limitation. Never silently skip required files.
 
 Use the style-selection checkpoint for new apps, meaningful UI features, or substantial redesigns. Modernimal is the recommended default. Ask conversationally when the user has not already chosen a style. Preserve an existing project's style for maintenance work.
