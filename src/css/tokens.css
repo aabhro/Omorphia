@@ -1,4 +1,4 @@
-/* Edgelit — Modernimal tokens. Override --ui-* on :root or any component scope. */
+/* Omorphia · Modernimal tokens. Override --ui-* on :root or any component scope. */
 :root,[data-ui-theme="dark"]{
 color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 --ui-bg:#0a0a0a;--ui-bg-inset:#171717;--ui-surface:#0a0a0a;--ui-surface-2:#171717;--ui-surface-3:#262626;--ui-overlay:#0a0a0a;

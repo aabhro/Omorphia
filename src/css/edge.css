@@ -1,4 +1,4 @@
-/* Omorfia — signature border illumination.
+/* Omorphia · signature border illumination.
    Two light sources on a physical edge: a primary at the top-left, a dimmer one at the bottom-right.
    Painted only in the border box (masked), following border-radius. No full outline, no glow. */
 
