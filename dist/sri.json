@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "files": {
     "omorphia.min.css": "sha384-fu9rr98FNHL8pq+pkwfZOCU4Stq53cOAthx9P1fwdeU3+dw75nvPJ0YB0CVjcySK",
-    "omorphia.min.js": "sha384-WSUGSEFHOSAvLInQA45WqCjmpyojSyPjvnpBQeXdTmRtDVv3Ek+eIv4pK2pNECM5",
-    "omorphia.esm.min.js": "sha384-85Hv8kbbYLBPqJ+cvg3NxZ8WA7mtDod2EfxinV0YAP/Lwnes9ASSdL4a0gps7l4f"
+    "omorphia.min.js": "sha384-G6B0RFBY0cjwOVFI/PH4LJS1dr4eMG6w0RI5WcZc4FcTQHfNUCvh3fdsUaD19k6x",
+    "omorphia.esm.min.js": "sha384-Z+hhU5QvY4GDULjkuTc82D5fk0Tm1yPxk3ZqgT9c0I7BkYqplpMTrMmAXNxbtAdy"
   }
 }

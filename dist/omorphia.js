@@ -158,6 +158,7 @@ var Omorphia = (() => {
         if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
       }
     }
+    el._uiFloatParent = el.parentElement?.closest(".ui-float[data-open]") || null;
     if (el.parentNode && !el._uiFloatPlaceholder) {
       el._uiFloatPlaceholder = document.createComment("ui-float-origin");
       el.parentNode.insertBefore(el._uiFloatPlaceholder, el);
@@ -186,6 +187,7 @@ var Omorphia = (() => {
     if (el._uiFloatSavedZ != null) el.style.zIndex = el._uiFloatSavedZ;
     else el.style.removeProperty("z-index");
     el._uiFloatSavedZ = null;
+    el._uiFloatParent = null;
     el._uiFloatMode = null;
   }
   function floatEl(el) {
@@ -271,23 +273,34 @@ var Omorphia = (() => {
     const maxHeight = Math.min(vh - pad2 * 2, availableHeight);
     floating.style.maxHeight = `${maxHeight}px`;
     if (f.height > maxHeight) floating.style.overflowY = "auto";
+    const finalRect = floating.getBoundingClientRect();
     let x, y;
     if (side === "top" || side === "bottom") {
-      y = side === "top" ? a.top - f.height - offset : a.bottom + offset;
-      x = align === "start" ? a.left : align === "end" ? a.right - f.width : a.left + (a.width - f.width) / 2;
+      y = side === "top" ? a.top - finalRect.height - offset : a.bottom + offset;
+      x = align === "start" ? a.left : align === "end" ? a.right - finalRect.width : a.left + (a.width - finalRect.width) / 2;
     } else {
-      x = side === "left" ? a.left - f.width - offset : a.right + offset;
-      y = align === "start" ? a.top : align === "end" ? a.bottom - f.height : a.top + (a.height - f.height) / 2;
+      x = side === "left" ? a.left - finalRect.width - offset : a.right + offset;
+      y = align === "start" ? a.top : align === "end" ? a.bottom - finalRect.height : a.top + (a.height - finalRect.height) / 2;
     }
-    x = Math.max(pad2, Math.min(x, vw - f.width - pad2));
-    y = Math.max(pad2, Math.min(y, vh - Math.min(f.height, maxHeight) - pad2));
+    x = Math.max(pad2, Math.min(x, vw - finalRect.width - pad2));
+    y = Math.max(pad2, Math.min(y, vh - Math.min(finalRect.height, maxHeight) - pad2));
     floating.style.left = `${Math.round(x)}px`;
     floating.style.top = `${Math.round(y)}px`;
     floating.setAttribute("data-placement", side);
   }
   function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
+    const insideChildFloat = (target) => {
+      const layer = getFloatLayer();
+      return [...layer.querySelectorAll(".ui-float[data-open]")].some((panel) => {
+        if (!panel.contains(target)) return false;
+        for (let parent = panel._uiFloatParent; parent; parent = parent._uiFloatParent) {
+          if (parent === floating) return true;
+        }
+        return false;
+      });
+    };
     const down = (e) => {
-      if (!floating.contains(e.target) && !anchor.contains(e.target)) onClose("outside");
+      if (!floating.contains(e.target) && !anchor.contains(e.target) && !insideChildFloat(e.target)) onClose("outside");
     };
     const key = (e) => {
       if (e.key === "Escape") {
@@ -2361,6 +2374,18 @@ var Omorphia = (() => {
     focus(options) {
       this.trigger?.focus(options);
     }
+    get open() {
+      return !!this.popover?.open;
+    }
+    show() {
+      this.popover?.show();
+    }
+    hide() {
+      this.popover?.hide();
+    }
+    toggle() {
+      this.popover?.toggle();
+    }
     get disabled() {
       return this.hasAttribute("disabled");
     }
@@ -2522,6 +2547,18 @@ var Omorphia = (() => {
     }
     focus(options) {
       this.trigger?.focus(options);
+    }
+    get open() {
+      return !!this.popover?.open;
+    }
+    show() {
+      this.popover?.show();
+    }
+    hide() {
+      this.popover?.hide();
+    }
+    toggle() {
+      this.popover?.toggle();
     }
     get is12Hour() {
       return this.getAttribute("format") === "12h";
