@@ -96,11 +96,11 @@ export class UIAccordion extends HTMLElement {
       if (wanted != null && item.value === wanted) { item.open = true; kept = true; }
       else if (item.open && kept) item.open = false;
       else if (item.open && wanted != null && item.value !== wanted) item.open = false;
-      item.sync?.();
+      if (item.trigger) item.sync();
     });
     if (wanted == null) {
       const first = items.find((item) => item.open);
-      if (first) { first.open = true; items.filter((item) => item !== first).forEach((item) => { item.open = false; item.sync?.(); }); }
+      if (first) { first.open = true; items.filter((item) => item !== first).forEach((item) => { item.open = false; if (item.trigger) item.sync(); }); }
     }
   }
 }
