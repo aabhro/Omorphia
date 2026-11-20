@@ -15,6 +15,22 @@ const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; 
 
 await t('exports global API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
 await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
+await t('Modernimal neutral theme and opaque overlay defaults', () => {
+  const css = readFileSync('dist/edgelit.css', 'utf8');
+  assert.match(css, /--ui-bg:\s*#0a0a0a/);
+  assert.match(css, /--ui-text:\s*#f5f5f5/);
+  assert.match(css, /--ui-overlay:\s*#0a0a0a/);
+  assert.match(css, /background:\s*#0a0a0a/);
+  assert.doesNotMatch(css, /#6ee7c8|#0f8f74/);
+});
+await t('directional border illumination remains part of the build', () => {
+  const css = readFileSync('src/css/edge.css', 'utf8');
+  assert.match(css, /--ui-edge-tl-alpha/);
+  assert.match(css, /--ui-edge-br-alpha/);
+  assert.match(css, /linear-gradient\(to bottom right/);
+  assert.match(css, /linear-gradient\(to top left/);
+  assert.match(css, /-webkit-mask-composite:\s*xor/);
+});
 await t('ui-icon renders bundled Lucide svg', () => { const c = mount('<ui-icon name="search"></ui-icon><ui-icon name="home"></ui-icon>'); assert.equal(c.querySelectorAll('svg path, svg circle').length > 1, true); assert.ok(c.querySelectorAll('svg').length === 2); });
 await t('ui-button variants, loading, disabled, icon-only', async () => {
   const c = mount('<ui-button variant="primary" icon="save">Save</ui-button><ui-button icon="copy" label="Copy"></ui-button>'); const [a, b] = c.children;
