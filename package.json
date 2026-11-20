@@ -1,0 +1,36 @@
+{
+  "name": "edgelit",
+  "version": "1.0.0",
+  "description": "Dependency-free, CDN-first UI components and stylesheet with directional border illumination.",
+  "main": "dist/edgelit.min.js",
+  "scripts": {
+    "icons": "node scripts/gen-icons.mjs",
+    "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
+    "test": "node tests/smoke.mjs && node tests/showcase.mjs"
+  },
+  "keywords": [
+    "ui",
+    "web-components",
+    "css",
+    "cdn",
+    "lucide"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jsdom": "^31.0.1",
+    "lucide-static": "^1.77.0"
+  },
+  "module": "dist/edgelit.esm.min.js",
+  "style": "dist/edgelit.min.css",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/edgelit.git"
+  }
+}

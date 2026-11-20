@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en" data-ui-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edgelit — component showcase</title>
+  <meta name="description" content="Dependency-free UI components and stylesheet with directional border illumination, served from a CDN.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0d11'/%3E%3Cpath d='M7 25V9a2 2 0 0 1 2-2h16' fill='none' stroke='%236ee7c8' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist to load from the CDN. -->
+  <link rel="stylesheet" href="./dist/edgelit.min.css">
+  <link rel="stylesheet" href="./showcase/showcase.css">
+</head>
+<body class="ui-root">
+<div class="shell">
+  <ui-sidebar id="nav" heading="Edgelit" collapsible label="Showcase sections">
+    <ui-sidebar-item icon="type" href="#type">Typography</ui-sidebar-item>
+    <ui-sidebar-item icon="palette" href="#buttons">Buttons</ui-sidebar-item>
+    <ui-sidebar-item icon="pencil" href="#inputs">Inputs</ui-sidebar-item>
+    <ui-sidebar-item icon="menu" href="#navigation">Navigation</ui-sidebar-item>
+    <ui-sidebar-item icon="bell" href="#feedback">Feedback</ui-sidebar-item>
+    <ui-sidebar-item icon="layers" href="#containers">Containers</ui-sidebar-item>
+    <ui-sidebar-item icon="command">Advanced
+      <ui-sidebar-item href="#palette">Command palette</ui-sidebar-item>
+      <ui-sidebar-item href="#search">Search</ui-sidebar-item>
+      <ui-sidebar-item href="#sidemenu">Side menu</ui-sidebar-item>
+    </ui-sidebar-item>
+    <ui-sidebar-item icon="sparkles" href="#effects">Effects</ui-sidebar-item>
+  </ui-sidebar>
+
+  <div class="main">
+    <div class="topbar">
+      <ui-button class="menu-btn" variant="subtle" icon="menu" label="Open navigation" data-ui-toggle="#nav"></ui-button>
+      <span class="grow"></span>
+      <ui-button icon="search" onclick="document.querySelector('ui-command-palette').open()"><span class="cmd-label">Search</span> <span class="ui-kbd">Ctrl K</span></ui-button>
+      <ui-tooltip content="Toggle light / dark" placement="bottom"><ui-button variant="subtle" icon="sun" label="Toggle theme" onclick="Edgelit.theme.toggle()"></ui-button></ui-tooltip>
+      <ui-button variant="subtle" icon="external-link" onclick="window.open('https://github.com/YOUR_USERNAME/edgelit','_blank','noopener')">GitHub</ui-button>
+    </div>
+
+    <header class="hero">
+      <h1 class="ui-display">Components that catch the light.</h1>
+      <p>Edgelit is a dependency-free UI library for any website: one stylesheet, one script, native custom elements, and a border illumination that behaves like light on a physical edge.</p>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/edgelit.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/edgelit@1.0.0/dist/edgelit.min.js"&gt;&lt;/script&gt;</pre></div></div>
+    </header>
+
+    <section class="block" id="type">
+      <header><h2 class="ui-h1">Typography</h2><p>One sans-serif stack at every size. Nothing below 12px, and no monospace outside code blocks.</p></header>
+      <div class="demo"><div class="demo-title">Scale</div><template>
+        <div class="ui-stack ui-gap-3">
+          <p class="ui-display">Display 36</p>
+          <p class="ui-h1">Heading 1 — 26</p>
+          <p class="ui-h2">Heading 2 — 20</p>
+          <p class="ui-h3">Heading 3 — 16</p>
+          <p class="ui-body">Body text at 14px with a comfortable 1.6 line height for reading long passages in interface copy.</p>
+          <p class="ui-small ui-muted">Small and muted, for descriptions and metadata — 13px.</p>
+          <p class="ui-caption ui-faint">Caption — 12px, still a proportional font.</p>
+          <p class="ui-body">Press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">K</span> · <a class="ui-link" href="#type">a link</a> · <span class="ui-code">inline code</span></p>
+        </div></template></div>
+    </section>
+
+    <section class="block" id="buttons">
+      <header><h2 class="ui-h1">Buttons</h2><p>Use the <span class="ui-code">&lt;ui-button&gt;</span> element, or put the <span class="ui-code">ui-btn</span> classes on a native button.</p></header>
+      <div class="demo"><div class="demo-title">Variants</div><template>
+        <ui-button variant="primary">Save changes</ui-button>
+        <ui-button variant="secondary">Cancel</ui-button>
+        <ui-button variant="subtle">Skip for now</ui-button>
+        <ui-button variant="destructive" icon="trash-2">Delete project</ui-button></template></div>
+      <div class="demo"><div class="demo-title">Sizes, icons and states</div><template>
+        <ui-button size="sm" variant="primary">Small</ui-button>
+        <ui-button variant="primary">Medium</ui-button>
+        <ui-button size="lg" variant="primary">Large</ui-button>
+        <ui-button icon="download">Download</ui-button>
+        <ui-button icon-end="arrow-right">Continue</ui-button>
+        <ui-button icon="plus" label="Add item"></ui-button>
+        <ui-button variant="subtle" icon="ellipsis" label="More options"></ui-button>
+        <ui-button variant="primary" loading>Saving</ui-button>
+        <ui-button disabled>Unavailable</ui-button></template></div>
+      <div class="demo"><div class="demo-title">Native markup, no JavaScript</div><template>
+        <button class="ui-btn ui-btn--primary">Primary</button>
+        <button class="ui-btn ui-btn--secondary ui-btn--sm">Secondary</button>
+        <span class="ui-btn-group"><button class="ui-btn">Day</button><button class="ui-btn">Week</button><button class="ui-btn">Month</button></span></template></div>
+    </section>
+
+    <section class="block" id="inputs">
+      <header><h2 class="ui-h1">Inputs</h2><p>Text-like controls use a wrapper so the illumination can follow its shape; focus brightens the edge with your accent colour.</p></header>
+      <div class="cols">
+        <div class="demo" data-layout="stack"><div class="demo-title">Text, search, textarea, select</div><template>
+          <div class="ui-field"><label class="ui-label" for="i-name">Project name</label>
+            <div class="ui-input"><ui-icon name="folder"></ui-icon><input id="i-name" placeholder="Untitled project"></div>
+            <p class="ui-hint">Shown on invoices and in the sidebar.</p></div>
+          <div class="ui-field"><label class="ui-label" for="i-q">Search</label>
+            <div class="ui-input"><ui-icon name="search"></ui-icon><input id="i-q" type="search" placeholder="Search projects"></div></div>
+          <div class="ui-field"><label class="ui-label" for="i-t">Notes</label>
+            <div class="ui-textarea"><textarea id="i-t" rows="3" placeholder="Anything the team should know"></textarea></div></div>
+          <div class="ui-field"><label class="ui-label" for="i-s">Region</label>
+            <div class="ui-select"><select id="i-s"><option>Europe (Frankfurt)</option><option>US East (Virginia)</option><option>Asia Pacific (Singapore)</option></select></div></div></template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Choices, switches, range</div><template>
+          <label class="ui-check"><input class="ui-check-input" type="checkbox" checked> Email me about deploys</label>
+          <label class="ui-check"><input class="ui-check-input" type="checkbox"> Weekly summary</label>
+          <div class="ui-stack ui-gap-2" role="radiogroup" aria-label="Plan">
+            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" checked> Starter</label>
+            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan"> Team</label></div>
+          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked><span class="ui-switch-track"></span> Auto-deploy main</label>
+          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" disabled><span class="ui-switch-track"></span> Preview builds (plan upgrade)</label>
+          <div class="ui-field"><label class="ui-label" for="range-demo">Concurrency <span class="ui-muted" id="range-out">40</span></label>
+            <input id="range-demo" class="ui-range" type="range" min="0" max="100" value="40"></div></template></div>
+      </div>
+      <div class="demo"><div class="demo-title">Validation states (try an invalid email)</div><template>
+        <form class="fx-validate ui-row" style="align-items:flex-start" novalidate>
+          <div class="ui-field" style="width:300px"><label class="ui-label" for="v-mail">Email</label>
+            <div class="ui-input"><ui-icon name="mail"></ui-icon><input id="v-mail" type="email" placeholder="you@company.com" aria-describedby="v-help"></div>
+            <p class="ui-hint" id="v-help">We only use this for receipts.</p>
+            <p class="ui-error-text" id="v-err">Enter an email like name@company.com.</p>
+            <p class="ui-success-text">Looks good.</p></div>
+          <ui-button type="submit" variant="primary" style="margin-top:22px">Validate</ui-button>
+        </form></template></div>
+    </section>
+
+    <section class="block" id="navigation">
+      <header><h2 class="ui-h1">Navigation</h2></header>
+      <div class="demo"><div class="demo-title">Breadcrumbs and links</div><template>
+        <ol class="ui-crumbs" aria-label="Breadcrumb"><li class="ui-crumb"><a href="#navigation">Projects</a></li><li class="ui-crumb"><a href="#navigation">Atlas</a></li><li class="ui-crumb"><span aria-current="page">Settings</span></li></ol>
+        <nav class="ui-nav" aria-label="Sections"><a class="ui-nav-link" href="#navigation" aria-current="page"><ui-icon name="house"></ui-icon>Overview</a><a class="ui-nav-link" href="#navigation"><ui-icon name="chart-column"></ui-icon>Analytics</a><a class="ui-nav-link" href="#navigation"><ui-icon name="settings"></ui-icon>Settings</a></nav></template></div>
+      <div class="demo"><div class="demo-title">Tabs</div><template>
+        <ui-tabs value="overview" style="width:100%">
+          <ui-tab label="Overview" value="overview" icon="layers"><p class="ui-body ui-muted">Arrow keys, Home and End move between tabs.</p></ui-tab>
+          <ui-tab label="Activity" value="activity" icon="clock"><p class="ui-body ui-muted">Panels are the <span class="ui-code">ui-tab</span> elements themselves.</p></ui-tab>
+          <ui-tab label="Billing" value="billing" icon="lock" disabled>Hidden</ui-tab>
+        </ui-tabs></template></div>
+      <div class="demo"><div class="demo-title">Pagination</div><template>
+        <ui-pagination id="pg" total="24" page="6"></ui-pagination><span class="ui-small ui-muted" id="pg-out" aria-live="polite">Page 6</span></template></div>
+      <div class="demo"><div class="demo-title">Dropdown menu</div><template>
+        <ui-dropdown id="actions-menu" placement="bottom-start">
+          <ui-button slot="trigger" icon-end="chevron-down">Actions</ui-button>
+          <div class="ui-menu-label">Project</div>
+          <button data-value="Rename"><ui-icon name="pencil"></ui-icon>Rename<span class="ui-menu-shortcut">R</span></button>
+          <button data-value="Duplicate"><ui-icon name="copy"></ui-icon>Duplicate</button>
+          <button data-value="Share" disabled><ui-icon name="link"></ui-icon>Share (disabled)</button>
+          <hr>
+          <button class="ui-menu-item--danger" data-value="Delete"><ui-icon name="trash-2"></ui-icon>Delete</button>
+        </ui-dropdown></template></div>
+    </section>
+
+    <section class="block" id="feedback">
+      <header><h2 class="ui-h1">Feedback and information</h2></header>
+      <div class="demo"><div class="demo-title">Tooltips</div><template>
+        <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
+        <ui-tooltip content="Appears below" placement="bottom"><ui-button variant="subtle" icon="info" label="Info"></ui-button></ui-tooltip>
+        <ui-tooltip content="Also on keyboard focus" placement="right"><button class="ui-btn">Focus me</button></ui-tooltip></template></div>
+      <div class="demo"><div class="demo-title">Toast notifications</div><template>
+        <ui-button onclick="Edgelit.toast({ title: 'Changes saved', description: 'Atlas is up to date.', variant: 'success' })">Success</ui-button>
+        <ui-button onclick="Edgelit.toast({ title: 'Deploy failed', description: 'Build exited with code 1.', variant: 'danger', duration: 8000 })">Error</ui-button>
+        <ui-button onclick="Edgelit.toast({ title: 'Project archived', variant: 'info', action: { label: 'Undo', onClick: () => Edgelit.toast('Restored') } })">With action</ui-button>
+        <ui-button onclick="Edgelit.toast({ title: 'Storage almost full', variant: 'warning', duration: 0 })">Sticky</ui-button></template></div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Alerts</div><template>
+        <div class="ui-alert ui-alert--info" role="status"><ui-icon name="info"></ui-icon><div><p class="ui-alert-title">Scheduled maintenance</p><p class="ui-alert-desc">Saturday 02:00–03:00 UTC. Deploys will queue.</p></div></div>
+        <div class="ui-alert ui-alert--success" role="status"><ui-icon name="circle-check"></ui-icon><div><p class="ui-alert-title">Domain verified</p></div></div>
+        <div class="ui-alert ui-alert--warning" role="alert"><ui-icon name="triangle-alert"></ui-icon><div><p class="ui-alert-title">Token expires in 3 days</p><p class="ui-alert-desc">Rotate it under Settings to avoid failed builds.</p></div></div>
+        <div class="ui-alert ui-alert--danger" role="alert"><ui-icon name="circle-x"></ui-icon><div><p class="ui-alert-title">Payment declined</p><p class="ui-alert-desc">Update your card to keep your team's projects online.</p></div></div></template></div>
+      <div class="demo"><div class="demo-title">Badges and status</div><template>
+        <span class="ui-badge">Draft</span><span class="ui-badge ui-badge--accent">New</span><span class="ui-badge ui-badge--success"><ui-icon name="check"></ui-icon>Passing</span><span class="ui-badge ui-badge--warning">Review</span><span class="ui-badge ui-badge--danger">Failed</span><span class="ui-badge ui-badge--info">Beta</span>
+        <span class="ui-status ui-status--online">Operational</span><span class="ui-status ui-status--away">Degraded</span><span class="ui-status ui-status--busy">Outage</span><span class="ui-status ui-status--online ui-status--live">Live</span></template></div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Progress, spinner, skeleton</div><template>
+        <div class="ui-progress" role="progressbar" aria-label="Upload" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" style="--value:64"><div class="ui-progress-bar"></div></div>
+        <div class="ui-progress ui-progress--indeterminate" role="progressbar" aria-label="Loading"><div class="ui-progress-bar"></div></div>
+        <div class="ui-row"><span class="ui-spinner" role="status" aria-label="Loading"></span><span class="ui-small ui-muted">Syncing…</span></div>
+        <div class="ui-row ui-row--nowrap"><span class="ui-skeleton ui-skeleton--circle"></span><div class="ui-grow ui-stack ui-gap-2"><span class="ui-skeleton ui-skeleton--title"></span><span class="ui-skeleton"></span><span class="ui-skeleton" style="width:80%"></span></div></div></template></div>
+    </section>
+
+    <section class="block" id="containers">
+      <header><h2 class="ui-h1">Containers and layout</h2></header>
+      <div class="cols">
+        <div class="demo"><div class="demo-title">Cards and avatars</div><template>
+          <article class="ui-card" style="width:100%">
+            <header class="ui-card-header"><span class="ui-avatar" data-status="online">AL</span><div><h3 class="ui-card-title">Ada Lovelace</h3><p class="ui-card-desc">Platform engineering</p></div></header>
+            <div class="ui-card-body ui-small ui-muted">Maintains the build pipeline and reviews infrastructure changes.</div>
+            <footer class="ui-card-footer"><ui-button size="sm" variant="primary">Message</ui-button><ui-button size="sm" variant="subtle">Profile</ui-button></footer>
+          </article>
+          <div class="ui-avatar-group"><span class="ui-avatar ui-avatar--sm">GH</span><span class="ui-avatar ui-avatar--sm">AT</span><span class="ui-avatar ui-avatar--sm">MH</span><span class="ui-avatar ui-avatar--sm">+4</span></div></template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Stack, row, divider, collapsible</div><template>
+          <div class="ui-row"><span class="ui-badge">One</span><span class="ui-divider ui-divider--vertical"></span><span class="ui-badge">Two</span></div>
+          <hr class="ui-divider" aria-label="or"><p class="ui-small ui-muted" style="margin:0">Dividers can carry a label: <span class="ui-code">&lt;div class="ui-divider"&gt;or&lt;/div&gt;</span></p>
+          <details class="ui-collapsible" open><summary class="ui-summary">What is included?</summary><div class="ui-collapsible-body">Native <span class="ui-code">&lt;details&gt;</span> — works without JavaScript.</div></details>
+          <details class="ui-collapsible"><summary class="ui-summary">Can I theme it?</summary><div class="ui-collapsible-body">Yes: every colour, radius and duration is a CSS variable.</div></details></template></div>
+      </div>
+      <div class="demo"><div class="demo-title">Modal and popover</div><template>
+        <ui-modal id="invite-modal" heading="Invite teammates">
+          They'll get an email with a link to join Atlas. Press Escape or click outside to dismiss.
+          <div class="ui-field" style="margin-top:16px"><label class="ui-label" for="inv">Email address</label><div class="ui-input"><ui-icon name="mail"></ui-icon><input id="inv" placeholder="name@company.com"></div></div>
+          <div slot="footer"><ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button><ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Edgelit.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button></div>
+        </ui-modal>
+        <ui-button variant="primary" onclick="document.getElementById('invite-modal').show()">Invite teammates</ui-button>
+        <ui-button variant="destructive" onclick="Edgelit.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Edgelit.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
+        <ui-popover placement="bottom-start"><ui-button slot="trigger" icon="settings">Display options</ui-button>
+          <div class="ui-stack ui-gap-3"><p class="ui-h3">Display</p><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked><span class="ui-switch-track"></span> Compact rows</label><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch"><span class="ui-switch-track"></span> Show IDs</label></div></ui-popover></template></div>
+    </section>
+
+    <section class="block" id="advanced">
+      <header><h2 class="ui-h1">Advanced components</h2></header>
+      <div class="demo" id="palette"><div class="demo-title">Command palette — Ctrl K / ⌘K</div><template>
+        <ui-button icon="command" onclick="document.querySelector('ui-command-palette').open()">Open command palette</ui-button>
+        <span class="ui-small ui-muted">Or press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">K</span> anywhere on this page. Try “theme”, “btn” or a typo.</span>
+        <script type="text/plain">
+          Edgelit.commands.register([
+            { id: 'new', label: 'New project', group: 'Actions', icon: 'plus', shortcut: 'N', onSelect: () => createProject() },
+            { id: 'docs', label: 'Open documentation', group: 'Links', icon: 'book-open', href: '/docs' },
+          ]);
+        </script></template></div>
+      <div class="cols" id="search">
+        <div class="demo" data-layout="stack"><div class="demo-title">Local data + suggestions</div><template>
+          <ui-search id="search-local" autocomplete placeholder="Search fruit…"></ui-search>
+          <p class="ui-hint">Focus the empty field for suggestions. ↑ ↓ Enter, Esc to close, Esc again to clear.</p></template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Async source, loading and empty states</div><template>
+          <ui-search id="search-async" autocomplete placeholder="Search remote (700 ms)…"></ui-search>
+          <p class="ui-hint">Type “zzz” for the empty state. Stale requests are aborted.</p></template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Custom suggestion rendering</div><template>
+          <ui-search id="search-custom" autocomplete min-chars="1" placeholder="Find a teammate…"></ui-search></template></div>
+      </div>
+      <div class="demo" id="sidemenu"><div class="demo-title">Side menu — collapsible, nested, responsive</div><template>
+        <div style="display:flex;width:100%;height:360px;background:var(--ui-bg-inset);border-radius:var(--ui-radius-lg);padding:8px;gap:8px;overflow:hidden">
+          <ui-sidebar collapsible breakpoint="1" heading="Workspace" width="230px" style="position:static;height:100%;--ui-sidebar-radius:12px">
+            <ui-sidebar-item icon="house" href="#sidemenu" active>Dashboard</ui-sidebar-item>
+            <ui-sidebar-item icon="folder-open" expanded>Projects
+              <ui-sidebar-item href="#sidemenu">Atlas</ui-sidebar-item>
+              <ui-sidebar-item href="#sidemenu">Meridian</ui-sidebar-item>
+            </ui-sidebar-item>
+            <ui-sidebar-item icon="users" href="#sidemenu">Team</ui-sidebar-item>
+            <ui-sidebar-item icon="settings" href="#sidemenu">Settings</ui-sidebar-item>
+          </ui-sidebar>
+          <div class="ui-grow ui-small ui-muted" style="padding:16px">Use ↑ ↓ to move, → ← to expand or collapse groups, and the Collapse button to shrink to icons. The page sidebar switches to an off-canvas drawer below 768px.</div>
+        </div></template></div>
+    </section>
+
+    <section class="block" id="effects">
+      <header><h2 class="ui-h1">Effects and illumination</h2><p>A primary light at the top-left and a dimmer one at the bottom-right, painted only in the border ring and following the corner radius.</p></header>
+      <div class="demo" data-layout="stack"><div class="demo-title">Live configuration</div><template>
+        <div class="fx-stage" id="fx-stage"><div class="fx-box ui-edge">ui-edge</div></div>
+        <label class="ctl">Top-left <input type="range" class="ui-range" min="0" max="1" step="0.05" value="0.5" data-fx="--ui-edge-tl-alpha"><output></output></label>
+        <label class="ctl">Bottom-right <input type="range" class="ui-range" min="0" max="1" step="0.05" value="0.14" data-fx="--ui-edge-br-alpha"><output></output></label>
+        <label class="ctl">Top-left reach <input type="range" class="ui-range" min="5" max="100" value="52" data-fx="--ui-edge-tl-reach" data-unit="%"><output></output></label>
+        <label class="ctl">Base outline <input type="range" class="ui-range" min="0" max="0.3" step="0.01" value="0.05" data-fx="--ui-edge-base-alpha"><output></output></label>
+        <label class="ctl">Edge width <input type="range" class="ui-range" min="1" max="4" step="1" value="1" data-fx="--ui-edge-width" data-unit="px"><output></output></label>
+        <label class="ctl">Radius <input type="range" class="ui-range" min="0" max="48" value="14" data-fx="--fx-radius" data-unit="px"><output></output></label></template></div>
+      <div class="demo"><div class="demo-title">Applied to any surface, with utilities</div><template>
+        <div class="fx-grid" style="width:100%">
+          <div class="ui-edge ui-edge--soft" style="border-radius:12px">.ui-edge--soft</div>
+          <div class="ui-edge" style="border-radius:12px">.ui-edge</div>
+          <div class="ui-edge ui-edge--strong" style="border-radius:12px">.ui-edge--strong</div>
+          <div class="ui-edge ui-edge--accent ui-edge--strong" style="border-radius:12px">.ui-edge--accent</div>
+          <div class="ui-edge ui-edge--animated" style="border-radius:12px">.ui-edge--animated</div>
+          <div class="ui-edge" style="border-radius:42px">Pill radius</div>
+          <div class="ui-edge" style="border-radius:2px">Sharp radius</div>
+          <div class="ui-edge" style="border-radius:12px 40px 12px 40px">Mixed radii</div>
+        </div></template></div>
+      <div class="demo"><div class="demo-title">Theming with CSS variables</div><template>
+        <div class="ui-row">
+          <ui-button variant="primary" onclick="Edgelit.theme.set('light')">Light</ui-button>
+          <ui-button onclick="Edgelit.theme.set('dark')">Dark</ui-button>
+          <ui-button onclick="Edgelit.theme.set('auto')">Match system</ui-button>
+          <ui-button variant="subtle" onclick="document.documentElement.style.setProperty('--ui-accent', '#ffb454'); document.documentElement.style.setProperty('--ui-accent-hover', '#ffc47a'); document.documentElement.style.setProperty('--ui-accent-contrast', '#2a1800')">Amber accent</ui-button>
+          <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Reset accent</ui-button>
+        </div></template></div>
+    </section>
+  </div>
+</div>
+
+<ui-command-palette placeholder="Search sections and actions…">
+  <ui-command label="Open the invite dialog" group="Actions" icon="send" description="Demonstrates a declarative command" onselect="document.getElementById('invite-modal').show()"></ui-command>
+</ui-command-palette>
+
+<script src="./dist/edgelit.min.js"></script>
+<script src="./showcase/showcase.js"></script>
+</body>
+</html>
