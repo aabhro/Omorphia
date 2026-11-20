@@ -195,7 +195,7 @@ await t('custom select supports single, searchable, and multiple selection', () 
   assert.equal(single.value, 'fra');
   assert.equal(selected, 'fra');
   multi.choose(multi.options[2]);
-  assert.deepEqual(multi.value, ['a', 'b', 'c']);
+  assert.deepEqual(Array.from(multi.value), ['a', 'b', 'c']);
   assert.equal(multi.formFields.querySelectorAll('input').length, 3);
   single.popover.show();
   assert.equal(single.popover.open, true);
