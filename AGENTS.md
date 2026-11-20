@@ -14,7 +14,7 @@ These instructions apply to coding agents, autonomous agents, pair-programming a
 4. Inspect the complete [motion reference](https://github.com/aabhro/Stylesheets/tree/main/motion): read `README.md`, `SKILL.md`, and `catalog.md`; inspect `tokens.css`, `patterns.css`, and `motion.js`; use `demo.html` to verify behavior when relevant.
 5. Inspect the actual Omorphia files involved in the task, their imports, tests, build scripts, and existing behavior before changing them.
 
-**Public reference access:** `aabhro/Stylesheets` is public. Read the linked files directly from GitHub or clone the repository with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets` for complete local inspection. No authentication or private checkout is needed. If a temporary network or tooling issue blocks a file, retry through the public raw file URL or clone before reporting the exact limitation. Do not silently skip mandatory references or claim to have read files you did not inspect.
+**Public reference access:** `aabhro/Stylesheets` is public. Read the linked files directly from GitHub or clone the repository with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets` for complete local inspection. No authentication or prior checkout is needed. If a temporary network or tooling issue blocks a file, retry through the public raw file URL or clone before reporting the exact limitation. Do not silently skip mandatory references or claim to have read files you did not inspect.
 
 ## Design-style choice
 
