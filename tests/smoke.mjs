@@ -258,7 +258,7 @@ await t('custom drawer opens, traps focus, and closes after its exit motion', as
   assert.equal(d.body.style.overflow, '');
 });
 await t('dropdown uses custom menu items and preserves the selected value', () => {
-  const c = mount('<ui-dropdown><ui-button slot="trigger">Actions</ui-button><ui-menu-item value="archive" label="Archive" icon="archive"></ui-menu-item><ui-menu-item value="delete" label="Delete" destructive></ui-menu-item></ui-dropdown>');
+  const c = mount('<ui-dropdown><ui-button slot="trigger">Actions</ui-button><ui-menu-item value="archive" label="Archive" icon="folder"></ui-menu-item><ui-menu-item value="delete" label="Delete" destructive></ui-menu-item></ui-dropdown>');
   const dropdown = c.firstChild;
   assert.equal(dropdown.items.length, 2);
   let selected;
