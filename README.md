@@ -30,7 +30,7 @@ Always use an exact version in production. It maps to a Git tag (`v1.1.0`), and 
 | Style | URL |
 |---|---|
 | Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css` |
-| Latest 1.x patch | `…/edgelit@v1.0/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
+| Latest 1.x patch | `…/edgelit@v1.1/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
 | Branch (development only) | `…/edgelit@main/dist/…` (cached up to 12 h) |
 
 Subresource Integrity hashes for each release are in [`dist/sri.json`](dist/sri.json):
