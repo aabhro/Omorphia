@@ -23,6 +23,17 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
   assert.match(css, /background:\s*#0a0a0a/);
   assert.doesNotMatch(css, /#6ee7c8|#0f8f74/);
 });
+await t('command palette has no exterior border', () => {
+  const advanced = readFileSync('src/css/advanced.css', 'utf8');
+  assert.match(advanced, /\\.ui-command\\{[^}]*border:0/);
+});
+await t('showcase code blocks follow the active theme', () => {
+  const css = readFileSync('showcase/showcase.css', 'utf8');
+  assert.match(css, /\\.demo-code pre \\{[^}]*background: var\\(--ui-bg-inset\\)/);
+  assert.match(css, /\\.fx-code \\{[^}]*background: var\\(--ui-bg-inset\\)/);
+  assert.doesNotMatch(css, /\\.demo-code pre \\{[^}]*background:\\s*#0a0a0a/);
+  assert.doesNotMatch(css, /\\.fx-code \\{[^}]*background:\\s*#0a0a0a/);
+});
 await t('decorative perimeter outlines are omitted', () => {
   const edge = readFileSync('src/css/edge.css', 'utf8');
   for (const selector of ['.ui-alert', '.ui-badge', '.ui-card', '.ui-avatar', '.ui-sidebar-panel', '.ui-tabs-list', '.ui-page-btn', '.ui-collapsible', '.ui-progress']) {
@@ -45,8 +56,12 @@ await t('decorative perimeter outlines are omitted', () => {
   assert.match(buttons, /\.ui-btn:focus-visible\{outline:none/);
   assert.doesNotMatch(base, /\.ui-summary\):focus-visible/);
 });
-await t('README examples start collapsed', () => {
+await t('README uses a minimal logo and title masthead', () => {
   const readme = readFileSync('README.md', 'utf8');
+  assert.match(readme, /^<p align="center">\\s*<img src="assets\\/logo\\.svg"/);
+  assert.match(readme, /<h1 align="center">Omorphia<\\/h1>/);
+  assert.doesNotMatch(readme, /readme-cover\\.svg|img\\.shields\\.io/);
+  assert.doesNotMatch(readme.slice(0, readme.indexOf('## Overview')), /background|<hr|<div/);
   assert.doesNotMatch(readme, /<details\\s+open/i);
   let depth = 0;
   for (const line of readme.split('\\n')) {

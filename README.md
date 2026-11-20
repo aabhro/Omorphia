@@ -1,34 +1,8 @@
-<div align="center">
-  <img src="assets/readme-cover.svg" alt="Omorphia, quietly considered interface components" width="100%">
-  <p>
-    <a href="https://aabhro.github.io/Omorphia/"><strong>Live showcase</strong></a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/aabhro/Omorphia">Repository</a>
-    &nbsp;·&nbsp;
-    <a href="LICENSE">MIT license</a>
-  </p>
-  <p>
-    <img src="https://img.shields.io/github/v/tag/aabhro/Omorphia?label=release&style=flat-square&labelColor=0a0a0a&color=262626" alt="Release">
-    <img src="https://img.shields.io/github/actions/workflow/status/aabhro/Omorphia/ci.yml?branch=main&label=checks&style=flat-square&labelColor=0a0a0a&color=262626" alt="Checks">
-    <img src="https://img.shields.io/github/license/aabhro/Omorphia?style=flat-square&labelColor=0a0a0a&color=262626" alt="MIT">
-  </p>
-</div>
+<p align="center">
+  <img src="assets/logo.svg" width="40" height="40" alt="Omorphia logo">
+</p>
 
----
-
-<div align="center">
-  <a href="#overview"><img src="assets/icons/info.svg" width="15" height="15" alt=""> Overview</a>
-  &nbsp;·&nbsp;
-  <a href="#quick-start"><img src="assets/icons/rocket.svg" width="15" height="15" alt=""> Quick start</a>
-  &nbsp;·&nbsp;
-  <a href="#components"><img src="assets/icons/layers.svg" width="15" height="15" alt=""> Components</a>
-  &nbsp;·&nbsp;
-  <a href="#illumination"><img src="assets/icons/sun.svg" width="15" height="15" alt=""> Illumination</a>
-  &nbsp;·&nbsp;
-  <a href="#theming"><img src="assets/icons/palette.svg" width="15" height="15" alt=""> Theming</a>
-  &nbsp;·&nbsp;
-  <a href="#development"><img src="assets/icons/terminal.svg" width="15" height="15" alt=""> Development</a>
-</div>
+<h1 align="center">Omorphia</h1>
 
 ## Overview
 
@@ -49,8 +23,8 @@ Omorphia is a small, dependency-free UI library for websites. It uses native cus
 Use a pinned release for production.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/omorphia.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/omorphia.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard">
@@ -67,10 +41,10 @@ Custom elements upgrade automatically, including elements inserted later.
   <summary><strong>ES module installation</strong> · Import the complete API</summary>
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/omorphia.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.css">
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -86,9 +60,9 @@ Custom elements upgrade automatically, including elements inserted later.
   <summary><strong>Individual CSS modules</strong> · Load only the styles you need</summary>
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.6/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/feedback.min.css">
 ~~~
 
 The complete stylesheet is <code>dist/omorphia.min.css</code>. Generated integrity hashes are listed in <a href="dist/sri.json"><code>dist/sri.json</code></a>.
