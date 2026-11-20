@@ -23,7 +23,7 @@ export class UISelect extends HTMLElement {
     this.popover = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, trigger);
     this.panelContent = h('div', { class: 'ui-select-panel', role: 'presentation' });
     if (bool(this, 'searchable')) {
-      this.search = h('ui-input', { class: 'ui-select-search', placeholder: 'Search options…', 'aria-label': 'Filter options' });
+      this.search = h('ui-input', { class: 'ui-select-search', placeholder: 'Search options…', label: 'Filter options', 'aria-label': 'Filter options' });
       this.search.addEventListener('ui-input', () => this.filter(this.search.value));
       this.panelContent.append(this.search);
     }
