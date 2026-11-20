@@ -100,7 +100,9 @@ await t('ui-dropdown menu: roles, keyboard, select event', () => {
 await t('toast appears, stacks, dismisses', async () => { const a = E.toast({ title: 'Saved', variant: 'success', duration: 0 }); E.toast('Second'); assert.equal(d.querySelectorAll('.ui-toast').length, 2); a.dismiss(); await tick(220); assert.equal(d.querySelectorAll('.ui-toast').length, 1); });
 await t('command palette: open, filter+highlight, keyboard, callback, empty/no-results', async () => {
   const c = mount('<ui-command-palette></ui-command-palette>'); const p = c.firstChild; assert.ok(p.dialog);
-  p.open(); assert.ok(d.querySelector('.ui-empty-title').textContent.includes('No commands yet')); p.close();
+  assert.equal(p.dialog.parentElement, d.body, 'native dialog is portalled outside the hidden custom-element host');
+  assert.equal(p.contains(p.dialog), false, 'the hidden host does not contain the visible dialog');
+  p.open(); assert.ok(p.isOpen); assert.ok(d.querySelector('.ui-empty-title').textContent.includes('No commands yet')); p.close();
   const focused = d.createElement('input'); d.body.append(focused);
   focused.addEventListener('keydown', (e) => e.stopPropagation());
   const reserved = new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true });

@@ -1,6 +1,6 @@
 {
   "name": "omorphia",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Dependency-free, CDN-first UI components and stylesheet with directional border illumination.",
   "main": "dist/omorphia.min.js",
   "scripts": {

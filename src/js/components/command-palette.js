@@ -155,8 +155,13 @@ export class UICommandPalette extends HTMLElement {
         const option = event.target.closest('.ui-option');
         if (option) this.run(this.view[Number(option.dataset.i)]);
       });
-      this.append(this.dialog);
     }
+
+    // The custom-element host is intentionally hidden by the library stylesheet.
+    // Portal the native dialog to the document so showModal() cannot make the page
+    // inert behind a dialog that is trapped inside a display:none ancestor.
+    const portal = this.ownerDocument.body || this.ownerDocument.documentElement;
+    if (this.dialog.parentNode !== portal) portal.append(this.dialog);
 
     connectPalette(this);
   }
@@ -167,6 +172,8 @@ export class UICommandPalette extends HTMLElement {
       this._prev = null;
       this.close();
     }
+    // A portalled dialog outlives its host unless it is explicitly removed.
+    this.dialog?.remove();
   }
 
   get disabled() { return this.hasAttribute('disabled'); }
