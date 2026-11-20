@@ -1,8 +1,8 @@
 {
-  "name": "omorfia",
-  "version": "1.1.2",
+  "name": "omorphia",
+  "version": "1.1.3",
   "description": "Dependency-free, CDN-first UI components and stylesheet with directional border illumination.",
-  "main": "dist/omorfia.min.js",
+  "main": "dist/omorphia.min.js",
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
@@ -22,8 +22,8 @@
     "jsdom": "^31.0.1",
     "lucide-static": "^1.77.0"
   },
-  "module": "dist/omorfia.esm.min.js",
-  "style": "dist/omorfia.min.css",
+  "module": "dist/omorphia.esm.min.js",
+  "style": "dist/omorphia.min.css",
   "files": [
     "dist",
     "src"
@@ -31,6 +31,6 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aabhro/edgelit.git"
+    "url": "git+https://github.com/aabhro/Omorphia.git"
   }
 }

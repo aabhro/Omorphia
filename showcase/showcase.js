@@ -7,26 +7,26 @@ document.querySelectorAll('.demo').forEach((demo) => {
   const summary = document.createElement('summary'); summary.textContent = 'View example code';
   const pre = document.createElement('pre'); const text = dedent(tpl.innerHTML.replace(/&amp;/g, '&')); pre.textContent = text;
   const copy = document.createElement('ui-button'); copy.className = 'copy'; copy.setAttribute('variant', 'subtle'); copy.setAttribute('size', 'sm'); copy.setAttribute('icon', 'copy'); copy.textContent = 'Copy';
-  copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(text); Omorfia.toast({ title: 'Copied to clipboard', variant: 'success', duration: 1800 }); } catch { Omorfia.toast({ title: 'Copy failed', description: 'Select the code and copy it manually.', variant: 'danger' }); } });
+  copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(text); Omorphia.toast({ title: 'Copied to clipboard', variant: 'success', duration: 1800 }); } catch { Omorphia.toast({ title: 'Copy failed', description: 'Select the code and copy it manually.', variant: 'danger' }); } });
   code.append(summary, pre, copy); tpl.replaceWith(preview); demo.append(code);
 });
 
 // Command palette commands (global registry + one <ui-command> declared in HTML)
-Omorfia.commands.register([
+Omorphia.commands.register([
   ...[['Typography', 'type'], ['Buttons', 'buttons'], ['Inputs', 'inputs'], ['Navigation', 'navigation'], ['Feedback', 'feedback'], ['Containers', 'containers'], ['Advanced components', 'advanced'], ['Effects and illumination', 'effects']]
     .map(([label, id]) => ({ id: 'go-' + id, label, group: 'Go to section', icon: 'arrow-right', onSelect: () => document.getElementById(id).scrollIntoView() })),
-  { id: 'theme', label: 'Toggle light / dark theme', group: 'Actions', icon: 'sun', keywords: ['appearance', 'mode'], shortcut: 'T', onSelect: () => Omorfia.theme.toggle() },
-  { id: 'toast', label: 'Show a notification', group: 'Actions', icon: 'bell', onSelect: () => Omorfia.toast({ title: 'Command ran', description: 'Triggered from the palette.', variant: 'success' }) },
-  { id: 'gh', label: 'Open the GitHub repository', group: 'Links', icon: 'external-link', href: 'https://github.com/aabhro/edgelit', target: '_blank' },
+  { id: 'theme', label: 'Toggle light / dark theme', group: 'Actions', icon: 'sun', keywords: ['appearance', 'mode'], shortcut: 'T', onSelect: () => Omorphia.theme.toggle() },
+  { id: 'toast', label: 'Show a notification', group: 'Actions', icon: 'bell', onSelect: () => Omorphia.toast({ title: 'Command ran', description: 'Triggered from the palette.', variant: 'success' }) },
+  { id: 'gh', label: 'Open the GitHub repository', group: 'Links', icon: 'external-link', href: 'https://github.com/aabhro/Omorphia', target: '_blank' },
 ]);
 
 // Dropdown demo: listen for the ui-select event
-document.addEventListener('ui-select', (e) => { if (e.target.id === 'actions-menu') Omorfia.toast({ title: `Chose ${e.detail.value}`, variant: 'info', duration: 2000 }); });
+document.addEventListener('ui-select', (e) => { if (e.target.id === 'actions-menu') Omorphia.toast({ title: `Chose ${e.detail.value}`, variant: 'info', duration: 2000 }); });
 
 // Search demo data / async source
 const fruit = ['Apple', 'Apricot', 'Avocado', 'Banana', 'Blackberry', 'Blueberry', 'Cherry', 'Coconut', 'Fig', 'Grape', 'Kiwi', 'Lemon', 'Mango', 'Orange', 'Papaya', 'Peach', 'Pear', 'Pineapple', 'Plum', 'Raspberry'];
 document.addEventListener('DOMContentLoaded', () => {
-  const s1 = document.getElementById('search-local'); if (s1) { s1.data = fruit.map((f) => ({ label: f, description: 'Fruit', icon: 'star' })); s1.suggestions = ['Mango', 'Kiwi', 'Papaya']; s1.addEventListener('ui-select', (e) => Omorfia.toast({ title: `Selected ${e.detail.value}`, variant: 'info', duration: 2200 })); }
+  const s1 = document.getElementById('search-local'); if (s1) { s1.data = fruit.map((f) => ({ label: f, description: 'Fruit', icon: 'star' })); s1.suggestions = ['Mango', 'Kiwi', 'Papaya']; s1.addEventListener('ui-select', (e) => Omorphia.toast({ title: `Selected ${e.detail.value}`, variant: 'info', duration: 2200 })); }
   const s2 = document.getElementById('search-async'); if (s2) { s2.source = (q, signal) => new Promise((res, rej) => { const t = setTimeout(() => res(fruit.filter((f) => f.toLowerCase().includes(q.toLowerCase())).map((f) => ({ label: f, description: 'Fruit' }))), 700); signal.addEventListener('abort', () => { clearTimeout(t); rej(); }); }); }
   const s3 = document.getElementById('search-custom'); if (s3) { const people = [['Ada Lovelace', 'AL', 'online'], ['Grace Hopper', 'GH', 'away'], ['Alan Turing', 'AT', 'busy'], ['Margaret Hamilton', 'MH', 'online']]; s3.data = people.map(([label, initials, status]) => ({ label, initials, status })); s3.renderItem = (it) => { const row = document.createElement('div'); row.className = 'ui-row ui-row--nowrap'; const av = document.createElement('span'); av.className = 'ui-avatar ui-avatar--sm'; av.dataset.status = it.status; av.textContent = it.initials; const name = document.createElement('span'); name.textContent = it.label; row.append(av, name); return row; }; }
   const range = document.getElementById('range-demo'); if (range) { const set = () => { range.style.setProperty('--_pct', ((range.value - range.min) / (range.max - range.min)) * 100 + '%'); document.getElementById('range-out').textContent = range.value; }; range.addEventListener('input', set); set(); }
@@ -92,10 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!copied) throw new Error('Clipboard unavailable');
       }
       fxStatus.textContent = 'CSS copied to clipboard.';
-      Omorfia.toast({ title: 'CSS copied', variant: 'success', duration: 1800 });
+      Omorphia.toast({ title: 'CSS copied', variant: 'success', duration: 1800 });
     } catch {
       fxStatus.textContent = 'Clipboard access is unavailable. Select the CSS above to copy it.';
-      Omorfia.toast({ title: 'Copy unavailable', description: 'Select the CSS block and copy it manually.', variant: 'warning' });
+      Omorphia.toast({ title: 'Copy unavailable', description: 'Select the CSS block and copy it manually.', variant: 'warning' });
     }
   };
   fxCopy?.addEventListener('click', copyFx);

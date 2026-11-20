@@ -39,20 +39,19 @@ export class UICommandPalette extends HTMLElement {
       e.preventDefault();
       this.toggle();
     };
-    // Capture before focused inputs and nested widgets can stop the event.
-    document.addEventListener('keydown', this._hk, true);
+    // Window capture runs before focused inputs, embedded controls, and document handlers.
+    window.addEventListener('keydown', this._hk, true);
   }
-  disconnectedCallback() { document.removeEventListener('keydown', this._hk, true); if (this.dialog?.open) this.dialog.close(); }
+  disconnectedCallback() { window.removeEventListener('keydown', this._hk, true); if (this.dialog?.open) this.dialog.close(); }
   matches_hotkey(e) {
     const parts = (this.getAttribute('hotkey') || 'mod+k').toLowerCase().split('+').map((part) => part.trim()).filter(Boolean);
     const key = parts.pop();
-    const mod = parts.includes('mod');
-    const wantsCtrl = parts.includes('ctrl') || (mod && !isMac());
-    const wantsMeta = parts.includes('meta') || (mod && isMac());
+    const isMod = parts.includes('mod');
+    const modifierMatches = isMod
+      ? (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey)
+      : e.ctrlKey === parts.includes('ctrl') && e.metaKey === parts.includes('meta');
     const keyMatches = e.key?.toLowerCase() === key || (key?.length === 1 && e.code?.toLowerCase() === 'key' + key);
-    return !!key && keyMatches &&
-      e.ctrlKey === wantsCtrl &&
-      e.metaKey === wantsMeta &&
+    return !!key && keyMatches && modifierMatches &&
       e.altKey === parts.includes('alt') &&
       e.shiftKey === parts.includes('shift');
   }
@@ -86,7 +85,7 @@ export class UICommandPalette extends HTMLElement {
       const none = !this.all().length;
       this.list.append(h('div', { class: 'ui-empty' }, icon(none ? 'command' : 'search'),
         h('p', { class: 'ui-empty-title' }, none ? 'No commands yet' : `No results for “${q.trim()}”`),
-        h('p', { class: 'ui-empty-desc' }, none ? 'Add commands with Omorfia.commands.register() or <ui-command> elements.' : 'Check the spelling or try a broader term.')));
+        h('p', { class: 'ui-empty-desc' }, none ? 'Add commands with Omorphia.commands.register() or <ui-command> elements.' : 'Check the spelling or try a broader term.')));
       this.input.removeAttribute('aria-activedescendant'); return;
     }
     let group;

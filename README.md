@@ -1,119 +1,124 @@
 <div align="center">
-  <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/layers-3.svg" width="42" height="42" alt="Omorfia icon">
-  <h1>Omorfia</h1>
-  <p><strong>Quietly considered interface components.</strong></p>
-  <p>A dependency-free UI library with native custom elements, practical components, and restrained directional border illumination.</p>
-  <p><a href="https://aabhro.github.io/edgelit/"><strong>Open the live showcase</strong></a> &nbsp;·&nbsp; <a href="https://github.com/aabhro/Edgelit">Source repository</a></p>
+  <img src="assets/readme-cover.svg" alt="Omorphia, quietly considered interface components" width="100%">
   <p>
-    <img src="https://img.shields.io/github/v/tag/aabhro/Edgelit?label=release&style=flat" alt="Latest release">
-    <img src="https://img.shields.io/github/actions/workflow/status/aabhro/Edgelit/ci.yml?branch=main&label=checks&style=flat" alt="Build status">
-    <img src="https://img.shields.io/github/license/aabhro/Edgelit?style=flat" alt="MIT license">
+    <a href="https://aabhro.github.io/Omorphia/"><strong>Live showcase</strong></a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/aabhro/Omorphia">Repository</a>
+    &nbsp;·&nbsp;
+    <a href="LICENSE">MIT license</a>
+  </p>
+  <p>
+    <img src="https://img.shields.io/github/v/tag/aabhro/Omorphia?label=release&style=flat-square&labelColor=0a0a0a&color=262626" alt="Release">
+    <img src="https://img.shields.io/github/actions/workflow/status/aabhro/Omorphia/ci.yml?branch=main&label=checks&style=flat-square&labelColor=0a0a0a&color=262626" alt="Checks">
+    <img src="https://img.shields.io/github/license/aabhro/Omorphia?style=flat-square&labelColor=0a0a0a&color=262626" alt="MIT">
   </p>
 </div>
 
 ---
 
 <div align="center">
-  <a href="#overview"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/info.svg" width="15" height="15" alt=""> Overview</a>
-  &nbsp;·&nbsp; <a href="#quick-start"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/rocket.svg" width="15" height="15" alt=""> Quick start</a>
-  &nbsp;·&nbsp; <a href="#components"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/layout-grid.svg" width="15" height="15" alt=""> Components</a>
-  &nbsp;·&nbsp; <a href="#illumination"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/sun.svg" width="15" height="15" alt=""> Illumination</a>
-  &nbsp;·&nbsp; <a href="#theming"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/palette.svg" width="15" height="15" alt=""> Theming</a>
-  &nbsp;·&nbsp; <a href="#development"><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/code-2.svg" width="15" height="15" alt=""> Development</a>
+  <a href="#overview"><img src="assets/icons/info.svg" width="15" height="15" alt=""> Overview</a>
+  &nbsp;·&nbsp;
+  <a href="#quick-start"><img src="assets/icons/rocket.svg" width="15" height="15" alt=""> Quick start</a>
+  &nbsp;·&nbsp;
+  <a href="#components"><img src="assets/icons/layers.svg" width="15" height="15" alt=""> Components</a>
+  &nbsp;·&nbsp;
+  <a href="#illumination"><img src="assets/icons/sun.svg" width="15" height="15" alt=""> Illumination</a>
+  &nbsp;·&nbsp;
+  <a href="#theming"><img src="assets/icons/palette.svg" width="15" height="15" alt=""> Theming</a>
+  &nbsp;·&nbsp;
+  <a href="#development"><img src="assets/icons/terminal.svg" width="15" height="15" alt=""> Development</a>
 </div>
 
 ## Overview
 
-Omorfia provides reusable interface elements without requiring a framework, runtime dependency, or build step in the consuming project.
+Omorphia is a small, dependency-free UI library for websites. It uses native custom elements, plain CSS, and browser APIs. No framework is required.
 
-- **Small integration surface:** one CSS file and one JavaScript file.
-- **Native foundations:** semantic HTML, custom elements, and native browser dialogs.
-- **Useful interaction:** keyboard navigation, accessible states, and responsive navigation.
-- **Lucide icons:** common icons are bundled. Additional names load on demand.
-- **Scoped theming:** CSS variables work globally or inside a component subtree.
-- **Progressive enhancement:** CSS-only elements work without JavaScript where possible.
-
-The library keeps its original <code>ui-</code> custom-element and class prefixes for compatibility. Existing integrations using the <code>Edgelit</code> global continue to work as an alias.
+- **Simple setup:** one stylesheet and one script from a CDN.
+- **Native interaction:** semantic elements, keyboard support, and accessible states.
+- **Useful components:** buttons, forms, navigation, feedback, overlays, search, and sidebars.
+- **Lucide icons:** common icons are bundled. Other icons load when needed.
+- **Scoped themes:** override CSS variables globally or inside a component.
+- **Directional illumination:** a restrained light on selected surface edges, not a permanent outline on every component.
 
 ## Quick start
 
-<details open>
-  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/package.svg" width="15" height="15" alt=""> CDN setup</strong> · CSS and classic JavaScript</summary>
+<details>
+  <summary><strong>CDN installation</strong> · Classic script</summary>
 
-Use a pinned release in production. GitHub's code block toolbar provides a copy action.
+Use a pinned release for production.
 
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.min.js"></script>
+~~~html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard">
   <ui-button icon="copy">Copy</ui-button>
 </ui-tooltip>
 <ui-command-palette></ui-command-palette>
-```
+~~~
 
-Custom elements upgrade automatically, including elements inserted later. Dark mode is the default.
-
-</details>
-
-<details>
-  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/pin.svg" width="15" height="15" alt=""> Pin a release</strong> · Stable production assets</summary>
-
-Use an exact version such as <code>v1.1.2</code>. A release tag gives you a stable asset URL.
-
-| Asset | Path |
-|---|---|
-| CSS | <code>dist/omorfia.min.css</code> |
-| Classic JS | <code>dist/omorfia.min.js</code> |
-| ES module | <code>dist/omorfia.esm.min.js</code> |
-
-Generated Subresource Integrity hashes are available in <a href="dist/sri.json"><code>dist/sri.json</code></a>.
+Custom elements upgrade automatically, including elements inserted later.
 
 </details>
 
 <details>
-  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/blocks.svg" width="15" height="15" alt=""> ES modules</strong> · Import only what you use</summary>
+  <summary><strong>ES module installation</strong> · Import the complete API</summary>
 
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/css/feedback.min.css">
+~~~html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.css">
 
 <script type="module">
-  import * as Omorfia from 'https://cdn.jsdelivr.net/gh/aabhro/Edgelit@v1.1.2/dist/omorfia.esm.min.js';
-  Omorfia.toast({ title: 'Ready', variant: 'success' });
-</script>
-```
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.esm.min.js';
 
-For individual component modules, see the component list below.
+  Omorphia.toast({
+    title: 'Ready',
+    description: 'Omorphia is loaded.',
+    variant: 'success'
+  });
+</script>
+~~~
+
+</details>
+
+<details>
+  <summary><strong>Individual CSS modules</strong> · Load only the styles you need</summary>
+
+~~~html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/css/feedback.min.css">
+~~~
+
+The complete stylesheet is <code>dist/omorphia.min.css</code>. Generated integrity hashes are listed in <a href="dist/sri.json"><code>dist/sri.json</code></a>.
 
 </details>
 
 ## Components
 
-The CSS is split into focused modules. The complete stylesheet includes every module.
+The stylesheet is split into focused modules.
 
 | Module | Includes |
 |---|---|
-| <code>core</code> | Tokens, base styles, and border illumination |
+| <code>core</code> | Tokens, base styles, edge illumination |
 | <code>button</code> | Buttons and button groups |
-| <code>forms</code> | Inputs, selects, checkboxes, switches, and search |
-| <code>nav</code> | Breadcrumbs, navigation links, tabs, and pagination |
-| <code>feedback</code> | Tooltips, alerts, badges, status, progress, and toast styles |
-| <code>containers</code> | Cards, avatars, dialogs, popovers, and collapsibles |
-| <code>advanced</code> | Command palette, search panels, and side navigation |
+| <code>forms</code> | Inputs, textareas, selects, switches, ranges |
+| <code>nav</code> | Breadcrumbs, navigation links, tabs, pagination |
+| <code>feedback</code> | Tooltips, alerts, badges, status, progress, toasts |
+| <code>containers</code> | Cards, avatars, dialogs, popovers, collapsibles |
+| <code>advanced</code> | Command palette, search panels, side navigation |
 
 ### Buttons
 
 <details>
-  <summary><strong>View implementation</strong></summary>
+  <summary><strong>Example markup</strong></summary>
 
-```html
+~~~html
 <ui-button variant="primary" icon="save">Save</ui-button>
 <ui-button variant="secondary">Cancel</ui-button>
 <ui-button variant="subtle" icon="ellipsis" label="More options"></ui-button>
-```
+~~~
 
 Variants: <code>primary</code>, <code>secondary</code>, <code>subtle</code>, and <code>destructive</code>. Sizes: <code>sm</code>, <code>md</code>, and <code>lg</code>.
 
@@ -122,29 +127,29 @@ Variants: <code>primary</code>, <code>secondary</code>, <code>subtle</code>, and
 ### Forms
 
 <details>
-  <summary><strong>View implementation</strong></summary>
+  <summary><strong>Example markup</strong></summary>
 
-```html
+~~~html
 <div class="ui-field">
   <label class="ui-label" for="project-name">Project name</label>
   <div class="ui-input">
     <ui-icon name="folder"></ui-icon>
-    <input id="project-name" name="project-name" placeholder="Untitled project">
+    <input id="project-name" placeholder="Untitled project">
   </div>
   <p class="ui-hint">Choose a name for this workspace.</p>
 </div>
-```
+~~~
 
-Also available: <code>.ui-textarea</code>, <code>.ui-select</code>, <code>.ui-check</code>, <code>.ui-radio</code>, <code>.ui-switch</code>, and <code>.ui-range</code>.
+Textareas use <code>.ui-textarea</code>. Selects, checkboxes, radios, switches, and range inputs are also included.
 
 </details>
 
 ### Navigation
 
 <details>
-  <summary><strong>View implementation</strong></summary>
+  <summary><strong>Tabs, pagination, and dropdowns</strong></summary>
 
-```html
+~~~html
 <ui-tabs value="overview">
   <ui-tab label="Overview" value="overview">Overview panel</ui-tab>
   <ui-tab label="Activity" value="activity">Activity panel</ui-tab>
@@ -157,45 +162,45 @@ Also available: <code>.ui-textarea</code>, <code>.ui-select</code>, <code>.ui-ch
   <button data-value="rename">Rename</button>
   <button data-value="duplicate">Duplicate</button>
 </ui-dropdown>
-```
+~~~
 
-Tabs support arrow keys, Home, and End. Dropdown menus support arrow-key navigation, Home, End, and type-ahead.
+Tabs support arrow keys, Home, and End. Dropdowns support arrow keys, Home, End, and type-ahead.
 
 </details>
 
 ### Feedback and overlays
 
 <details>
-  <summary><strong>View implementation</strong></summary>
+  <summary><strong>Toast and confirmation dialogs</strong></summary>
 
-```js
-Omorfia.toast({
+~~~js
+Omorphia.toast({
   title: 'Changes saved',
   description: 'Your work is up to date.',
   variant: 'success'
 });
 
-const confirmed = await Omorfia.confirm({
+const confirmed = await Omorphia.confirm({
   title: 'Delete project?',
   message: 'This action cannot be undone.',
   confirmLabel: 'Delete',
   destructive: true
 });
-```
+~~~
 
-Available elements include <code>&lt;ui-tooltip&gt;</code>, <code>&lt;ui-modal&gt;</code>, <code>&lt;ui-popover&gt;</code>, and <code>&lt;ui-dropdown&gt;</code>.
+Also included: <code>&lt;ui-tooltip&gt;</code>, <code>&lt;ui-modal&gt;</code>, <code>&lt;ui-popover&gt;</code>, and <code>&lt;ui-dropdown&gt;</code>.
 
 </details>
 
 ### Command palette
 
-Press <kbd>Ctrl</kbd> + <kbd>K</kbd> on Windows and Linux, or <kbd>⌘</kbd> + <kbd>K</kbd> on macOS. Use the arrow keys to move, Enter to run, and Escape to close.
+Press <kbd>Ctrl</kbd> + <kbd>K</kbd> on Windows and Linux, or <kbd>⌘</kbd> + <kbd>K</kbd> on macOS. The palette opens even when a form field has focus. Use the arrow keys to move, Enter to run, and Escape to close.
 
 <details>
   <summary><strong>Register commands</strong></summary>
 
-```js
-Omorfia.commands.register([
+~~~js
+Omorphia.commands.register([
   {
     id: 'new-project',
     label: 'New project',
@@ -212,18 +217,18 @@ Omorfia.commands.register([
     href: '/docs'
   }
 ]);
-```
+~~~
 
-Commands can be registered globally or on one palette. The component also supports declarative <code>&lt;ui-command&gt;</code> elements.
+Commands can be registered globally or on one palette. Declarative <code>&lt;ui-command&gt;</code> elements are supported too.
 
 </details>
 
 ### Search and side navigation
 
 <details>
-  <summary><strong>Search suggestions</strong></summary>
+  <summary><strong>Local search data</strong></summary>
 
-```js
+~~~js
 const search = document.querySelector('ui-search');
 
 search.data = [
@@ -234,16 +239,16 @@ search.data = [
 search.addEventListener('ui-select', (event) => {
   console.log(event.detail.item);
 });
-```
+~~~
 
-The search component supports local data, asynchronous sources, loading states, keyboard selection, and custom item rendering.
+Search supports local data, asynchronous sources, loading states, keyboard selection, and custom item rendering.
 
 </details>
 
 <details>
-  <summary><strong>Responsive side navigation</strong></summary>
+  <summary><strong>Responsive sidebar</strong></summary>
 
-```html
+~~~html
 <ui-sidebar heading="Workspace" collapsible breakpoint="768">
   <ui-sidebar-item icon="house" href="/" active>Home</ui-sidebar-item>
   <ui-sidebar-item icon="folder">Projects
@@ -251,23 +256,26 @@ The search component supports local data, asynchronous sources, loading states, 
     <ui-sidebar-item href="/meridian">Meridian</ui-sidebar-item>
   </ui-sidebar-item>
 </ui-sidebar>
-```
+~~~
 
-On narrow viewports the sidebar becomes an off-canvas drawer. It supports nested groups, collapse, keyboard navigation, and active states.
+On narrow screens the sidebar becomes an off-canvas drawer. Nested groups, collapse, active states, and keyboard navigation are included.
 
 </details>
 
 ## Illumination
 
-Omorfia keeps its signature directional light. The primary highlight starts near the top-left edge. A dimmer reflection sits near the bottom-right. The effect is masked into the border ring instead of drawing a bright outline around every element.
+Omorphia keeps its directional edge effect. A primary highlight begins near the top-left. A dimmer reflection sits near the bottom-right. The effect is masked into the border ring and is opt-in on generic surfaces.
 
-Apply it to a surface with <code>ui-edge</code>:
+<details>
+  <summary><strong>Apply the effect</strong></summary>
 
-```html
+~~~html
 <div class="ui-edge" style="border-radius: 8px">
   A softly illuminated surface
 </div>
-```
+~~~
+
+</details>
 
 | Variable | Default | Purpose |
 |---|---:|---|
@@ -282,13 +290,14 @@ Apply it to a surface with <code>ui-edge</code>:
 
 Modifiers: <code>ui-edge--soft</code>, <code>ui-edge--strong</code>, <code>ui-edge--accent</code>, <code>ui-edge--none</code>, and <code>ui-edge--animated</code>. Animation respects <code>prefers-reduced-motion</code>.
 
-The showcase includes a live configuration panel with presets and copyable CSS.
-
 ## Theming
 
-Override tokens on <code>:root</code> or scope them to any container.
+Dark is the default. Override variables on <code>:root</code> or scope them to any container.
 
-```css
+<details>
+  <summary><strong>Theme tokens</strong></summary>
+
+~~~css
 :root {
   --ui-bg: #0a0a0a;
   --ui-surface: #0a0a0a;
@@ -298,44 +307,40 @@ Override tokens on <code>:root</code> or scope them to any container.
   --ui-radius: 6px;
   --ui-font: "Geist", system-ui, sans-serif;
 }
-```
+~~~
 
-Set a theme through the attribute:
+</details>
 
-```html
-<html data-ui-theme="dark">
-<section data-ui-theme="light">A separately themed section</section>
-```
+<details>
+  <summary><strong>Switch themes</strong></summary>
 
-Or use the JavaScript helper:
+~~~js
+Omorphia.theme.set('dark');  // dark, light, or auto
+Omorphia.theme.toggle();
+~~~
 
-```js
-Omorfia.theme.set('dark');  // dark, light, or auto
-Omorfia.theme.toggle();
-```
+Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. Floating panels keep an opaque near-black surface.
 
-Menus, dialogs, toasts, and other floating panels keep an opaque near-black surface for consistent contrast.
+</details>
 
 ## Browser support
 
-Targets current Chrome, Edge, Safari 16.4+, and Firefox. The library uses modern browser features including custom elements, <code>color-mix()</code>, CSS masks, <code>:has()</code>, and native dialogs. Floating panels use the Popover API where available and a fixed-position fallback elsewhere.
+Targets current Chrome, Edge, Safari 16.4+, and Firefox. Omorphia uses custom elements, <code>color-mix()</code>, CSS masks, <code>:has()</code>, and native dialogs. Floating panels use the Popover API where available and a fixed-position fallback elsewhere.
 
 ## Development
 
 <details>
-  <summary><strong><img src="https://cdn.jsdelivr.net/npm/lucide-static@1.77.0/icons/terminal.svg" width="15" height="15" alt=""> Build and test locally</strong></summary>
+  <summary><strong><img src="assets/icons/terminal.svg" width="15" height="15" alt=""> Build and test locally</strong></summary>
 
-```bash
-git clone https://github.com/aabhro/Edgelit.git
-cd Edgelit
+~~~bash
+git clone https://github.com/aabhro/Omorphia.git
+cd Omorphia
 npm install
 npm run build
 npm test
-```
+~~~
 
-The showcase is <code>index.html</code>. Source styles live in <code>src/css/</code>, component logic lives in <code>src/js/</code>, and showcase-only wiring lives in <code>showcase/</code>.
-
-The build regenerates the complete and modular CSS, classic and ESM bundles, component modules, compatibility filenames, and the SRI manifest. The generated <code>dist/</code> directory is committed because it is served directly from the repository.
+The showcase is <code>index.html</code>. Source styles are in <code>src/css/</code>, component logic is in <code>src/js/</code>, and showcase-specific wiring is in <code>showcase/</code>. The build regenerates the committed CDN bundles and integrity manifest.
 
 </details>
 

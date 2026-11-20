@@ -12,6 +12,7 @@
   background: transparent; color: var(--ui-text); border: 1px solid var(--ui-control-border); border-radius: var(--ui-radius);
   transition: border-color var(--ui-duration) var(--ui-ease), background-color var(--ui-duration) var(--ui-ease);
 }
+.ui-textarea { border-radius: 0; }
 .ui-input { height: var(--ui-h-md); padding-inline: var(--ui-space-3); }
 .ui-input--sm { height: var(--ui-h-sm); } .ui-input--lg { height: var(--ui-h-lg); }
 .ui-input > ui-icon { color: var(--ui-text-faint); --ui-icon-size: var(--ui-icon); }

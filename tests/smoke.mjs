@@ -8,15 +8,15 @@ const w = dom.window; const errors = [];
 w.console.error = (...a) => errors.push(a.join(' ')); w.console.warn = (...a) => errors.push(a.join(' '));
 w.Element.prototype.scrollIntoView = () => {}; // jsdom lacks it
 w.fetch = async () => ({ ok: false });
-w.eval(readFileSync('dist/omorfia.min.js', 'utf8'));
-const E = w.Omorfia, d = w.document; const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
+w.eval(readFileSync('dist/omorphia.min.js', 'utf8'));
+const E = w.Omorphia, d = w.document; const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 let passed = 0; const t = async (name, fn) => { await fn(); passed++; console.log('  ✓', name); };
 const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; d.body.append(c); return c; };
 
-await t('exports global API', () => { assert.equal(w.Edgelit, E, 'legacy global alias'); assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
+await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
 await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
 await t('Modernimal neutral theme and opaque overlay defaults', () => {
-  const css = readFileSync('dist/omorfia.css', 'utf8');
+  const css = readFileSync('dist/omorphia.css', 'utf8');
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
   assert.match(css, /--ui-text:\s*#f5f5f5/);
   assert.match(css, /--ui-overlay:\s*#0a0a0a/);
@@ -31,11 +31,29 @@ await t('decorative perimeter outlines are omitted', () => {
   const containers = readFileSync('src/css/containers.css', 'utf8');
   assert.match(containers, /\.ui-card\{[^}]*border:0;border-radius:0/);
   assert.match(containers, /\.ui-avatar\{[^}]*border-radius:4px/);
+  const sidebar = readFileSync('src/js/components/sidebar.js', 'utf8');
+  assert.match(sidebar, /class: 'ui-sidebar-panel'/);
+  assert.doesNotMatch(sidebar, /ui-sidebar-panel ui-edge/);
+  const advanced = readFileSync('src/css/advanced.css', 'utf8');
+  assert.match(advanced, /\.ui-sidebar-panel\{[^}]*border:0/);
+  assert.doesNotMatch(advanced, /ui-sidebar-panel::before/);
+  const forms = readFileSync('src/css/forms.css', 'utf8');
+  assert.match(forms, /\.ui-textarea\s*\{\s*border-radius:\s*0/);
   const base = readFileSync('src/css/base.css', 'utf8');
   const buttons = readFileSync('src/css/button.css', 'utf8');
   assert.match(base, /\.ui-summary:focus-visible\s*\{[^}]*outline:\s*none/);
   assert.match(buttons, /\.ui-btn:focus-visible\{outline:none/);
   assert.doesNotMatch(base, /\.ui-summary\):focus-visible/);
+});
+await t('README examples start collapsed', () => {
+  const readme = readFileSync('README.md', 'utf8');
+  assert.doesNotMatch(readme, /<details\\s+open/i);
+  let depth = 0;
+  for (const line of readme.split('\\n')) {
+    if (line.trim() === '<details>') depth++;
+    if (line.startsWith('~~~')) assert.ok(depth > 0, 'every fenced example is inside collapsed details');
+    if (line.trim() === '</details>') depth--;
+  }
 });
 await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');

@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Omorfia · Component showcase</title>
+  <title>Omorphia · Component showcase</title>
   <meta name="description" content="A dependency-free UI library with native custom elements and restrained directional border illumination.">
   <meta name="theme-color" content="#0a0a0a">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Omorfia · Component showcase">
+  <meta property="og:title" content="Omorphia · Component showcase">
   <meta property="og:description" content="A dependency-free UI library with native custom elements and restrained directional border illumination.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Cpath d='M16 5.5a10.5 10.5 0 1 0 0 21a10.5 10.5 0 1 0 0-21Z' fill='none' stroke='%23f5f5f5' stroke-width='1.8'/%3E%3Cpath d='M19.8 10.5 12.2 21.5' stroke='%23a3a3a3' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.2/dist to load from the CDN. -->
-  <link rel="stylesheet" href="./dist/omorfia.min.css">
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist to load from the CDN. -->
+  <link rel="stylesheet" href="./dist/omorphia.min.css">
   <link rel="stylesheet" href="./showcase/showcase.css">
 </head>
 <body class="ui-root">
 <div class="shell">
-  <ui-sidebar id="nav" heading="Omorfia" collapsible label="Showcase sections">
+  <ui-sidebar id="nav" heading="Omorphia" collapsible label="Showcase sections">
     <ui-sidebar-item icon="type" href="#type">Typography</ui-sidebar-item>
     <ui-sidebar-item icon="palette" href="#buttons">Buttons</ui-sidebar-item>
     <ui-sidebar-item icon="pencil" href="#inputs">Inputs</ui-sidebar-item>
@@ -38,15 +38,15 @@
       <ui-button class="menu-btn" variant="subtle" icon="menu" label="Open navigation" data-ui-toggle="#nav"></ui-button>
       <span class="grow"></span>
       <ui-button icon="search" onclick="document.querySelector('ui-command-palette').open()"><span class="cmd-label">Search</span> <span class="ui-kbd">Ctrl K</span></ui-button>
-      <ui-tooltip content="Toggle light / dark" placement="bottom"><ui-button variant="subtle" icon="sun" label="Toggle theme" onclick="Omorfia.theme.toggle()"></ui-button></ui-tooltip>
-      <ui-button variant="subtle" icon="external-link" onclick="window.open('https://github.com/aabhro/edgelit','_blank','noopener')">GitHub</ui-button>
+      <ui-tooltip content="Toggle light / dark" placement="bottom"><ui-button variant="subtle" icon="sun" label="Toggle theme" onclick="Omorphia.theme.toggle()"></ui-button></ui-tooltip>
+      <ui-button variant="subtle" icon="external-link" onclick="window.open('https://github.com/aabhro/Omorphia','_blank','noopener')">GitHub</ui-button>
     </div>
 
     <header class="hero">
       <h1 class="ui-display">Interfaces shaped by light.</h1>
-      <p>Omorfia is a dependency-free UI library for websites. Use one stylesheet, one script, and native custom elements. Directional illumination adds a restrained highlight without turning every surface into an outline.</p>
-      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.2/dist/omorfia.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.2/dist/omorfia.min.js"&gt;&lt;/script&gt;</pre></div></div>
+      <p>Omorphia is a dependency-free UI library for websites. Use one stylesheet, one script, and native custom elements. Directional illumination adds a restrained highlight without turning every surface into an outline.</p>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.3/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
     </header>
 
     <section class="block" id="type">
@@ -154,10 +154,10 @@
         <ui-tooltip content="Appears below" placement="bottom"><ui-button variant="subtle" icon="info" label="Info"></ui-button></ui-tooltip>
         <ui-tooltip content="Also on keyboard focus" placement="right"><button class="ui-btn">Focus me</button></ui-tooltip></template></div>
       <div class="demo"><div class="demo-title">Toast notifications</div><template>
-        <ui-button onclick="Omorfia.toast({ title: 'Changes saved', description: 'Atlas is up to date.', variant: 'success' })">Success</ui-button>
-        <ui-button onclick="Omorfia.toast({ title: 'Deploy failed', description: 'Build exited with code 1.', variant: 'danger', duration: 8000 })">Error</ui-button>
-        <ui-button onclick="Omorfia.toast({ title: 'Project archived', variant: 'info', action: { label: 'Undo', onClick: () => Omorfia.toast('Restored') } })">With action</ui-button>
-        <ui-button onclick="Omorfia.toast({ title: 'Storage almost full', variant: 'warning', duration: 0 })">Sticky</ui-button></template></div>
+        <ui-button onclick="Omorphia.toast({ title: 'Changes saved', description: 'Atlas is up to date.', variant: 'success' })">Success</ui-button>
+        <ui-button onclick="Omorphia.toast({ title: 'Deploy failed', description: 'Build exited with code 1.', variant: 'danger', duration: 8000 })">Error</ui-button>
+        <ui-button onclick="Omorphia.toast({ title: 'Project archived', variant: 'info', action: { label: 'Undo', onClick: () => Omorphia.toast('Restored') } })">With action</ui-button>
+        <ui-button onclick="Omorphia.toast({ title: 'Storage almost full', variant: 'warning', duration: 0 })">Sticky</ui-button></template></div>
       <div class="demo" data-layout="stack"><div class="demo-title">Alerts</div><template>
         <div class="ui-alert ui-alert--info" role="status"><ui-icon name="info"></ui-icon><div><p class="ui-alert-title">Scheduled maintenance</p><p class="ui-alert-desc">Saturday 02:00–03:00 UTC. Deploys will queue.</p></div></div>
         <div class="ui-alert ui-alert--success" role="status"><ui-icon name="circle-check"></ui-icon><div><p class="ui-alert-title">Domain verified</p></div></div>
@@ -193,10 +193,10 @@
         <ui-modal id="invite-modal" heading="Invite teammates">
           They'll get an email with a link to join Atlas. Press Escape or click outside to dismiss.
           <div class="ui-field" style="margin-top:16px"><label class="ui-label" for="inv">Email address</label><div class="ui-input"><ui-icon name="mail"></ui-icon><input id="inv" placeholder="name@company.com"></div></div>
-          <div slot="footer"><ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button><ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Omorfia.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button></div>
+          <div slot="footer"><ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button><ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Omorphia.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button></div>
         </ui-modal>
         <ui-button variant="primary" onclick="document.getElementById('invite-modal').show()">Invite teammates</ui-button>
-        <ui-button variant="destructive" onclick="Omorfia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorfia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
+        <ui-button variant="destructive" onclick="Omorphia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorphia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
         <ui-popover placement="bottom-start"><ui-button slot="trigger" icon="settings">Display options</ui-button>
           <div class="ui-stack ui-gap-3"><p class="ui-h3">Display</p><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked><span class="ui-switch-track"></span> Compact rows</label><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch"><span class="ui-switch-track"></span> Show IDs</label></div></ui-popover></template></div>
     </section>
@@ -207,7 +207,7 @@
         <ui-button icon="command" onclick="document.querySelector('ui-command-palette').open()">Open command palette</ui-button>
         <span class="ui-small ui-muted">Or press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">K</span> anywhere on this page. Try “theme”, “btn” or a typo.</span>
         <script type="text/plain">
-          Omorfia.commands.register([
+          Omorphia.commands.register([
             { id: 'new', label: 'New project', group: 'Actions', icon: 'plus', shortcut: 'N', onSelect: () => createProject() },
             { id: 'docs', label: 'Open documentation', group: 'Links', icon: 'book-open', href: '/docs' },
           ]);
@@ -242,7 +242,7 @@
       <div class="demo" data-layout="stack"><div class="demo-title">Live configuration</div><template>
         <div class="fx-config">
           <div class="fx-config-preview">
-            <div class="fx-stage" id="fx-stage"><div class="fx-box ui-edge">Omorfia illumination</div></div>
+            <div class="fx-stage" id="fx-stage"><div class="fx-box ui-edge">Omorphia illumination</div></div>
             <div class="fx-actions">
               <div class="ui-btn-group fx-presets" role="group" aria-label="Illumination presets">
                 <button type="button" class="ui-btn ui-btn--sm" data-fx-preset="quiet" aria-pressed="false">Quiet</button>
@@ -298,9 +298,9 @@
         </div></template></div>
       <div class="demo"><div class="demo-title">Theming with CSS variables</div><template>
         <div class="ui-row">
-          <ui-button variant="primary" onclick="Omorfia.theme.set('light')">Light</ui-button>
-          <ui-button onclick="Omorfia.theme.set('dark')">Dark</ui-button>
-          <ui-button onclick="Omorfia.theme.set('auto')">Match system</ui-button>
+          <ui-button variant="primary" onclick="Omorphia.theme.set('light')">Light</ui-button>
+          <ui-button onclick="Omorphia.theme.set('dark')">Dark</ui-button>
+          <ui-button onclick="Omorphia.theme.set('auto')">Match system</ui-button>
           <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Neutral accents</ui-button>
         </div></template></div>
     </section>
@@ -311,7 +311,7 @@
   <ui-command label="Open the invite dialog" group="Actions" icon="send" description="Demonstrates a declarative command" onselect="document.getElementById('invite-modal').show()"></ui-command>
 </ui-command-palette>
 
-<script src="./dist/omorfia.min.js"></script>
+<script src="./dist/omorphia.min.js"></script>
 <script src="./showcase/showcase.js"></script>
 </body>
 </html>

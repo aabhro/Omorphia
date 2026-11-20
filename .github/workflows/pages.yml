@@ -3,19 +3,31 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-permissions: { pages: write, id-token: write, contents: read }
+permissions:
+  pages: write
+  id-token: write
+  contents: read
 concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: { name: github-pages, url: "${{ steps.d.outputs.page_url }}" }
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - uses: actions/configure-pages@v5
-      - run: mkdir _site && cp -r index.html dist showcase _site/
+      - run: mkdir _site && cp -r index.html dist showcase assets favicon.svg _site/
       - uses: actions/upload-pages-artifact@v3
-        with: { path: _site }
+        with:
+          path: _site
       - id: d
         uses: actions/deploy-pages@v4

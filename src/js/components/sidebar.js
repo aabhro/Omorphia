@@ -42,7 +42,7 @@ export class UISidebar extends HTMLElement {
     if (!this.nav) {
       const kids = [...this.childNodes]; const slot = (n) => kids.filter((k) => k.nodeType === 1 && k.getAttribute('slot') === n);
       const head = slot('header'), foot = slot('footer'), items = kids.filter((k) => !head.includes(k) && !foot.includes(k) && !(k.nodeType === 3 && !k.textContent.trim()));
-      this.nav = h('nav', { class: 'ui-sidebar-panel ui-edge', 'aria-label': this.getAttribute('label') || 'Sidebar' });
+      this.nav = h('nav', { class: 'ui-sidebar-panel', 'aria-label': this.getAttribute('label') || 'Sidebar' });
       const heading = this.getAttribute('heading');
       if (heading || head.length) this.nav.append(h('div', { class: 'ui-side-head' }, head.length ? head : [h('span', { class: 'ui-side-head-text', text: heading })]));
       this.scroll = h('div', { class: 'ui-side-scroll' }, items); this.nav.append(this.scroll);
@@ -91,7 +91,7 @@ export class UISidebar extends HTMLElement {
 }
 define('ui-sidebar', UISidebar);
 
-if (typeof document !== 'undefined' && !window.__edgelitToggle) {
-  window.__edgelitToggle = true;
+if (typeof document !== 'undefined' && !window.__omorphiaToggle) {
+  window.__omorphiaToggle = true;
   document.addEventListener('click', (e) => { const t = e.target.closest?.('[data-ui-toggle]'); if (!t) return; const el = document.querySelector(t.getAttribute('data-ui-toggle')); el?.toggle?.(); });
 }
