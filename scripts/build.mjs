@@ -24,7 +24,7 @@ for (const min of [false, true]) {
   await build({ ...common, entryPoints: ['src/js/index.js'], format: 'iife', globalName: 'Edgelit', outfile: `dist/edgelit${s}.js`, minify: min });
   await build({ ...common, entryPoints: ['src/js/index.js'], format: 'esm', outfile: `dist/edgelit.esm${s}.js`, minify: min });
 }
-const comps = readdirSync('src/js/components').map((f) => `src/js/components/${f}`);
+const comps = readdirSync('src/js/components').sort().map((f) => `src/js/components/${f}`);
 await build({ ...common, entryPoints: [...comps, 'src/js/icons.js'], format: 'esm', splitting: true, outdir: 'dist/esm', chunkNames: 'chunks/[name]-[hash]', minify: true });
 
 // ---- SRI manifest

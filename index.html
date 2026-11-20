@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Edgelit — component showcase</title>
   <meta name="description" content="Dependency-free UI components and stylesheet with directional border illumination, served from a CDN.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0d11'/%3E%3Cpath d='M7 25V9a2 2 0 0 1 2-2h16' fill='none' stroke='%236ee7c8' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0a0a'/%3E%3Cpath d='M7 25V9a2 2 0 0 1 2-2h16' fill='none' stroke='%236ee7c8' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist to load from the CDN. -->
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist to load from the CDN. -->
   <link rel="stylesheet" href="./dist/edgelit.min.css">
   <link rel="stylesheet" href="./showcase/showcase.css">
 </head>
@@ -41,8 +41,8 @@
     <header class="hero">
       <h1 class="ui-display">Components that catch the light.</h1>
       <p>Edgelit is a dependency-free UI library for any website: one stylesheet, one script, native custom elements, and a border illumination that behaves like light on a physical edge.</p>
-      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.js"&gt;&lt;/script&gt;</pre></div></div>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.js"&gt;&lt;/script&gt;</pre></div></div>
     </header>
 
     <section class="block" id="type">
@@ -84,7 +84,7 @@
     </section>
 
     <section class="block" id="inputs">
-      <header><h2 class="ui-h1">Inputs</h2><p>Text-like controls use a wrapper so the illumination can follow its shape; focus brightens the edge with your accent colour.</p></header>
+      <header><h2 class="ui-h1">Inputs</h2><p>Text-like controls use a wrapper so the illumination can follow its shape; focus sharpens the edge without changing its shape.</p></header>
       <div class="cols">
         <div class="demo" data-layout="stack"><div class="demo-title">Text, search, textarea, select</div><template>
           <div class="ui-field"><label class="ui-label" for="i-name">Project name</label>
@@ -259,8 +259,7 @@
           <ui-button variant="primary" onclick="Edgelit.theme.set('light')">Light</ui-button>
           <ui-button onclick="Edgelit.theme.set('dark')">Dark</ui-button>
           <ui-button onclick="Edgelit.theme.set('auto')">Match system</ui-button>
-          <ui-button variant="subtle" onclick="document.documentElement.style.setProperty('--ui-accent', '#ffb454'); document.documentElement.style.setProperty('--ui-accent-hover', '#ffc47a'); document.documentElement.style.setProperty('--ui-accent-contrast', '#2a1800')">Amber accent</ui-button>
-          <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Reset accent</ui-button>
+          <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Neutral accents</ui-button>
         </div></template></div>
     </section>
   </div>

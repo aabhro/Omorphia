@@ -13,8 +13,8 @@ Dependency-free UI components and a stylesheet for any website, served from a CD
 ## Quick start
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
@@ -25,29 +25,29 @@ Custom elements upgrade automatically, including ones inserted later with `inner
 
 ### Pin a version
 
-Always use an exact version in production. It maps to a Git tag (`v1.0.0`), and jsDelivr caches it permanently.
+Always use an exact version in production. It maps to a Git tag (`v1.1.0`), and jsDelivr caches it permanently.
 
 | Style | URL |
 |---|---|
-| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/edgelit.min.css` |
+| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css` |
 | Latest 1.x patch | `…/edgelit@v1.0/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
 | Branch (development only) | `…/edgelit@main/dist/…` (cached up to 12 h) |
 
 Subresource Integrity hashes for each release are in [`dist/sri.json`](dist/sri.json):
 
 ```html
-<script src="…/edgelit@v1.0.0/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
+<script src="…/edgelit@v1.1.0/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
 ```
 
 Other GitHub-backed CDNs serve the same files:
 
 ```
-https://raw.githack.com/aabhro/edgelit/v1.0.0/dist/edgelit.min.js
-https://cdn.statically.io/gh/aabhro/edgelit/v1.0.0/dist/edgelit.min.js
+https://raw.githack.com/aabhro/edgelit/v1.1.0/dist/edgelit.min.js
+https://cdn.statically.io/gh/aabhro/edgelit/v1.1.0/dist/edgelit.min.js
 https://aabhro.github.io/edgelit/dist/edgelit.min.js      (GitHub Pages)
 ```
 
-If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.0.0/dist/edgelit.min.js` also works.
+If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.1.0/dist/edgelit.min.js` also works.
 
 ### Files
 
@@ -66,8 +66,8 @@ If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.0.0/dist/edgelit.
 <link rel="stylesheet" href="…/dist/css/button.min.css">
 <link rel="stylesheet" href="…/dist/css/feedback.min.css">
 <script type="module">
-  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/esm/components/toast.js';
-  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.0.0/dist/esm/components/button.js'; // registers <ui-button>
+  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/esm/components/toast.js';
+  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/esm/components/button.js'; // registers <ui-button>
   toast({ title: 'Loaded only what I need', variant: 'success' });
 </script>
 ```
@@ -161,6 +161,10 @@ Attributes: `collapsed`, `collapsible` (adds a collapse button), `width` (or `--
 ### Icons
 Lucide icons are bundled (76 common ones) so they render with no extra request: `<ui-icon name="search" size="20" stroke="1.5" label="Search">`. Any other Lucide icon name loads automatically from jsDelivr on first use. Use `Edgelit.icons.register('brand', '<path d="…"/>')` for your own, `Edgelit.icons.has(name)`, and `Edgelit.icon(name, size)` to create elements. Icons inherit `currentColor`; size with `--ui-icon-size`.
 
+## Visual system
+
+Edgelit uses a restrained near-black canvas, proportional interface typography, low-contrast separators, text-led controls, and minimal surfaces. Floating panels stay opaque `#0a0a0a` in both themes. Related actions share a single group, and active tabs use a fine underline instead of a filled strip.
+
 ## Border illumination
 
 Add `ui-edge` to any element, or use any built-in component. The effect is a masked gradient painted only in the border ring (a 1px `::before`), so it follows `border-radius` and never creates a full outline or glow.
@@ -171,7 +175,7 @@ Add `ui-edge` to any element, or use any built-in component. The effect is a mas
 
 | Variable | Default (dark) | Meaning |
 |---|---|---|
-| `--ui-edge-color` | `#fff` | Light colour (dark ink in light theme) |
+| `--ui-edge-color` | `#f5f5f5` | Light colour (dark ink in light theme) |
 | `--ui-edge-tl-alpha` | `0.5` | Top-left light strength |
 | `--ui-edge-br-alpha` | `0.14` | Bottom-right light strength (keep dimmer) |
 | `--ui-edge-tl-reach` / `--ui-edge-br-reach` | `52%` / `42%` | How far each light travels along the edges |
@@ -186,8 +190,8 @@ Modifiers: `ui-edge--soft`, `ui-edge--strong`, `ui-edge--accent`, `ui-edge--none
 
 ```css
 :root {                       /* or any container */
-  --ui-accent: #ffb454;  --ui-accent-hover: #ffc47a;  --ui-accent-contrast: #2a1800;
-  --ui-bg: #101114;  --ui-surface: #17191e;  --ui-text: #f1f1f3;
+  --ui-accent: #f5f5f5;  --ui-accent-hover: #d4d4d4;  --ui-accent-contrast: #0a0a0a;
+  --ui-bg: #0a0a0a;  --ui-surface: #0a0a0a;  --ui-overlay: #0a0a0a;  --ui-text: #f5f5f5;
   --ui-radius: 6px;  --ui-radius-lg: 10px;
   --ui-font: "Geist", system-ui, sans-serif;
   --ui-duration: 120ms;
@@ -209,7 +213,7 @@ open index.html    # the showcase consumes ./dist, the same files the CDN serves
 ```
 Source lives in `src/css/*.css` (one file per area) and `src/js/components/*.js` (one file per component). Guidelines: keep the `ui-` prefix; no element selectors outside component scope; use tokens, never hard-coded colours; proportional fonts only for UI text and nothing under 12px; every interactive component needs keyboard support and ARIA; add a test and a showcase demo for anything new; **commit the rebuilt `dist/`** (the CDN serves it from git and CI checks it is current).
 
-Releasing: bump `version` in `package.json`, `npm run build && npm test`, commit, then `git tag v1.0.1 && git push --tags`. jsDelivr serves the new tag immediately.
+Releasing: bump `version` in `package.json` and `package-lock.json`, run `npm run build && npm test`, then push to `main`. CI refreshes the committed `dist/` output and creates the matching `vX.Y.Z` tag. jsDelivr serves the pinned tag after it is pushed.
 
 ## License
 MIT
