@@ -43,6 +43,9 @@ Copy the prompt below into your AI coding agent. Use the code block copy control
 ~~~text
 You are my product designer and engineering agent. I am building or improving an interface with Omorphia.
 
+Omorphia repository: https://github.com/aabhro/Omorphia
+Use this exact repository as the source of truth. Inspect its README, AGENTS.md, AI/AGENT-PROMPT.md, source, tests, and build configuration before making changes.
+
 MANDATORY BEFORE YOU CODE:
 1. Read the complete Omorphia AGENTS.md and AI/AGENT-PROMPT.md. Follow them as required project instructions.
 2. Inspect the existing project, its architecture, features, dependencies, source files, and tests before proposing changes.
