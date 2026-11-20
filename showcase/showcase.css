@@ -18,13 +18,17 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 .demo-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 11px 12px; min-width: 0; }
 .demo-preview.stack { flex-direction: column; align-items: stretch; }
 .demo-code { position: relative; margin-top: 13px; border: 0; }
-.demo-code > summary { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; color: var(--ui-text-muted); font: 500 var(--ui-text-sm)/1 var(--ui-font); cursor: pointer; list-style: none; user-select: none; }
-.demo-code > summary::-webkit-details-marker { display: none; }
-.demo-code > summary::before { content: ""; width: 13px; height: 13px; background: currentColor; opacity: .75; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center/contain no-repeat; transition: transform var(--ui-duration-fast) var(--ui-ease); }
-.demo-code[open] > summary::before { transform: rotate(90deg); }
+.demo-code .ui-accordion-trigger { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; color: var(--ui-text-muted); font: 500 var(--ui-text-sm)/1 var(--ui-font); cursor: pointer; list-style: none; user-select: none; }
+.demo-code .ui-accordion-trigger::-webkit-details-marker { display: none; }
+.demo-code .ui-accordion-trigger>ui-icon { display: none; }
+.demo-code .ui-accordion-inner { overflow: visible; padding: 0; }
+.demo-code ui-accordion-item[data-state="open"] .ui-accordion-inner { padding: 0; }
+.demo-code .ui-accordion-trigger { min-height: 30px; padding: 0; }
+.demo-code .ui-accordion-trigger::before { content: ""; width: 13px; height: 13px; background: currentColor; opacity: .75; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center/contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E") center/contain no-repeat; transition: transform var(--ui-duration-fast) var(--ui-ease); }
+.demo-code ui-accordion-item[open] > .ui-accordion-trigger::before { transform: rotate(90deg); }
 .demo-code pre { margin: 9px 0 0; padding: 14px 15px; overflow: auto; font: 13px/1.65 var(--ui-font-mono); color: var(--ui-text); background: var(--ui-bg-inset); border: 1px solid var(--ui-border); border-radius: 4px; max-height: 300px; }
 .demo-code .copy { position: absolute; top: 4px; right: 5px; }
-.demo-code[open] pre { padding-right: 88px; }
+.demo-code ui-accordion-item[open] pre { padding-right: 88px; }
 .cols { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
 .fx-config { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(18px, 3vw, 32px); align-items: start; }
 .fx-config-preview, .fx-config-controls { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
@@ -37,7 +41,7 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 .fx-control-group { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .fx-control-group legend { margin-bottom: 2px; padding: 0; color: var(--ui-text); font: 550 var(--ui-text-sm)/1.4 var(--ui-font); }
 .ctl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, 1.3fr) 42px; align-items: center; gap: 11px; color: var(--ui-text-muted); font-size: var(--ui-text-sm); }
-.ctl input { min-width: 0; }
+.ctl ui-range { min-width: 0; }
 .ctl output { text-align: right; color: var(--ui-text); font-variant-numeric: tabular-nums; }
 .fx-code { margin: 0; padding: 13px 15px; overflow: auto; color: var(--ui-text); background: var(--ui-bg-inset); border: 1px solid var(--ui-border); border-radius: 4px; font: 12px/1.65 var(--ui-font-mono); white-space: pre; }
 .fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
@@ -60,5 +64,5 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .demo-code > summary::before { transition: none; }
+  .demo-code .ui-accordion-trigger::before { transition: none; }
 }

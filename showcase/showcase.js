@@ -5,12 +5,12 @@ const dedent = (s) => { const lines = s.replace(/^\n+|\s+$/g, '').split('\n'); c
 document.querySelectorAll('.demo').forEach((demo) => {
   const tpl = demo.querySelector('template'); if (!tpl) return;
   const preview = document.createElement('div'); preview.className = 'demo-preview' + (demo.dataset.layout === 'stack' ? ' stack' : ''); preview.append(tpl.content.cloneNode(true));
-  const code = document.createElement('details'); code.className = 'demo-code';
-  const summary = document.createElement('summary'); summary.textContent = 'View example code';
+  const code = document.createElement('ui-accordion'); code.className = 'demo-code';
+  const item = document.createElement('ui-accordion-item'); item.setAttribute('heading', 'View example code');
   const pre = document.createElement('pre'); const text = dedent(tpl.innerHTML.replace(/&amp;/g, '&')); pre.textContent = text;
   const copy = document.createElement('ui-button'); copy.className = 'copy'; copy.setAttribute('variant', 'subtle'); copy.setAttribute('size', 'sm'); copy.setAttribute('icon', 'copy'); copy.textContent = 'Copy';
   copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(text); Omorphia.toast({ title: 'Copied to clipboard', variant: 'success', duration: 1800 }); } catch { Omorphia.toast({ title: 'Copy failed', description: 'Select the code and copy it manually.', variant: 'danger' }); } });
-  code.append(summary, pre, copy); tpl.replaceWith(preview); demo.append(code);
+  item.append(pre, copy); code.append(item); tpl.replaceWith(preview); demo.append(code);
 });
 
 // Command palette commands (global registry + one <ui-command> declared in HTML)
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const s1 = document.getElementById('search-local'); if (s1) { s1.data = fruit.map((f) => ({ label: f, description: 'Fruit', icon: 'star' })); s1.suggestions = ['Mango', 'Kiwi', 'Papaya']; s1.addEventListener('ui-select', (e) => Omorphia.toast({ title: `Selected ${e.detail.value}`, variant: 'info', duration: 2200 })); }
   const s2 = document.getElementById('search-async'); if (s2) { s2.source = (q, signal) => new Promise((res, rej) => { const t = setTimeout(() => res(fruit.filter((f) => f.toLowerCase().includes(q.toLowerCase())).map((f) => ({ label: f, description: 'Fruit' }))), 700); signal.addEventListener('abort', () => { clearTimeout(t); rej(); }); }); }
   const s3 = document.getElementById('search-custom'); if (s3) { const people = [['Ada Lovelace', 'AL', 'online'], ['Grace Hopper', 'GH', 'away'], ['Alan Turing', 'AT', 'busy'], ['Margaret Hamilton', 'MH', 'online']]; s3.data = people.map(([label, initials, status]) => ({ label, initials, status })); s3.renderItem = (it) => { const row = document.createElement('div'); row.className = 'ui-row ui-row--nowrap'; const av = document.createElement('span'); av.className = 'ui-avatar ui-avatar--sm'; av.dataset.status = it.status; av.textContent = it.initials; const name = document.createElement('span'); name.textContent = it.label; row.append(av, name); return row; }; }
-  const range = document.getElementById('range-demo'); if (range) { const set = () => { range.style.setProperty('--_pct', ((range.value - range.min) / (range.max - range.min)) * 100 + '%'); document.getElementById('range-out').textContent = range.value; }; range.addEventListener('input', set); set(); }
+  const range = document.getElementById('range-demo'); if (range) { const set = () => { document.getElementById('range-out').textContent = range.value; }; range.addEventListener('ui-input', set); set(); }
   const pg = document.getElementById('pg'); pg?.addEventListener('ui-change', (e) => (document.getElementById('pg-out').textContent = `Page ${e.detail.page}`));
   // Effects playground
   const stage = document.getElementById('fx-stage');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-fx-preset]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.fxPreset === name)));
     updateFx(name[0].toUpperCase() + name.slice(1) + ' preset · ready to customize.');
   };
-  fxInputs.forEach((input) => input.addEventListener('input', () => {
+  fxInputs.forEach((input) => input.addEventListener('ui-input', () => {
     document.querySelectorAll('[data-fx-preset]').forEach((button) => button.setAttribute('aria-pressed', 'false'));
     updateFx();
   }));

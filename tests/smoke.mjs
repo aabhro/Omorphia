@@ -13,8 +13,8 @@ const E = w.Omorphia, d = w.document; const tick = (ms = 0) => new Promise((r) =
 let passed = 0; const t = async (name, fn) => { await fn(); passed++; console.log('  ✓', name); };
 const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; d.body.append(c); return c; };
 
-await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config']) assert.ok(E[k], k); });
-await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-command', 'ui-search', 'ui-sidebar', 'ui-sidebar-item']) assert.ok(w.customElements.get(n), n); });
+await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config', 'UIInput', 'UITextarea', 'UICheckbox', 'UIRadio', 'UISwitch', 'UIRange', 'UIOption', 'UISelect', 'UIDatePicker', 'UITimePicker', 'UIDrawer', 'UIAccordion', 'UIAccordionItem', 'UIMenuItem']) assert.ok(E[k], k); });
+await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-command', 'ui-search', 'ui-sidebar', 'ui-sidebar-item', 'ui-input', 'ui-textarea', 'ui-checkbox', 'ui-radio', 'ui-switch', 'ui-range', 'ui-option', 'ui-select', 'ui-date-picker', 'ui-time-picker', 'ui-drawer', 'ui-accordion', 'ui-accordion-item', 'ui-menu-item']) assert.ok(w.customElements.get(n), n); });
 await t('Modernimal neutral theme and opaque overlay defaults', () => {
   const css = readFileSync('dist/omorphia.css', 'utf8');
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
@@ -106,8 +106,8 @@ await t('AI component catalog matches registered elements and every agent entry 
   const inventory = catalog.slice(inventoryStart, inventoryEnd);
   const documented = new Set([...inventory.matchAll(/&lt;(ui-[a-z-]+)&gt;/g)].map((match) => match[1]));
   assert.deepEqual([...documented].sort(), [...registered].sort(), 'catalog lists exactly the elements registered by source');
-  assert.equal(registered.size, 14, 'expected current Omorphia custom-element count');
-  for (const falseTag of ['ui-input', 'ui-select', 'ui-card', 'ui-alert', 'ui-badge']) {
+  assert.equal(registered.size, 28, 'expected current Omorphia custom-element count');
+  for (const falseTag of ['ui-card', 'ui-alert', 'ui-badge', 'ui-avatar', 'ui-progress', 'ui-skeleton', 'ui-collapsible']) {
     assert.ok(catalog.includes('<code>&lt;' + falseTag + '&gt;</code>'), falseTag + ' is explicitly identified as a non-element');
   }
   for (const file of [
@@ -130,6 +130,162 @@ await t('AI component catalog matches registered elements and every agent entry 
   assert.match(quickPrompt, /Do not guess/);
   assert.match(catalog, /Component reuse audit/);
 });
+await t('custom text fields preserve typed input and programmatic values', () => {
+  const c = mount('<ui-input id="field-title" name="title" value="Atlas" label="Project title"></ui-input><ui-textarea id="field-notes" name="notes" value="First draft" label="Notes" maxlength="30"></ui-textarea>');
+  const input = c.querySelector('ui-input');
+  const textarea = c.querySelector('ui-textarea');
+  assert.equal(input.value, 'Atlas');
+  assert.equal(input.input.getAttribute('aria-label'), 'Project title');
+  let typed;
+  input.addEventListener('ui-input', (event) => { typed = event.detail.value; });
+  input.input.value = 'Atlas v2';
+  input.input.dispatchEvent(new w.Event('input', { bubbles: true }));
+  assert.equal(input.value, 'Atlas v2', 'typing must not be reset to the initial value attribute');
+  assert.equal(typed, 'Atlas v2');
+  input.value = 'Updated in code';
+  assert.equal(input.value, 'Updated in code');
+  textarea.textarea.value = 'Notes updated';
+  textarea.textarea.dispatchEvent(new w.Event('input', { bubbles: true }));
+  assert.equal(textarea.value, 'Notes updated', 'textarea typing must not be reset');
+  textarea.value = 'Programmatic note';
+  assert.equal(textarea.value, 'Programmatic note');
+  assert.equal(textarea.count.hidden, false);
+});
+await t('custom checkbox, radio, and switch controls keep accessible and form state', () => {
+  const c = mount('<form><ui-checkbox name="updates" value="deploys" label="Deploy updates" checked></ui-checkbox><ui-radio name="plan" value="starter" label="Starter" checked></ui-radio><ui-radio name="plan" value="team" label="Team"></ui-radio><ui-switch name="auto" value="yes" label="Auto deploy"></ui-switch></form>');
+  const checkbox = c.querySelector('ui-checkbox');
+  const radios = c.querySelectorAll('ui-radio');
+  const toggle = c.querySelector('ui-switch');
+  assert.equal(checkbox.control.getAttribute('role'), 'checkbox');
+  assert.equal(checkbox.formValue.name, 'updates');
+  checkbox.control.click();
+  assert.equal(checkbox.checked, false);
+  assert.equal(checkbox.formValue.name, '');
+  radios[1].toggle();
+  assert.equal(radios[0].checked, false);
+  assert.equal(radios[1].checked, true);
+  assert.equal(radios[1].formValue.name, 'plan');
+  radios[0].control.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+  assert.equal(radios[1].checked, true);
+  toggle.control.click();
+  assert.equal(toggle.checked, true);
+  assert.equal(toggle.control.getAttribute('role'), 'switch');
+});
+await t('custom range supports keyboard input, bounds, and form values', () => {
+  const c = mount('<ui-range name="volume" min="0" max="10" step="2" value="4" label="Volume"></ui-range>');
+  const range = c.firstChild;
+  assert.equal(range.value, 4);
+  assert.equal(range.hiddenValue.name, 'volume');
+  range.track.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+  assert.equal(range.value, 6);
+  range.track.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'End', bubbles: true, cancelable: true }));
+  assert.equal(range.value, 10);
+  range.track.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true }));
+  assert.equal(range.value, 10, 'range value is clamped to its maximum');
+});
+await t('custom select supports single, searchable, and multiple selection', () => {
+  const c = mount('<ui-select id="region" name="region" value="sin" searchable placeholder="Choose region"><ui-option value="fra" description="Europe">Frankfurt</ui-option><ui-option value="iad">Virginia</ui-option><ui-option value="sin">Singapore</ui-option></ui-select><ui-select id="topics" name="topics" multiple value="a,b"><ui-option value="a">Alpha</ui-option><ui-option value="b">Beta</ui-option><ui-option value="c">Gamma</ui-option></ui-select>');
+  const single = c.querySelector('#region'), multi = c.querySelector('#topics');
+  assert.equal(single.value, 'sin');
+  assert.equal(single.selectedOptions[0].label, 'Singapore');
+  assert.equal(single.formFields.querySelector('input').name, 'region');
+  let selected;
+  single.addEventListener('ui-change', (event) => { selected = event.detail.value; });
+  single.choose(single.options[0]);
+  assert.equal(single.value, 'fra');
+  assert.equal(selected, 'fra');
+  multi.choose(multi.options[2]);
+  assert.deepEqual(Array.from(multi.value), ['a', 'b', 'c']);
+  assert.equal(multi.formFields.querySelectorAll('input').length, 3);
+  single.popover.show();
+  assert.equal(single.popover.open, true);
+  single.popover.hide();
+});
+await t('custom date picker handles calendar selection, limits, and hidden form value', () => {
+  const c = mount('<ui-date-picker id="date" name="release" value="2026-11-20" min="2026-11-10" max="2026-11-30"></ui-date-picker>');
+  const picker = c.firstChild;
+  assert.equal(picker.value, '2026-11-20');
+  assert.equal(picker.hiddenValue.name, 'release');
+  assert.equal(picker.days.querySelector('[data-date="2026-11-05"]').disabled, true);
+  assert.equal(picker.days.querySelector('[data-date="2026-12-01"]').disabled, true);
+  let changed;
+  picker.addEventListener('ui-change', (event) => { changed = event.detail.value; });
+  picker.days.querySelector('[data-date="2026-11-21"]').click();
+  assert.equal(picker.value, '2026-11-21');
+  assert.equal(changed, '2026-11-21');
+  assert.equal(picker.hiddenValue.value, '2026-11-21');
+});
+await t('custom time picker supports 12-hour mode and hidden form value', () => {
+  const c = mount('<ui-time-picker id="time" name="time" value="14:30" format="12h" step="5"></ui-time-picker>');
+  const picker = c.firstChild;
+  assert.equal(picker.value, '14:30');
+  assert.equal(picker.valueLabel.textContent, '2:30 PM');
+  assert.equal(picker.hiddenValue.name, 'time');
+  picker.minuteList.querySelector('[data-minute="35"]').click();
+  assert.equal(picker.value, '14:35');
+  picker.period.click();
+  assert.equal(picker.value, '02:35');
+  assert.equal(picker.valueLabel.textContent, '2:35 AM');
+  assert.equal(picker.hiddenValue.value, '02:35');
+});
+await t('custom accordion supports exclusive and multiple panels with keyboard navigation', () => {
+  const c = mount('<ui-accordion><ui-accordion-item heading="One" value="one" open>First panel</ui-accordion-item><ui-accordion-item heading="Two" value="two">Second panel</ui-accordion-item></ui-accordion><ui-accordion multiple><ui-accordion-item heading="Alpha">A</ui-accordion-item><ui-accordion-item heading="Beta">B</ui-accordion-item></ui-accordion>');
+  const exclusive = c.querySelector('ui-accordion');
+  const [one, two] = exclusive.items;
+  assert.equal(one.open, true);
+  two.trigger.click();
+  assert.equal(one.open, false);
+  assert.equal(two.open, true);
+  assert.equal(two.panel.getAttribute('aria-hidden'), 'false');
+  one.trigger.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'End', bubbles: true, cancelable: true }));
+  assert.equal(d.activeElement, two.trigger);
+  const multiple = c.querySelector('ui-accordion[multiple]');
+  multiple.items[0].show();
+  multiple.items[1].show();
+  assert.equal(multiple.items.filter((item) => item.open).length, 2);
+});
+await t('custom drawer opens, traps focus, and closes after its exit motion', async () => {
+  const c = mount('<button id="drawer-origin">Open</button><ui-drawer heading="Settings"><ui-input name="title" label="Title"></ui-input><div slot="footer"><ui-button>Save</ui-button></div></ui-drawer>');
+  const drawer = c.querySelector('ui-drawer');
+  assert.equal(drawer.hidden, true);
+  drawer.show();
+  assert.equal(drawer.open, true);
+  assert.equal(d.body.style.overflow, 'hidden');
+  drawer.close('test');
+  assert.equal(drawer.dataset.state, 'closing');
+  await tick(260);
+  assert.equal(drawer.hidden, true);
+  assert.equal(d.body.style.overflow, '');
+});
+await t('dropdown uses custom menu items and preserves the selected value', () => {
+  const c = mount('<ui-dropdown><ui-button slot="trigger">Actions</ui-button><ui-menu-item value="archive" label="Archive" icon="folder"></ui-menu-item><ui-menu-item value="delete" label="Delete" destructive></ui-menu-item></ui-dropdown>');
+  const dropdown = c.firstChild;
+  assert.equal(dropdown.items.length, 2);
+  let selected;
+  dropdown.addEventListener('ui-select', (event) => { selected = event.detail.value; });
+  dropdown.show();
+  assert.equal(dropdown.open, true);
+  dropdown.items[0].click();
+  assert.equal(selected, 'archive');
+  assert.equal(dropdown.open, false);
+});
+await t('floating morph and overlay surfaces avoid visible borders', () => {
+  const advanced = readFileSync('src/css/advanced.css', 'utf8');
+  const nav = readFileSync('src/css/nav.css', 'utf8');
+  const containers = readFileSync('src/css/containers.css', 'utf8');
+  const feedback = readFileSync('src/css/feedback.css', 'utf8');
+  assert.match(advanced, /\.ui-search-panel\{[^}]*border:0/);
+  assert.match(nav, /\.ui-menu\{[^}]*border:0/);
+  assert.match(containers, /\.ui-modal-panel\{[^}]*border:0/);
+  assert.match(containers, /\.ui-popover-panel\{[^}]*border:0/);
+  assert.match(feedback, /\.ui-tooltip-bubble\{[^}]*border:0/);
+  assert.match(feedback, /\.ui-toast\{[^}]*border:0/);
+  assert.match(containers, /grid-template-rows:0fr/);
+  assert.match(containers, /prefers-reduced-motion:reduce/);
+  assert.match(readFileSync('src/js/core.js', 'utf8'), /function morphSurface/);
+  assert.match(readFileSync('src/js/components/popover.js', 'utf8'), /morphSurface\(this\.trigger/);
+});
+
 await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');
   assert.match(css, /--ui-edge-tl-alpha/);

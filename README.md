@@ -5,7 +5,7 @@
   <p><strong>A framework-free UI component library for the browser.</strong></p>
   <p>Native custom elements. Plain CSS. CDN-first delivery.</p>
   <p>
-    <img src="https://img.shields.io/badge/version-1.1.7-111111?style=flat-square" alt="Version 1.1.7">
+    <img src="https://img.shields.io/badge/version-1.2.0-111111?style=flat-square" alt="Version 1.2.0">
     <img src="https://img.shields.io/badge/framework-free-111111?style=flat-square" alt="Framework free">
     <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
   </p>
@@ -55,7 +55,10 @@ MANDATORY BEFORE YOU CODE:
 5. Read the Stylesheets motion/README.md, motion/SKILL.md, motion/catalog.md, motion/tokens.css, motion/patterns.css, and motion/motion.js. Use motion/demo.html to verify patterns when needed. These references are mandatory, not optional inspiration.
 
 COMPONENT-FIRST RULE (NON-NEGOTIABLE):
-Before writing UI markup, identify each requirement and map it to an exact Omorphia element or class-based primitive. Inspect that component's source in src/js/ and CSS in src/css/, then follow the matching index.html example. Do not guess tag names, attributes, methods, events, or slots. Do not create a home-made Button, Modal, Dropdown, Tabs, Search, Toast, or Sidebar when Omorphia already provides it. Classes such as .ui-input, .ui-select, .ui-card, and .ui-alert belong on native HTML. If no built-in match exists, mark it NO BUILT-IN COMPONENT and use native HTML/classes first. Only add custom UI after proving the exact gap. Before delivery, audit every <ui-...> tag against the catalog and source.
+Before writing UI markup, read AI/COMPONENT-CATALOG.md in full and map every interactive requirement to an exact custom Omorphia element. Inspect its source in src/js/ and styles in src/css/, then follow the matching index.html example. **Do not author raw <button>, <input>, <textarea>, <select>, <option>, or <details> controls in new application UI.** Use ui-button, ui-input, ui-textarea, ui-select/ui-option, ui-checkbox, ui-radio, ui-switch, ui-range, ui-date-picker, ui-time-picker, ui-menu-item, ui-drawer, ui-accordion/ui-accordion-item, and the existing overlay/navigation components. Do not guess tag names, attributes, methods, events, or slots. Do not make home-made Button, Modal, Dropdown, Tabs, Search, Toast, Sidebar, Drawer, Select, or DatePicker replacements. CSS classes such as .ui-card and .ui-alert are static content patterns, not interactive control substitutes. If no built-in match exists, mark it NO BUILT-IN COMPONENT and explain the exact gap before proposing custom UI. Before delivery, audit every custom tag and authored control against the catalog and source.
+
+OVERLAYS AND MOTION:
+Do not add borders or outlines to menus, dropdowns, popovers, command/search panels, tooltips, drawers, or date/time panels. Keep them opaque #0a0a0a. Reuse Omorphia's trigger-to-panel morph and accordion height transition. Respect prefers-reduced-motion.
 
 DESIGN CHOICE:
 For a new app, meaningful UI feature, or substantial redesign, first ask which direction to use unless I have already specified it: Modernimal (recommended), another named style from my Stylesheets repository, the existing project style, or a custom direction based on my references. Summarize the proposed design and ask what I want changed. Wait for approval before substantial implementation. For a focused bug fix or documentation-only task, preserve the existing style and do not ask unnecessary questions.
@@ -109,10 +112,10 @@ Use the classic bundle when you want the global <code>Omorphia</code> API.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.min.css"
 >
 
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-command-palette></ui-command-palette>
@@ -138,11 +141,11 @@ Load the stylesheet separately, then import the module in the browser.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.min.css"
 >
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -162,10 +165,10 @@ Load the stylesheet separately, then import the module in the browser.
 Load <code>core.min.css</code> first. It contains the design tokens, base styles, and edge effect. Add the modules required by your interface.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/forms.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/css/forms.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/css/feedback.min.css">
 ~~~
 
 Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, and <code>advanced</code>.
@@ -177,7 +180,7 @@ The complete stylesheet is <a href="dist/omorphia.min.css"><code>dist/omorphia.m
 ### Versioning and network requirements
 
 - **Development:** use the <code>@main</code> URLs to follow the current default branch.
-- **Production:** pin an exact release tag, such as <code>@v1.1.7</code>, so deployed projects use a known revision.
+- **Production:** pin an exact release tag, such as <code>@v1.2.0</code>, so deployed projects use a known revision.
 - **Online requirement:** the browser must be able to reach <code>cdn.jsdelivr.net</code>. CDN imports do not work offline unless the project deliberately hosts the files locally.
 - **Content Security Policy:** allow <code>https://cdn.jsdelivr.net</code> in the relevant <code>style-src</code> and <code>script-src</code> directives.
 - **ES modules:** load the module in the browser runtime. Keep browser-only imports out of server-side rendering entry points.
@@ -190,11 +193,11 @@ The stylesheet is split into focused modules. The JavaScript bundle registers th
 |:--|:--|
 | <code>core</code> | Design tokens, base styles, and directional illumination |
 | <code>button</code> | Buttons and button groups |
-| <code>forms</code> | Inputs, textareas, selects, checkboxes, radios, switches, and ranges |
+| <code>forms</code> | Custom input, textarea, select, checkbox, radio, switch, and range elements |
 | <code>nav</code> | Breadcrumbs, navigation links, tabs, and pagination |
 | <code>feedback</code> | Tooltips, alerts, badges, status, progress, and toasts |
-| <code>containers</code> | Cards, avatars, dialogs, popovers, dropdowns, and collapsibles |
-| <code>advanced</code> | Command palette, search panels, and side navigation |
+| <code>containers</code> | Cards, avatars, dialogs, popovers, dropdowns, drawers, and animated accordions |
+| <code>advanced</code> | Command palette, search, date/time pickers, and side navigation |
 
 ### Buttons
 
@@ -214,20 +217,24 @@ Variants: <code>primary</code>, <code>secondary</code>, <code>subtle</code>, and
 ### Forms
 
 <details>
-  <summary><strong>Field example</strong></summary>
+  <summary><strong>Custom field and choice examples</strong></summary>
 
 ~~~html
 <div class="ui-field">
-  <label class="ui-label" for="project-name">Project name</label>
-  <div class="ui-input">
-    <ui-icon name="folder"></ui-icon>
-    <input id="project-name" placeholder="Untitled project">
-  </div>
+  <span class="ui-label">Project name</span>
+  <ui-input name="project-name" label="Project name" icon="folder" placeholder="Untitled project"></ui-input>
   <p class="ui-hint">Choose a name for this workspace.</p>
 </div>
+
+<ui-textarea name="notes" label="Notes" rows="4" placeholder="Write a note…"></ui-textarea>
+<ui-checkbox name="updates" value="deploys" label="Email me about deploys" checked></ui-checkbox>
+<ui-radio name="plan" value="starter" label="Starter" checked></ui-radio>
+<ui-radio name="plan" value="team" label="Team"></ui-radio>
+<ui-switch name="auto-deploy" value="yes" label="Auto-deploy" checked></ui-switch>
+<ui-range name="volume" label="Volume" min="0" max="100" step="5" value="40"></ui-range>
 ~~~
 
-Use <code>.ui-textarea</code> for textareas. Selects, checkboxes, radios, switches, and range inputs are also included.
+Use `value`, `disabled`, `required`, and the documented attributes on the custom element. Listen for `ui-input` while changing and `ui-change` when committed. Do not author raw native form controls in new interface markup.
 
 </details>
 
@@ -245,13 +252,13 @@ Use <code>.ui-textarea</code> for textareas. Selects, checkboxes, radios, switch
 <ui-pagination total="24" page="1"></ui-pagination>
 
 <ui-dropdown>
-  <button slot="trigger">Actions</button>
-  <button data-value="rename">Rename</button>
-  <button data-value="duplicate">Duplicate</button>
+  <ui-button slot="trigger" icon-end="chevron-down">Actions</ui-button>
+  <ui-menu-item value="rename" label="Rename" icon="pencil"></ui-menu-item>
+  <ui-menu-item value="duplicate" label="Duplicate" icon="copy"></ui-menu-item>
 </ui-dropdown>
 ~~~
 
-Tabs support arrow keys, Home, and End. Dropdowns support arrow keys, Home, End, and type-ahead.
+Dropdowns support arrow keys, Home, End, type-ahead, and custom menu rows. Use `ui-menu-item` rather than raw native menu buttons.
 
 </details>
 
@@ -278,6 +285,44 @@ const confirmed = await Omorphia.confirm({
 Also available: <code>&lt;ui-tooltip&gt;</code>, <code>&lt;ui-modal&gt;</code>, <code>&lt;ui-popover&gt;</code>, and <code>&lt;ui-dropdown&gt;</code>.
 
 </details>
+
+### Date and time pickers
+
+<details>
+<summary>Example</summary>
+
+~~~html
+<ui-date-picker name="release-date" label="Release date" value="2026-11-20"></ui-date-picker>
+<ui-time-picker name="maintenance-time" label="Maintenance time" value="14:30" format="12h" step="5"></ui-time-picker>
+~~~
+
+</details>
+
+Both pickers render custom interactive panels and store predictable values. Dates use `YYYY-MM-DD`. Times use 24-hour `HH:MM` values even when displayed in 12-hour format.
+
+### Drawer and accordion
+
+<details>
+<summary>Example</summary>
+
+~~~html
+<ui-drawer id="settings" heading="Settings" placement="right" size="md">
+  <ui-input name="project" label="Project name"></ui-input>
+  <div slot="footer">
+    <ui-button variant="subtle" onclick="document.getElementById('settings').close()">Cancel</ui-button>
+    <ui-button variant="primary">Save</ui-button>
+  </div>
+</ui-drawer>
+
+<ui-accordion>
+  <ui-accordion-item heading="Overview" value="overview" open>Overview details.</ui-accordion-item>
+  <ui-accordion-item heading="Advanced" value="advanced">Advanced details.</ui-accordion-item>
+</ui-accordion>
+~~~
+
+</details>
+
+The drawer handles focus, Escape, backdrop dismissal, scroll locking, and focus restoration. Accordions use smooth height morphing and support single or multiple open panels.
 
 ### Command palette
 

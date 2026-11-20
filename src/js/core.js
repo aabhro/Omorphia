@@ -62,6 +62,27 @@ export function hideFloat(el) {
   el.removeAttribute('data-open');
   if (hasPopover()) { try { if (el.matches(':popover-open')) el.hidePopover(); } catch (_) {} }
 }
+/* Morph a floating surface from the control that opened it. Uses geometry, not a generic fade. */
+export function morphSurface(anchor, surface, opening = true) {
+  if (!anchor || !surface || typeof surface.animate !== 'function') return null;
+  if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return null;
+  const a = anchor.getBoundingClientRect();
+  const b = surface.getBoundingClientRect();
+  if (!a.width || !a.height || !b.width || !b.height) return null;
+  const originX = ((a.left + a.width / 2 - b.left) / b.width) * 100;
+  const originY = ((a.top + a.height / 2 - b.top) / b.height) * 100;
+  const scaleX = Math.max(0.12, Math.min(1, a.width / b.width));
+  const scaleY = Math.max(0.12, Math.min(1, a.height / b.height));
+  surface.style.transformOrigin = originX + '% ' + originY + '%';
+  const from = { opacity: 0, transform: 'scale(' + scaleX + ',' + scaleY + ')' };
+  const to = { opacity: 1, transform: 'scale(1,1)' };
+  return surface.animate(opening ? [from, to] : [to, from], {
+    duration: opening ? 190 : 145,
+    easing: opening ? 'cubic-bezier(.16,1,.3,1)' : 'cubic-bezier(.4,0,1,1)',
+    fill: 'both'
+  });
+}
+
 export function inheritTheme(from, to) {
   const t = from.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
   if (t) to.setAttribute('data-ui-theme', t); else to.removeAttribute('data-ui-theme');
