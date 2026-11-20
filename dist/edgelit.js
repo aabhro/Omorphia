@@ -1,5 +1,5 @@
-/*! Edgelit v1.1.1 | MIT | https://github.com/aabhro/edgelit */
-var Edgelit = (() => {
+/*! Omorfia v1.1.2 | MIT | https://github.com/aabhro/edgelit */
+var Omorfia = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -61,6 +61,7 @@ var Edgelit = (() => {
     return ev;
   };
   var bool = (el, name) => el.hasAttribute(name) && el.getAttribute(name) !== "false";
+  var isMac = () => /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   function h(tag, attrs = {}, ...kids) {
     const el = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
@@ -869,22 +870,24 @@ var Edgelit = (() => {
         this.append(this.dialog);
       }
       this._hk = (e) => {
-        if (this.matches_hotkey(e)) {
-          e.preventDefault();
-          this.toggle();
-        }
+        if (e.repeat || e.isComposing || !this.matches_hotkey(e)) return;
+        e.preventDefault();
+        this.toggle();
       };
-      document.addEventListener("keydown", this._hk);
+      document.addEventListener("keydown", this._hk, true);
     }
     disconnectedCallback() {
-      document.removeEventListener("keydown", this._hk);
+      document.removeEventListener("keydown", this._hk, true);
       if (this.dialog?.open) this.dialog.close();
     }
     matches_hotkey(e) {
-      const parts = (this.getAttribute("hotkey") || "mod+k").toLowerCase().split("+");
+      const parts = (this.getAttribute("hotkey") || "mod+k").toLowerCase().split("+").map((part) => part.trim()).filter(Boolean);
       const key = parts.pop();
-      const mod = parts.includes("mod") ? e.metaKey || e.ctrlKey : e.ctrlKey === parts.includes("ctrl") && e.metaKey === parts.includes("meta");
-      return mod && e.altKey === parts.includes("alt") && e.shiftKey === parts.includes("shift") && e.key.toLowerCase() === key;
+      const mod = parts.includes("mod");
+      const wantsCtrl = parts.includes("ctrl") || mod && !isMac();
+      const wantsMeta = parts.includes("meta") || mod && isMac();
+      const keyMatches = e.key?.toLowerCase() === key || key?.length === 1 && e.code?.toLowerCase() === "key" + key;
+      return !!key && keyMatches && e.ctrlKey === wantsCtrl && e.metaKey === wantsMeta && e.altKey === parts.includes("alt") && e.shiftKey === parts.includes("shift");
     }
     register(cmds) {
       const list = [].concat(cmds);
@@ -951,7 +954,7 @@ var Edgelit = (() => {
           { class: "ui-empty" },
           icon(none ? "command" : "search"),
           h("p", { class: "ui-empty-title" }, none ? "No commands yet" : `No results for \u201C${q.trim()}\u201D`),
-          h("p", { class: "ui-empty-desc" }, none ? "Add commands with Edgelit.commands.register() or <ui-command> elements." : "Check the spelling or try a broader term.")
+          h("p", { class: "ui-empty-desc" }, none ? "Add commands with Omorfia.commands.register() or <ui-command> elements." : "Check the spelling or try a broader term.")
         ));
         this.input.removeAttribute("aria-activedescendant");
         return;
@@ -1410,7 +1413,7 @@ var Edgelit = (() => {
   }
 
   // src/js/index.js
-  var version = true ? "1.1.1" : "dev";
+  var version = true ? "1.1.2" : "dev";
   var theme = {
     get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
     set(mode, el = document.documentElement) {
@@ -1423,3 +1426,5 @@ var Edgelit = (() => {
   };
   return __toCommonJS(index_exports);
 })();
+
+;globalThis.Edgelit = globalThis.Edgelit || globalThis.Omorfia;
