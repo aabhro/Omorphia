@@ -23,6 +23,17 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
   assert.match(css, /background:\s*#0a0a0a/);
   assert.doesNotMatch(css, /#6ee7c8|#0f8f74/);
 });
+await t('decorative perimeter outlines are omitted', () => {
+  const edge = readFileSync('src/css/edge.css', 'utf8');
+  for (const selector of ['.ui-alert', '.ui-badge', '.ui-avatar', '.ui-sidebar-panel', '.ui-tabs-list', '.ui-page-btn', '.ui-collapsible', '.ui-progress']) {
+    assert.equal(edge.includes(selector), false, selector);
+  }
+  const base = readFileSync('src/css/base.css', 'utf8');
+  const buttons = readFileSync('src/css/button.css', 'utf8');
+  assert.match(base, /\.ui-summary:focus-visible\s*\{[^}]*outline:\s*none/);
+  assert.match(buttons, /\.ui-btn:focus-visible\{outline:none/);
+  assert.doesNotMatch(base, /\.ui-summary\):focus-visible/);
+});
 await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');
   assert.match(css, /--ui-edge-tl-alpha/);

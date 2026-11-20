@@ -13,8 +13,8 @@ Dependency-free UI components and a stylesheet for any website, served from a CD
 ## Quick start
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css">
-<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.css">
+<script src="https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
@@ -25,25 +25,25 @@ Custom elements upgrade automatically, including ones inserted later with `inner
 
 ### Pin a version
 
-Always use an exact version in production. It maps to a Git tag (`v1.1.0`), and jsDelivr caches it permanently.
+Always use an exact version in production. It maps to a Git tag (`v1.1.1`), and jsDelivr caches it permanently.
 
 | Style | URL |
 |---|---|
-| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/edgelit.min.css` |
+| Exact (recommended) | `https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/edgelit.min.css` |
 | Latest 1.x patch | `…/edgelit@v1.1/dist/…` or `…@v1/dist/…` (convenient, not immutable) |
 | Branch (development only) | `…/edgelit@main/dist/…` (cached up to 12 h) |
 
 Subresource Integrity hashes for each release are in [`dist/sri.json`](dist/sri.json):
 
 ```html
-<script src="…/edgelit@v1.1.0/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
+<script src="…/edgelit@v1.1.1/dist/edgelit.min.js" integrity="sha384-…" crossorigin="anonymous"></script>
 ```
 
 Other GitHub-backed CDNs serve the same files:
 
 ```
-https://raw.githack.com/aabhro/edgelit/v1.1.0/dist/edgelit.min.js
-https://cdn.statically.io/gh/aabhro/edgelit/v1.1.0/dist/edgelit.min.js
+https://raw.githack.com/aabhro/edgelit/v1.1.1/dist/edgelit.min.js
+https://cdn.statically.io/gh/aabhro/edgelit/v1.1.1/dist/edgelit.min.js
 https://aabhro.github.io/edgelit/dist/edgelit.min.js      (GitHub Pages)
 ```
 
@@ -66,8 +66,8 @@ If you publish to npm, `https://cdn.jsdelivr.net/npm/edgelit@1.1.0/dist/edgelit.
 <link rel="stylesheet" href="…/dist/css/button.min.css">
 <link rel="stylesheet" href="…/dist/css/feedback.min.css">
 <script type="module">
-  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/esm/components/toast.js';
-  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.0/dist/esm/components/button.js'; // registers <ui-button>
+  import { toast } from 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/esm/components/toast.js';
+  import 'https://cdn.jsdelivr.net/gh/aabhro/edgelit@v1.1.1/dist/esm/components/button.js'; // registers <ui-button>
   toast({ title: 'Loaded only what I need', variant: 'success' });
 </script>
 ```
