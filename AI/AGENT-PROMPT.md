@@ -38,7 +38,7 @@ Before starting, read and inspect all applicable sources:
 - Inspect the [motion directory](https://github.com/aabhro/Stylesheets/tree/main/motion). Read `motion/README.md`, `motion/SKILL.md`, and `motion/catalog.md`, then inspect `motion/tokens.css`, `motion/patterns.css`, and `motion/motion.js`. Use `motion/demo.html` to confirm behavior when relevant.
 - Read any additional stylesheet, component, or implementation reference that belongs to the style the user selects.
 
-**Public-repository access:** `aabhro/Stylesheets` is public and its references are available without authentication. Read the linked GitHub files directly, or clone the full repository for local inspection with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. Do not ask the user for private-repository access or a local copy. If a temporary network/tooling issue blocks a required file, retry using its public `raw.githubusercontent.com` URL or a fresh clone. Only report an access limitation after those public routes fail, and never claim to have inspected content you did not read.
+**Public-repository access:** `aabhro/Stylesheets` is public and its references are available without authentication. Read the linked GitHub files directly, or clone the full repository for local inspection with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. Do not ask the user for repository permissions or a local copy. If a temporary network/tooling issue blocks a required file, retry using its public `raw.githubusercontent.com` URL or a fresh clone. Only report an access limitation after those public routes fail, and never claim to have inspected content you did not read.
 
 ## 3. Choose the design style with the user
 
