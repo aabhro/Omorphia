@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.4 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.1.5 | MIT | https://github.com/aabhro/Omorphia */
 /* Omorphia · Modernimal tokens. Override --ui-* on :root or any component scope. */
 :root,[data-ui-theme="dark"]{
 color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;

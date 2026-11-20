@@ -1,4 +1,4 @@
-/*! Omorphia v1.1.4 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.1.5 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -856,8 +856,10 @@ var UICommandPalette = class extends HTMLElement {
       this.view = [];
       const lid = uid("ui-cmd-list");
       this.input = h("input", {
+        id: uid("ui-command-search"),
+        name: "command-search",
         class: "ui-command-input",
-        type: "text",
+        type: "search",
         role: "combobox",
         "aria-expanded": "true",
         "aria-controls": lid,
@@ -929,7 +931,7 @@ var UICommandPalette = class extends HTMLElement {
   }
   matches_hotkey(event) {
     const raw = this.getAttribute("hotkey");
-    const parsed = parseHotkey(raw == null ? "mod+k" : raw);
+    const parsed = parseHotkey(raw == null ? "mod+shift+k" : raw);
     if (!parsed || !event) return false;
     const { key, modifiers } = parsed;
     const wantsMod = modifiers.has("mod");
@@ -1119,6 +1121,7 @@ var UICommandPalette = class extends HTMLElement {
 define("ui-command-palette", UICommandPalette);
 define("ui-command", class extends HTMLElement {
 });
+var shortcutLabel = () => isMac() ? "\u2318 + Shift + K" : "Ctrl + Shift + K";
 
 // src/js/components/search.js
 var norm = (x) => typeof x === "string" ? { label: x, value: x } : { value: x.label, ...x };
@@ -1131,7 +1134,7 @@ var UISearch = class extends HTMLElement {
   connectedCallback() {
     if (!this.input) {
       const lid = uid("ui-search-list");
-      this.input = h("input", { type: "search", role: "combobox", "aria-autocomplete": "list", "aria-expanded": "false", "aria-controls": lid, autocomplete: "off", spellcheck: "false" });
+      this.input = h("input", { id: uid("ui-search-input"), name: this.getAttribute("name") || uid("ui-search"), type: "search", role: "combobox", "aria-autocomplete": "list", "aria-expanded": "false", "aria-controls": lid, autocomplete: "off", spellcheck: "false" });
       this.spin = h("span", { class: "ui-spinner", hidden: true, "aria-hidden": "true" });
       this.clearBtn = h("button", { class: "ui-search-clear", type: "button", hidden: true, "aria-label": "Clear search", onclick: () => {
         this.clear();
@@ -1170,7 +1173,7 @@ var UISearch = class extends HTMLElement {
   sync() {
     this.input.placeholder = this.getAttribute("placeholder") || "Search\u2026";
     this.input.setAttribute("aria-label", this.getAttribute("label") || this.getAttribute("placeholder") || "Search");
-    if (this.hasAttribute("name")) this.input.name = this.getAttribute("name");
+    this.input.name = this.getAttribute("name") || this.input.name || "ui-search";
     if (this.hasAttribute("value") && this.input.value !== this.getAttribute("value")) this.input.value = this.getAttribute("value");
     this.clearBtn.hidden = !this.input.value;
     this.spin.hidden = !bool(this, "loading");
@@ -1512,7 +1515,7 @@ if (typeof document !== "undefined" && !window.__omorphiaToggle) {
 }
 
 // src/js/index.js
-var version = true ? "1.1.4" : "dev";
+var version = true ? "1.1.5" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {
@@ -1542,6 +1545,7 @@ export {
   icon,
   config as iconConfig,
   icons,
+  shortcutLabel,
   theme,
   toast,
   version
