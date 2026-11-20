@@ -11,12 +11,33 @@ These instructions apply to coding agents, autonomous agents, pair-programming a
 ## Mandatory reading
 
 1. Read this file and the complete `AI/AGENT-PROMPT.md` before planning or editing.
-2. For UI, component, styling, or showcase work, read the full [Modernimal Stylesheet](https://github.com/aabhro/Stylesheets/blob/main/Styles/Modernimal%20Stylesheet.md). Do not rely on the README excerpt or the reusable prompt alone.
-3. Inspect the canonical [Modernimal component reference](https://github.com/aabhro/Stylesheets/blob/main/Components/Modernimal.html).
-4. Inspect the complete [motion reference](https://github.com/aabhro/Stylesheets/tree/main/motion): read `README.md`, `SKILL.md`, and `catalog.md`; inspect `tokens.css`, `patterns.css`, and `motion.js`; use `demo.html` to verify behavior when relevant.
-5. Inspect the actual Omorphia files involved in the task, their imports, tests, build scripts, and existing behavior before changing them.
+2. For every UI, component, styling, or showcase task, read the complete [verified Omorphia component catalog](AI/COMPONENT-CATALOG.md) before writing markup. Use it to identify the exact existing element or CSS primitive.
+3. For UI, component, styling, or showcase work, read the full [Modernimal Stylesheet](https://github.com/aabhro/Stylesheets/blob/main/Styles/Modernimal%20Stylesheet.md). Do not rely on the README excerpt or the reusable prompt alone.
+4. Inspect the canonical [Modernimal component reference](https://github.com/aabhro/Stylesheets/blob/main/Components/Modernimal.html).
+5. Inspect the complete [motion reference](https://github.com/aabhro/Stylesheets/tree/main/motion): read `README.md`, `SKILL.md`, and `catalog.md`; inspect `tokens.css`, `patterns.css`, and `motion.js`; use `demo.html` to verify behavior when relevant.
+6. Inspect the actual Omorphia files involved in the task, their imports, tests, build scripts, and existing behavior before changing them.
 
 **Public reference access:** `aabhro/Stylesheets` is public. Read the linked files directly from GitHub or clone the repository with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets` for complete local inspection. No authentication or prior checkout is needed. If a temporary network or tooling issue blocks a file, retry through the public raw file URL or clone before reporting the exact limitation. Do not silently skip mandatory references or claim to have read files you did not inspect.
+
+
+## Mandatory component-first gate
+
+> [!CAUTION]
+> **DO NOT WRITE OR GENERATE A REPLACEMENT COMPONENT BEFORE CHECKING THE OMORPHIA INVENTORY.**
+>
+> Omorphia already provides buttons, dialogs, dropdowns, popovers, tabs, pagination, command search, autocomplete search, tooltips, icons, and responsive sidebars. Many other controls are native HTML with Omorphia CSS classes. Do not guess which is which.
+
+Before implementing any interface:
+1. Read [AI/COMPONENT-CATALOG.md](AI/COMPONENT-CATALOG.md) in full.
+2. Read the exact relevant implementation under `src/js/` and styles under `src/css/`. Confirm names, attributes, values, methods, events, properties, and slots from source.
+3. Inspect the matching working example in `index.html`.
+4. Write a compact component map: user need → exact Omorphia element or CSS primitive → source file. Mark unsupported needs as `NO BUILT-IN COMPONENT`.
+5. Reuse or compose the existing API. Do not replace it with app-local `Button`, `Modal`, `Dropdown`, `Tabs`, `Toast`, `Sidebar`, or similar wrappers.
+6. If a fit is missing, use native semantic HTML and existing primitives first. Only propose a custom component after documenting the precise gap and why composition does not work.
+
+**Never invent a `ui-*` tag or guess an API.** A CSS class such as `.ui-input`, `.ui-select`, or `.ui-card` does not mean a corresponding custom element exists. The Modernimal component showcase is a separate visual reference, not proof of an Omorphia API.
+
+Before delivery, search all changed markup for `<ui-` tags and verify every tag and API against the catalog and source. Include a short Component reuse audit in the completion report. For a new public component inside Omorphia, update source, registration/exports, tests, showcase, README, this catalog, and generated distribution files.
 
 ## Design-style choice
 
