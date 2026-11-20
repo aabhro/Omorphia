@@ -17,6 +17,7 @@ export class UISelect extends HTMLElement {
     const selected = this.options.filter((option) => option.hasAttribute('selected')).map((option) => option.value);
     this._value = this.hasAttribute('value') ? (bool(this, 'multiple') ? this.getAttribute('value').split(',').filter(Boolean) : this.getAttribute('value')) : (bool(this, 'multiple') ? selected : (selected[0] || ''));
     const trigger = h('button', { class: 'ui-select-trigger', type: 'button', slot: 'trigger', 'aria-label': this.getAttribute('label') || this.getAttribute('placeholder') || 'Choose an option' });
+    this.trigger = trigger;
     this.valueLabel = h('span', { class: 'ui-select-value' });
     trigger.append(this.valueLabel, h('ui-icon', { class: 'ui-select-chevron', name: 'chevron-down' }));
     this.popover = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, trigger);
