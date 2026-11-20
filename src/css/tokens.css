@@ -1,138 +1,28 @@
-/* Edgelit — design tokens. Override any --ui-* variable on :root or any container. */
-:root,
-[data-ui-theme="dark"] {
-  color-scheme: dark;
-  --ui-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --ui-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* code blocks only */
-
-  /* Surfaces */
-  --ui-bg: #0c0d11;
-  --ui-bg-inset: #08090c;
-  --ui-surface: #14161b;
-  --ui-surface-2: #1b1e25;
-  --ui-surface-3: #242832;
-  --ui-overlay: #171a20;
-
-  /* Text */
-  --ui-text: #eceef3;
-  --ui-text-muted: #a1a6b5;
-  --ui-text-faint: #7a8090;
-
-  /* Accent + status */
-  --ui-accent: #6ee7c8;
-  --ui-accent-hover: #8af0d6;
-  --ui-accent-contrast: #05231c;
-  --ui-accent-soft: rgb(110 231 200 / 0.14);
-  --ui-danger: #f4727d;
-  --ui-danger-contrast: #2a0409;
-  --ui-danger-soft: rgb(244 114 125 / 0.15);
-  --ui-success: #5fd98b;
-  --ui-success-soft: rgb(95 217 139 / 0.14);
-  --ui-warning: #f2b84b;
-  --ui-warning-soft: rgb(242 184 75 / 0.15);
-  --ui-info: #6cb6ff;
-  --ui-info-soft: rgb(108 182 255 / 0.15);
-  --ui-focus: #6ee7c8;
-  --ui-hover: rgb(255 255 255 / 0.06);
-  --ui-active: rgb(255 255 255 / 0.1);
-  --ui-border: rgb(255 255 255 / 0.09); /* hairline separators (dividers, table rules) — not component outlines */
-
-  /* Border illumination */
-  --ui-edge-color: #ffffff;
-  --ui-edge-tl-alpha: 0.5;   /* primary light, top-left */
-  --ui-edge-br-alpha: 0.14;  /* secondary light, bottom-right — keep dimmer than tl */
-  --ui-edge-tl-reach: 52%;   /* how far the top-left light travels (0–100%) */
-  --ui-edge-br-reach: 42%;
-  --ui-edge-base-alpha: 0.05; /* faint resting edge so shapes stay legible; set 0 to remove */
-  --ui-edge-width: 1px;
-  --ui-edge-intensity: 1;    /* multiplier for both lights */
-  --ui-edge-hover-boost: 1.5;
-
-  /* Shape, depth, motion */
-  --ui-radius-sm: 6px;
-  --ui-radius: 10px;
-  --ui-radius-lg: 14px;
-  --ui-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
-  --ui-shadow-md: 0 10px 28px -10px rgb(0 0 0 / 0.6);
-  --ui-shadow-lg: 0 28px 64px -16px rgb(0 0 0 / 0.75);
-  --ui-duration-fast: 110ms;
-  --ui-duration: 180ms;
-  --ui-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-
-  /* Type scale (never below 12px) */
-  --ui-text-xs: 0.75rem;
-  --ui-text-sm: 0.8125rem;
-  --ui-text-md: 0.875rem;
-  --ui-text-lg: 1rem;
-  --ui-text-xl: 1.25rem;
-  --ui-text-2xl: 1.625rem;
-  --ui-text-3xl: 2.25rem;
-  --ui-leading: 1.5;
-
-  /* Spacing */
-  --ui-space-1: 4px; --ui-space-2: 8px; --ui-space-3: 12px; --ui-space-4: 16px;
-  --ui-space-5: 24px; --ui-space-6: 32px; --ui-space-7: 48px; --ui-space-8: 64px;
-
-  /* Controls */
-  --ui-h-sm: 28px; --ui-h-md: 34px; --ui-h-lg: 42px;
-  --ui-icon-sm: 14px; --ui-icon: 16px; --ui-icon-lg: 20px;
-  --ui-icon-stroke: 1.75;
-
-  /* Layers */
-  --ui-sidebar-width: 256px;
-  --ui-sidebar-collapsed-width: 60px;
-}
-
-[data-ui-theme="light"] {
-  color-scheme: light;
-  --ui-bg: #f6f7f9;
-  --ui-bg-inset: #eef0f3;
-  --ui-surface: #ffffff;
-  --ui-surface-2: #f1f3f6;
-  --ui-surface-3: #e6e9ee;
-  --ui-overlay: #ffffff;
-  --ui-text: #14161c;
-  --ui-text-muted: #4d5363;
-  --ui-text-faint: #6b7183;
-  --ui-accent: #0f8f74;
-  --ui-accent-hover: #0b7a63;
-  --ui-accent-contrast: #ffffff;
-  --ui-accent-soft: rgb(15 143 116 / 0.12);
-  --ui-danger: #d3303f;
-  --ui-danger-contrast: #ffffff;
-  --ui-danger-soft: rgb(211 48 63 / 0.1);
-  --ui-success: #17803e;
-  --ui-success-soft: rgb(23 128 62 / 0.1);
-  --ui-warning: #a56a00;
-  --ui-warning-soft: rgb(165 106 0 / 0.12);
-  --ui-info: #1d65c1;
-  --ui-info-soft: rgb(29 101 193 / 0.1);
-  --ui-focus: #0f8f74;
-  --ui-hover: rgb(20 22 28 / 0.05);
-  --ui-active: rgb(20 22 28 / 0.09);
-  --ui-border: rgb(20 22 28 / 0.1);
-  --ui-edge-color: #11131a;
-  --ui-edge-tl-alpha: 0.42;
-  --ui-edge-br-alpha: 0.13;
-  --ui-edge-base-alpha: 0.07;
-  --ui-shadow-sm: 0 1px 2px rgb(20 24 40 / 0.1);
-  --ui-shadow-md: 0 10px 28px -12px rgb(20 24 40 / 0.22);
-  --ui-shadow-lg: 0 28px 64px -18px rgb(20 24 40 / 0.3);
-}
-
-/* data-ui-theme="auto" follows the operating system */
-@media (prefers-color-scheme: light) {
-  [data-ui-theme="auto"] {
-    color-scheme: light;
-    --ui-bg: #f6f7f9; --ui-bg-inset: #eef0f3; --ui-surface: #ffffff; --ui-surface-2: #f1f3f6; --ui-surface-3: #e6e9ee; --ui-overlay: #ffffff;
-    --ui-text: #14161c; --ui-text-muted: #4d5363; --ui-text-faint: #6b7183;
-    --ui-accent: #0f8f74; --ui-accent-hover: #0b7a63; --ui-accent-contrast: #ffffff; --ui-accent-soft: rgb(15 143 116 / 0.12);
-    --ui-danger: #d3303f; --ui-danger-contrast: #ffffff; --ui-danger-soft: rgb(211 48 63 / 0.1);
-    --ui-success: #17803e; --ui-success-soft: rgb(23 128 62 / 0.1);
-    --ui-warning: #a56a00; --ui-warning-soft: rgb(165 106 0 / 0.12);
-    --ui-info: #1d65c1; --ui-info-soft: rgb(29 101 193 / 0.1);
-    --ui-focus: #0f8f74; --ui-hover: rgb(20 22 28 / 0.05); --ui-active: rgb(20 22 28 / 0.09); --ui-border: rgb(20 22 28 / 0.1);
-    --ui-edge-color: #11131a; --ui-edge-tl-alpha: 0.42; --ui-edge-br-alpha: 0.13; --ui-edge-base-alpha: 0.07;
-    --ui-shadow-sm: 0 1px 2px rgb(20 24 40 / 0.1); --ui-shadow-md: 0 10px 28px -12px rgb(20 24 40 / 0.22); --ui-shadow-lg: 0 28px 64px -18px rgb(20 24 40 / 0.3);
-  }
-}
+/* Edgelit — Modernimal tokens. Override --ui-* on :root or any component scope. */
+:root,[data-ui-theme="dark"]{
+color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+--ui-bg:#0a0a0a;--ui-bg-inset:#171717;--ui-surface:#0a0a0a;--ui-surface-2:#171717;--ui-surface-3:#262626;--ui-overlay:#0a0a0a;
+--ui-text:#f5f5f5;--ui-text-muted:#d4d4d4;--ui-text-faint:#a3a3a3;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+--ui-accent:#f5f5f5;--ui-accent-hover:#d4d4d4;--ui-accent-contrast:#0a0a0a;--ui-accent-soft:rgb(245 245 245 / .08);--ui-focus:rgb(245 245 245 / .62);
+--ui-danger:#ef8888;--ui-danger-contrast:#0a0a0a;--ui-danger-soft:rgb(239 136 136 / .08);--ui-success:#9bc9a6;--ui-success-soft:rgb(155 201 166 / .08);--ui-warning:#d7b477;--ui-warning-soft:rgb(215 180 119 / .08);--ui-info:#d4d4d4;--ui-info-soft:rgb(212 212 212 / .07);
+--ui-hover:rgb(245 245 245 / .06);--ui-active:rgb(245 245 245 / .09);--ui-border:rgb(245 245 245 / .10);--ui-control-border:rgb(245 245 245 / .18);--ui-overlay-border:rgb(245 245 245 / .14);
+--ui-edge-color:#f5f5f5;--ui-edge-tl-alpha:.5;--ui-edge-br-alpha:.14;--ui-edge-tl-reach:52%;--ui-edge-br-reach:42%;--ui-edge-base-alpha:.05;--ui-edge-width:1px;--ui-edge-intensity:1;--ui-edge-hover-boost:1.45;
+--ui-radius-sm:8px;--ui-radius:999px;--ui-radius-lg:12px;--ui-shadow-sm:0 1px 2px rgb(0 0 0 / .22);--ui-shadow-md:0 16px 44px rgb(0 0 0 / .42);--ui-shadow-lg:0 24px 64px rgb(0 0 0 / .52);
+--ui-duration-fast:120ms;--ui-duration:180ms;--ui-duration-enter:220ms;--ui-duration-exit:150ms;--ui-ease:cubic-bezier(.2,0,0,1);--ui-ease-enter:cubic-bezier(.16,1,.3,1);--ui-ease-exit:cubic-bezier(.4,0,1,1);
+--ui-text-xs:.75rem;--ui-text-sm:.8125rem;--ui-text-md:.875rem;--ui-text-lg:1rem;--ui-text-xl:1.25rem;--ui-text-2xl:1.625rem;--ui-text-3xl:2.25rem;--ui-leading:1.5;
+--ui-space-1:4px;--ui-space-2:8px;--ui-space-3:12px;--ui-space-4:16px;--ui-space-5:24px;--ui-space-6:32px;--ui-space-7:48px;--ui-space-8:64px;
+--ui-h-sm:32px;--ui-h-md:40px;--ui-h-lg:44px;--ui-icon-sm:14px;--ui-icon:16px;--ui-icon-lg:20px;--ui-icon-stroke:1.75;--ui-sidebar-width:240px;--ui-sidebar-collapsed-width:60px}
+[data-ui-theme="light"]{
+color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#0a0a0a;
+--ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+--ui-accent:#0a0a0a;--ui-accent-hover:#262626;--ui-accent-contrast:#fafafa;--ui-accent-soft:rgb(10 10 10 / .06);--ui-focus:rgb(10 10 10 / .52);
+--ui-danger:#b84747;--ui-danger-contrast:#fafafa;--ui-danger-soft:rgb(184 71 71 / .08);--ui-success:#39784b;--ui-success-soft:rgb(57 120 75 / .08);--ui-warning:#8a642b;--ui-warning-soft:rgb(138 100 43 / .08);--ui-info:#404040;--ui-info-soft:rgb(64 64 64 / .06);
+--ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .18);--ui-overlay-border:rgb(245 245 245 / .14);
+--ui-edge-color:#0a0a0a;--ui-edge-tl-alpha:.38;--ui-edge-br-alpha:.12;--ui-edge-base-alpha:.06;--ui-shadow-sm:0 1px 2px rgb(10 10 10 / .07);--ui-shadow-md:0 16px 44px rgb(10 10 10 / .12);--ui-shadow-lg:0 24px 64px rgb(10 10 10 / .16)}
+@media(prefers-color-scheme:light){[data-ui-theme="auto"]{
+color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#0a0a0a;
+--ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+--ui-accent:#0a0a0a;--ui-accent-hover:#262626;--ui-accent-contrast:#fafafa;--ui-accent-soft:rgb(10 10 10 / .06);--ui-focus:rgb(10 10 10 / .52);
+--ui-danger:#b84747;--ui-danger-contrast:#fafafa;--ui-danger-soft:rgb(184 71 71 / .08);--ui-success:#39784b;--ui-success-soft:rgb(57 120 75 / .08);--ui-warning:#8a642b;--ui-warning-soft:rgb(138 100 43 / .08);--ui-info:#404040;--ui-info-soft:rgb(64 64 64 / .06);
+--ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .18);--ui-overlay-border:rgb(245 245 245 / .14);
+--ui-edge-color:#0a0a0a;--ui-edge-tl-alpha:.38;--ui-edge-br-alpha:.12;--ui-edge-base-alpha:.06;--ui-shadow-sm:0 1px 2px rgb(10 10 10 / .07);--ui-shadow-md:0 16px 44px rgb(10 10 10 / .12);--ui-shadow-lg:0 24px 64px rgb(10 10 10 / .16)}}
