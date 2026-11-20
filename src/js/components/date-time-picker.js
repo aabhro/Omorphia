@@ -64,6 +64,10 @@ export class UIDatePicker extends HTMLElement {
   }
   get date() { return parseDate(this.value); }
   focus(options) { this.trigger?.focus(options); }
+  get open() { return !!this.popover?.open; }
+  show() { this.popover?.show(); }
+  hide() { this.popover?.hide(); }
+  toggle() { this.popover?.toggle(); }
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   isDisabled(date) {
@@ -189,6 +193,10 @@ export class UITimePicker extends HTMLElement {
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   focus(options) { this.trigger?.focus(options); }
+  get open() { return !!this.popover?.open; }
+  show() { this.popover?.show(); }
+  hide() { this.popover?.hide(); }
+  toggle() { this.popover?.toggle(); }
   get is12Hour() { return this.getAttribute('format') === '12h'; }
   sync() {
     if (this.hasAttribute('value')) this._time = parseTime(this.getAttribute('value'));

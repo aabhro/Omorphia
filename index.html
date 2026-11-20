@@ -234,12 +234,31 @@
           <ui-button variant="destructive" onclick="Omorphia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorphia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
           <ui-popover placement="bottom-start">
             <ui-button slot="trigger" icon="settings">Display options</ui-button>
-            <div class="ui-stack ui-gap-3">
+            <div class="ui-stack ui-gap-3 demo-popover-content">
               <p class="ui-h3">Display</p>
               <ui-switch name="compact" label="Compact rows" checked></ui-switch>
               <ui-switch name="show-ids" label="Show IDs"></ui-switch>
             </div>
           </ui-popover>
+          <div class="demo-nested-floats">
+            <p class="ui-small ui-muted">Nested popover test</p>
+            <ui-popover id="nested-popover-outer" placement="bottom-start">
+              <ui-button slot="trigger" variant="secondary" icon="layers">Open layered panel</ui-button>
+              <div class="demo-popover-content">
+                <p class="ui-h3">Workspace options</p>
+                <p class="ui-small ui-muted">This panel stays open while a child panel is active.</p>
+                <ui-switch name="dense-layout" label="Dense layout"></ui-switch>
+                <ui-popover id="nested-popover-inner" placement="right-start">
+                  <ui-button slot="trigger" size="sm" variant="subtle" icon-end="chevron-right">More options</ui-button>
+                  <div class="demo-popover-content demo-popover-content--nested">
+                    <p class="ui-h3">Advanced options</p>
+                    <ui-checkbox name="confirm-delete" label="Confirm destructive actions" checked></ui-checkbox>
+                    <ui-switch name="show-preview" label="Show preview"></ui-switch>
+                  </div>
+                </ui-popover>
+              </div>
+            </ui-popover>
+          </div>
         </template></div>
     </section>
 
@@ -265,20 +284,21 @@
           <ui-search id="search-custom" autocomplete min-chars="1" placeholder="Find a teammate…"></ui-search></template></div>
       </div>
       
-      <div class="cols" id="pickers">
-        <div class="demo" data-layout="stack"><div class="demo-title">Custom date picker</div><template>
-          <div class="ui-field"><span class="ui-label">Deployment date</span>
-            <ui-date-picker id="date-demo" name="deployment-date" value="2026-11-20" min="2026-01-01" label="Deployment date"></ui-date-picker>
-            <p class="ui-hint">Use the arrows to move by day or week. Page Up and Page Down change months.</p>
+      <div class="demo" id="pickers" data-layout="stack"><div class="demo-title">Date and time pickers</div><template>
+        <div class="picker-demo-frame" id="picker-clip-stage">
+          <div class="picker-demo-unit">
+            <span class="picker-demo-label">Deployment date</span>
+            <ui-date-picker id="date-demo" name="deployment-date" value="2026-11-20" min="2026-01-01" max="2027-12-31" week-start="1" placement="bottom-start" label="Deployment date"></ui-date-picker>
+            <div class="picker-demo-readout"><span>Selected date</span><output id="date-demo-output">2026-11-20</output></div>
           </div>
-        </template></div>
-        <div class="demo" data-layout="stack"><div class="demo-title">Custom time picker</div><template>
-          <div class="ui-field"><span class="ui-label">Maintenance window</span>
-            <ui-time-picker id="time-demo" name="maintenance-time" value="14:30" format="12h" step="5" label="Maintenance time"></ui-time-picker>
-            <p class="ui-hint">Choose hours and minutes independently. Switch AM / PM when using 12-hour format.</p>
+          <div class="picker-demo-unit">
+            <span class="picker-demo-label">Maintenance window</span>
+            <ui-time-picker id="time-demo" name="maintenance-time" value="14:30" format="12h" step="5" placement="bottom-end" label="Maintenance time"></ui-time-picker>
+            <div class="picker-demo-readout"><span>Selected time</span><output id="time-demo-output">2:30 PM</output></div>
           </div>
-        </template></div>
-      </div>
+        </div>
+        <p class="ui-hint picker-demo-hint">The controls sit inside a clipped frame on purpose. Open either picker to see its panel escape the frame, reposition, and stay above nearby content. The date picker supports arrow keys, Home, End, Page Up and Page Down.</p>
+      </template></div>
       <div class="demo" id="drawer-demo"><div class="demo-title">Drawer · four edges, three sizes</div><template>
         <ui-button variant="secondary" icon="panel-left" onclick="document.getElementById('settings-drawer').show()">Open settings drawer</ui-button>
         <ui-drawer id="settings-drawer" heading="Project settings" placement="right" size="md">
