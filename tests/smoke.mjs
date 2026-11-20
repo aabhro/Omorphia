@@ -103,20 +103,24 @@ await t('command palette: open, filter+highlight, keyboard, callback, empty/no-r
   p.open(); assert.ok(d.querySelector('.ui-empty-title').textContent.includes('No commands yet')); p.close();
   const focused = d.createElement('input'); d.body.append(focused);
   focused.addEventListener('keydown', (e) => e.stopPropagation());
-  const shortcut = new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true });
+  const reserved = new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true });
+  focused.dispatchEvent(reserved);
+  assert.ok(!p.isOpen, 'Chrome-reserved Ctrl+K is not used as the default');
+  assert.equal(reserved.defaultPrevented, false, 'the library leaves browser-reserved Ctrl+K alone');
+  const shortcut = new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true, bubbles: true, cancelable: true });
   focused.dispatchEvent(shortcut);
-  assert.ok(p.isOpen, 'Ctrl+K works while focus is inside a control');
-  assert.ok(shortcut.defaultPrevented, 'the browser shortcut is prevented');
+  assert.ok(p.isOpen, 'Ctrl+Shift+K works while focus is inside a control');
+  assert.ok(shortcut.defaultPrevented, 'the library prevents the matched shortcut default');
   p.close(); focused.remove();
   let ran = 0; const off = E.commands.register([{ id: 'a', label: 'Create project', group: 'Actions', onSelect: () => ran++ }, { id: 'b', label: 'Open settings', group: 'Go to', icon: 'settings', href: '#x' }]);
-  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true })); assert.ok(p.isOpen); assert.equal(p.list.querySelectorAll('.ui-option').length, 2);
+  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true, bubbles: true })); assert.ok(p.isOpen); assert.equal(p.list.querySelectorAll('.ui-option').length, 2);
   p.input.value = 'proj'; p.input.dispatchEvent(new w.Event('input')); assert.equal(p.list.querySelectorAll('.ui-option').length, 1); assert.equal(p.list.querySelector('mark').textContent, 'proj');
   p.input.value = 'zzzz'; p.input.dispatchEvent(new w.Event('input')); assert.ok(p.list.textContent.includes('No results for “zzzz”'));
   p.input.value = 'cr'; p.input.dispatchEvent(new w.Event('input')); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); assert.equal(ran, 1); assert.ok(!p.isOpen);
   p.setAttribute('hotkey', 'meta+k'); d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })); assert.ok(p.isOpen); p.removeAttribute('hotkey'); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(p.active, 1); p.close(); off();
 });
 await t('command palette shortcut parsing, routing, and lifecycle', () => {
-  const host = mount('<ui-command-palette id="first" hotkey="mod+k"></ui-command-palette><ui-command-palette id="second" hotkey="ctrl+shift+k"></ui-command-palette><ui-command-palette id="disabled" hotkey="none"></ui-command-palette>');
+  const host = mount('<ui-command-palette id="first" hotkey="mod+shift+k"></ui-command-palette><ui-command-palette id="second" hotkey="ctrl+shift+p"></ui-command-palette><ui-command-palette id="disabled" hotkey="none"></ui-command-palette>');
   const [first, second, disabled] = host.children;
   const press = (target, init) => {
     const event = new w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init });
@@ -124,7 +128,10 @@ await t('command palette shortcut parsing, routing, and lifecycle', () => {
     return event;
   };
 
-  const ctrlK = press(d, { key: 'k', code: 'KeyK', ctrlKey: true });
+  const reserved = press(d, { key: 'k', code: 'KeyK', ctrlKey: true });
+  assert.ok(!first.isOpen && !second.isOpen && !disabled.isOpen, 'Chrome-reserved Ctrl+K is not bound by default');
+  assert.equal(reserved.defaultPrevented, false, 'reserved browser shortcut is left untouched');
+  const ctrlK = press(d, { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true });
   assert.ok(first.isOpen, 'mod+k opens the first matching palette');
   assert.ok(!second.isOpen && !disabled.isOpen, 'one shortcut press opens only one palette');
   assert.ok(ctrlK.defaultPrevented, 'matched shortcuts prevent browser defaults');
@@ -134,20 +141,20 @@ await t('command palette shortcut parsing, routing, and lifecycle', () => {
   assert.equal(repeat.defaultPrevented, false, 'auto-repeat is left untouched');
 
   first.close();
-  press(d, { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true });
-  assert.ok(second.isOpen, 'explicit ctrl+shift+k combinations are supported');
+  press(d, { key: 'p', code: 'KeyP', ctrlKey: true, shiftKey: true });
+  assert.ok(second.isOpen, 'custom ctrl+shift+p combinations are supported');
   second.close();
 
-  const composing = press(d, { key: 'k', code: 'KeyK', ctrlKey: true, isComposing: true });
+  const composing = press(d, { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true, isComposing: true });
   assert.ok(!first.isOpen && !second.isOpen, 'IME composition is not treated as a shortcut');
   assert.equal(composing.defaultPrevented, false, 'composition events are left untouched');
 
-  const legacy = new w.KeyboardEvent('keydown', { key: 'Unidentified', keyCode: 75, ctrlKey: true });
+  const legacy = new w.KeyboardEvent('keydown', { key: 'Unidentified', keyCode: 75, ctrlKey: true, shiftKey: true });
   assert.equal(first.matches_hotkey(legacy), true, 'legacy keyCode fallback works when key/code are unavailable');
 
   host.remove();
   const after = mount('<ui-command-palette></ui-command-palette>').firstChild;
-  press(d, { key: 'k', code: 'KeyK', ctrlKey: true });
+  press(d, { key: 'k', code: 'KeyK', ctrlKey: true, shiftKey: true });
   assert.ok(after.isOpen, 'shortcut listener is restored after all palettes disconnect');
   after.remove();
 });

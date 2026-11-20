@@ -90,7 +90,7 @@ function disconnectPalette(palette) {
   }
 }
 
-/** <ui-command-palette hotkey="mod+k" placeholder="Search commands…">
+/** <ui-command-palette hotkey="mod+shift+k" placeholder="Search commands…">
  *  Declarative: <ui-command label="Go home" href="/" group="Navigate" icon="house" shortcut="G H"></ui-command>
  *  JS: palette.register([...]), palette.open(), palette.close(), palette.toggle()
  *  Events: ui-open, ui-close, ui-command { command }
@@ -106,8 +106,10 @@ export class UICommandPalette extends HTMLElement {
 
       const lid = uid('ui-cmd-list');
       this.input = h('input', {
+        id: uid('ui-command-search'),
+        name: 'command-search',
         class: 'ui-command-input',
-        type: 'text',
+        type: 'search',
         role: 'combobox',
         'aria-expanded': 'true',
         'aria-controls': lid,
@@ -172,7 +174,7 @@ export class UICommandPalette extends HTMLElement {
 
   matches_hotkey(event) {
     const raw = this.getAttribute('hotkey');
-    const parsed = parseHotkey(raw == null ? 'mod+k' : raw);
+    const parsed = parseHotkey(raw == null ? 'mod+shift+k' : raw);
     if (!parsed || !event) return false;
 
     const { key, modifiers } = parsed;
@@ -367,4 +369,4 @@ export class UICommandPalette extends HTMLElement {
 
 define('ui-command-palette', UICommandPalette);
 define('ui-command', class extends HTMLElement {});
-export const shortcutLabel = () => (isMac() ? '⌘K' : 'Ctrl K');
+export const shortcutLabel = () => (isMac() ? '⌘ + Shift + K' : 'Ctrl + Shift + K');

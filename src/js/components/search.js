@@ -12,7 +12,7 @@ export class UISearch extends HTMLElement {
   connectedCallback() {
     if (!this.input) {
       const lid = uid('ui-search-list');
-      this.input = h('input', { type: 'search', role: 'combobox', 'aria-autocomplete': 'list', 'aria-expanded': 'false', 'aria-controls': lid, autocomplete: 'off', spellcheck: 'false' });
+      this.input = h('input', { id: uid('ui-search-input'), name: this.getAttribute('name') || uid('ui-search'), type: 'search', role: 'combobox', 'aria-autocomplete': 'list', 'aria-expanded': 'false', 'aria-controls': lid, autocomplete: 'off', spellcheck: 'false' });
       this.spin = h('span', { class: 'ui-spinner', hidden: true, 'aria-hidden': 'true' });
       this.clearBtn = h('button', { class: 'ui-search-clear', type: 'button', hidden: true, 'aria-label': 'Clear search', onclick: () => { this.clear(); this.input.focus(); } }, icon('x', 14));
       this.field = h('div', { class: 'ui-input ui-search-field' }, icon('search'), this.input, this.spin, this.clearBtn);
@@ -34,7 +34,7 @@ export class UISearch extends HTMLElement {
   attributeChangedCallback() { if (this.input) this.sync(); }
   sync() {
     this.input.placeholder = this.getAttribute('placeholder') || 'Search…'; this.input.setAttribute('aria-label', this.getAttribute('label') || this.getAttribute('placeholder') || 'Search');
-    if (this.hasAttribute('name')) this.input.name = this.getAttribute('name');
+    this.input.name = this.getAttribute('name') || this.input.name || 'ui-search';
     if (this.hasAttribute('value') && this.input.value !== this.getAttribute('value')) this.input.value = this.getAttribute('value');
     this.clearBtn.hidden = !this.input.value; this.spin.hidden = !bool(this, 'loading');
   }

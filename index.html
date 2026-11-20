@@ -37,7 +37,7 @@
     <div class="topbar">
       <ui-button class="menu-btn" variant="subtle" icon="menu" label="Open navigation" data-ui-toggle="#nav"></ui-button>
       <span class="grow"></span>
-      <ui-button icon="search" onclick="document.querySelector('ui-command-palette').open()"><span class="cmd-label">Search</span> <span class="ui-kbd">Ctrl K</span></ui-button>
+      <ui-button icon="search" onclick="document.querySelector('ui-command-palette').open()"><span class="cmd-label">Search</span> <span class="ui-kbd" data-ui-shortcut>Ctrl + Shift + K</span></ui-button>
       <ui-tooltip content="Toggle light / dark" placement="bottom"><ui-button variant="subtle" icon="sun" label="Toggle theme" onclick="Omorphia.theme.toggle()"></ui-button></ui-tooltip>
       <ui-button variant="subtle" icon="external-link" onclick="window.open('https://github.com/aabhro/Omorphia','_blank','noopener')">GitHub</ui-button>
     </div>
@@ -92,29 +92,29 @@
       <div class="cols">
         <div class="demo" data-layout="stack"><div class="demo-title">Text, search, textarea, select</div><template>
           <div class="ui-field"><label class="ui-label" for="i-name">Project name</label>
-            <div class="ui-input"><ui-icon name="folder"></ui-icon><input id="i-name" placeholder="Untitled project"></div>
+            <div class="ui-input"><ui-icon name="folder"></ui-icon><input id="i-name" name="project-name" placeholder="Untitled project"></div>
             <p class="ui-hint">Shown on invoices and in the sidebar.</p></div>
           <div class="ui-field"><label class="ui-label" for="i-q">Search</label>
-            <div class="ui-input"><ui-icon name="search"></ui-icon><input id="i-q" type="search" placeholder="Search projects"></div></div>
+            <div class="ui-input"><ui-icon name="search"></ui-icon><input id="i-q" name="project-search" type="search" placeholder="Search projects"></div></div>
           <div class="ui-field"><label class="ui-label" for="i-t">Notes</label>
-            <div class="ui-textarea"><textarea id="i-t" rows="3" placeholder="Anything the team should know"></textarea></div></div>
+            <div class="ui-textarea"><textarea id="i-t" name="project-notes" rows="3" placeholder="Anything the team should know"></textarea></div></div>
           <div class="ui-field"><label class="ui-label" for="i-s">Region</label>
-            <div class="ui-select"><select id="i-s"><option>Europe (Frankfurt)</option><option>US East (Virginia)</option><option>Asia Pacific (Singapore)</option></select></div></div></template></div>
+            <div class="ui-select"><select id="i-s" name="region"><option>Europe (Frankfurt)</option><option>US East (Virginia)</option><option>Asia Pacific (Singapore)</option></select></div></div></template></div>
         <div class="demo" data-layout="stack"><div class="demo-title">Choices, switches, range</div><template>
-          <label class="ui-check"><input class="ui-check-input" type="checkbox" checked> Email me about deploys</label>
-          <label class="ui-check"><input class="ui-check-input" type="checkbox"> Weekly summary</label>
+          <label class="ui-check"><input class="ui-check-input" type="checkbox" checked id="demo-field-4" name="demo-field-4"> Email me about deploys</label>
+          <label class="ui-check"><input class="ui-check-input" type="checkbox" id="demo-field-5" name="demo-field-5"> Weekly summary</label>
           <div class="ui-stack ui-gap-2" role="radiogroup" aria-label="Plan">
-            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" checked> Starter</label>
-            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan"> Team</label></div>
-          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked><span class="ui-switch-track"></span> Auto-deploy main</label>
-          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" disabled><span class="ui-switch-track"></span> Preview builds (plan upgrade)</label>
+            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" checked id="demo-field-6"> Starter</label>
+            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" id="demo-field-7"> Team</label></div>
+          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked id="demo-field-8" name="demo-field-8"><span class="ui-switch-track"></span> Auto-deploy main</label>
+          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" disabled id="demo-field-9" name="demo-field-9"><span class="ui-switch-track"></span> Preview builds (plan upgrade)</label>
           <div class="ui-field"><label class="ui-label" for="range-demo">Concurrency <span class="ui-muted" id="range-out">40</span></label>
-            <input id="range-demo" class="ui-range" type="range" min="0" max="100" value="40"></div></template></div>
+            <input id="range-demo" name="concurrency" class="ui-range" type="range" min="0" max="100" value="40"></div></template></div>
       </div>
       <div class="demo"><div class="demo-title">Validation states (try an invalid email)</div><template>
         <form class="fx-validate ui-row" style="align-items:flex-start" novalidate>
           <div class="ui-field" style="width:300px"><label class="ui-label" for="v-mail">Email</label>
-            <div class="ui-input"><ui-icon name="mail"></ui-icon><input id="v-mail" type="email" placeholder="you@company.com" aria-describedby="v-help"></div>
+            <div class="ui-input"><ui-icon name="mail"></ui-icon><input id="v-mail" name="validation-email" type="email" placeholder="you@company.com" aria-describedby="v-help"></div>
             <p class="ui-hint" id="v-help">We only use this for receipts.</p>
             <p class="ui-error-text" id="v-err">Enter an email like name@company.com.</p>
             <p class="ui-success-text">Looks good.</p></div>
@@ -192,20 +192,20 @@
       <div class="demo"><div class="demo-title">Modal and popover</div><template>
         <ui-modal id="invite-modal" heading="Invite teammates">
           They'll get an email with a link to join Atlas. Press Escape or click outside to dismiss.
-          <div class="ui-field" style="margin-top:16px"><label class="ui-label" for="inv">Email address</label><div class="ui-input"><ui-icon name="mail"></ui-icon><input id="inv" placeholder="name@company.com"></div></div>
+          <div class="ui-field" style="margin-top:16px"><label class="ui-label" for="inv">Email address</label><div class="ui-input"><ui-icon name="mail"></ui-icon><input id="inv" name="invite-email" placeholder="name@company.com"></div></div>
           <div slot="footer"><ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button><ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Omorphia.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button></div>
         </ui-modal>
         <ui-button variant="primary" onclick="document.getElementById('invite-modal').show()">Invite teammates</ui-button>
         <ui-button variant="destructive" onclick="Omorphia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorphia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
         <ui-popover placement="bottom-start"><ui-button slot="trigger" icon="settings">Display options</ui-button>
-          <div class="ui-stack ui-gap-3"><p class="ui-h3">Display</p><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked><span class="ui-switch-track"></span> Compact rows</label><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch"><span class="ui-switch-track"></span> Show IDs</label></div></ui-popover></template></div>
+          <div class="ui-stack ui-gap-3"><p class="ui-h3">Display</p><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked id="demo-field-13" name="demo-field-13"><span class="ui-switch-track"></span> Compact rows</label><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" id="demo-field-14" name="demo-field-14"><span class="ui-switch-track"></span> Show IDs</label></div></ui-popover></template></div>
     </section>
 
     <section class="block" id="advanced">
       <header><h2 class="ui-h1">Advanced components</h2></header>
-      <div class="demo" id="palette"><div class="demo-title">Command palette · Ctrl K / ⌘K</div><template>
+      <div class="demo" id="palette"><div class="demo-title">Command palette · Ctrl + Shift + K / ⌘ + Shift + K</div><template>
         <ui-button icon="command" onclick="document.querySelector('ui-command-palette').open()">Open command palette</ui-button>
-        <span class="ui-small ui-muted">Or press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">K</span> anywhere on this page. Try “theme”, “btn” or a typo.</span>
+        <span class="ui-small ui-muted">Or press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">Shift</span> <span class="ui-kbd">K</span> anywhere on this page. Try “theme”, “btn” or a typo.</span>
         <script type="text/plain">
           Omorphia.commands.register([
             { id: 'new', label: 'New project', group: 'Actions', icon: 'plus', shortcut: 'N', onSelect: () => createProject() },
@@ -270,18 +270,18 @@
           <div class="fx-config-controls">
             <fieldset class="fx-control-group">
               <legend>Light direction</legend>
-              <label class="ctl">Top-left strength <input type="range" class="ui-range" min="0" max="1" step="0.05" value="0.5" data-fx="--ui-edge-tl-alpha"><output></output></label>
-              <label class="ctl">Bottom-right strength <input type="range" class="ui-range" min="0" max="0.4" step="0.01" value="0.14" data-fx="--ui-edge-br-alpha"><output></output></label>
-              <label class="ctl">Top-left reach <input type="range" class="ui-range" min="5" max="100" value="52" data-fx="--ui-edge-tl-reach" data-unit="%"><output></output></label>
-              <label class="ctl">Bottom-right reach <input type="range" class="ui-range" min="5" max="100" value="42" data-fx="--ui-edge-br-reach" data-unit="%"><output></output></label>
+              <label class="ctl">Top-left strength <input type="range" class="ui-range" min="0" max="1" step="0.05" value="0.5" data-fx="--ui-edge-tl-alpha" id="demo-field-15" name="demo-field-15"><output></output></label>
+              <label class="ctl">Bottom-right strength <input type="range" class="ui-range" min="0" max="0.4" step="0.01" value="0.14" data-fx="--ui-edge-br-alpha" id="demo-field-16" name="demo-field-16"><output></output></label>
+              <label class="ctl">Top-left reach <input type="range" class="ui-range" min="5" max="100" value="52" data-fx="--ui-edge-tl-reach" data-unit="%" id="demo-field-17" name="demo-field-17"><output></output></label>
+              <label class="ctl">Bottom-right reach <input type="range" class="ui-range" min="5" max="100" value="42" data-fx="--ui-edge-br-reach" data-unit="%" id="demo-field-18" name="demo-field-18"><output></output></label>
             </fieldset>
             <fieldset class="fx-control-group">
               <legend>Surface detail</legend>
-              <label class="ctl">Base edge <input type="range" class="ui-range" min="0" max="0.3" step="0.01" value="0.05" data-fx="--ui-edge-base-alpha"><output></output></label>
-              <label class="ctl">Edge width <input type="range" class="ui-range" min="1" max="3" step="0.25" value="1" data-fx="--ui-edge-width" data-unit="px"><output></output></label>
-              <label class="ctl">Intensity <input type="range" class="ui-range" min="0.5" max="2" step="0.05" value="1" data-fx="--ui-edge-intensity"><output></output></label>
-              <label class="ctl">Hover boost <input type="range" class="ui-range" min="1" max="2" step="0.05" value="1.45" data-fx="--ui-edge-hover-boost"><output></output></label>
-              <label class="ctl">Corner radius <input type="range" class="ui-range" min="0" max="32" value="14" data-fx="--fx-radius" data-unit="px"><output></output></label>
+              <label class="ctl">Base edge <input type="range" class="ui-range" min="0" max="0.3" step="0.01" value="0.05" data-fx="--ui-edge-base-alpha" id="demo-field-19" name="demo-field-19"><output></output></label>
+              <label class="ctl">Edge width <input type="range" class="ui-range" min="1" max="3" step="0.25" value="1" data-fx="--ui-edge-width" data-unit="px" id="demo-field-20" name="demo-field-20"><output></output></label>
+              <label class="ctl">Intensity <input type="range" class="ui-range" min="0.5" max="2" step="0.05" value="1" data-fx="--ui-edge-intensity" id="demo-field-21" name="demo-field-21"><output></output></label>
+              <label class="ctl">Hover boost <input type="range" class="ui-range" min="1" max="2" step="0.05" value="1.45" data-fx="--ui-edge-hover-boost" id="demo-field-22" name="demo-field-22"><output></output></label>
+              <label class="ctl">Corner radius <input type="range" class="ui-range" min="0" max="32" value="14" data-fx="--fx-radius" data-unit="px" id="demo-field-23" name="demo-field-23"><output></output></label>
             </fieldset>
           </div>
         </div></template></div>
@@ -307,7 +307,7 @@
   </div>
 </div>
 
-<ui-command-palette hotkey="mod+k" placeholder="Search sections and actions…">
+<ui-command-palette hotkey="mod+shift+k" placeholder="Search sections and actions…">
   <ui-command label="Open the invite dialog" group="Actions" icon="send" description="Demonstrates a declarative command" onselect="document.getElementById('invite-modal').show()"></ui-command>
 </ui-command-palette>
 

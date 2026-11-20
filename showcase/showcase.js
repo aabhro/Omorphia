@@ -1,3 +1,5 @@
+document.querySelectorAll('[data-ui-shortcut]').forEach((node) => { node.textContent = Omorphia.shortcutLabel(); });
+
 // Showcase wiring. Demos are real library markup: the code panel is generated from the same <template> that renders the preview.
 const dedent = (s) => { const lines = s.replace(/^\n+|\s+$/g, '').split('\n'); const pad = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length)); return lines.map((l) => l.slice(pad)).join('\n'); };
 document.querySelectorAll('.demo').forEach((demo) => {
