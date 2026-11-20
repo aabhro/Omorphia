@@ -15,7 +15,7 @@ assert.deepEqual(missing, [], 'all icons render from the bundle: ' + missing);
 assert.ok(d.querySelector('#search-local').data.length > 10); assert.ok(d.getElementById('actions-menu').panel);
 assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration presets render');
 assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
-assert.match(d.querySelector('link[rel="icon"]')?.getAttribute('href') || '', /favicon\\.svg$/);
+assert.ok((d.querySelector('link[rel="icon"]')?.getAttribute('href') || '').endsWith('favicon.svg'));
 assert.match(d.title, /Omorphia/);
 assert.ok(d.getElementById('fx-css-output')?.textContent.includes('--ui-edge-tl-alpha'), 'live configuration emits CSS');
 const palette = d.querySelector('ui-command-palette');
