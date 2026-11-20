@@ -1,6 +1,7 @@
 // Loads the real showcase page (index.html + dist + showcase.js) and checks that every demo renders and nothing throws.
 import { JSDOM, VirtualConsole } from 'jsdom';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 const errs = []; const vc = new VirtualConsole(); vc.on('jsdomError', (e) => { if (!/stylesheet|fonts\.g|Could not load link/i.test(e.message)) errs.push(e.message); }); vc.on('error', (e) => errs.push(String(e))); vc.on('warn', (e) => errs.push(String(e)));
 const dom = await JSDOM.fromFile('index.html', { runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) { w.Element.prototype.scrollIntoView = () => {}; w.fetch = async () => ({ ok: false }); w.navigator.clipboard = { writeText: async () => {} }; } });
 await new Promise((r) => dom.window.addEventListener('load', r)); await new Promise((r) => setTimeout(r, 300));
@@ -17,6 +18,8 @@ assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration pr
 assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
 assert.ok((d.querySelector('link[rel="icon"]')?.getAttribute('href') || '').endsWith('favicon.svg'));
 assert.match(d.title, /Omorphia/);
+const packageVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
+assert.ok(d.body.innerHTML.includes(`@v${packageVersion}/dist/omorphia.min.js`), 'showcase CDN example matches the package version');
 assert.ok(d.getElementById('fx-css-output')?.textContent.includes('--ui-edge-tl-alpha'), 'live configuration emits CSS');
 const palette = d.querySelector('ui-command-palette');
 assert.ok(palette, 'command palette host exists');
