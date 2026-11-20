@@ -41,6 +41,7 @@ await t('directional border illumination remains part of the build', () => {
   const css = readFileSync('src/css/edge.css', 'utf8');
   assert.match(css, /--ui-edge-tl-alpha/);
   assert.match(css, /--ui-edge-br-alpha/);
+  assert.match(css, /max-resolution:\\s*1\\.25dppx/);
   assert.match(css, /linear-gradient\(to bottom right/);
   assert.match(css, /linear-gradient\(to top left/);
   assert.match(css, /-webkit-mask-composite:\s*xor/);
@@ -94,7 +95,7 @@ await t('command palette: open, filter+highlight, keyboard, callback, empty/no-r
   p.input.value = 'proj'; p.input.dispatchEvent(new w.Event('input')); assert.equal(p.list.querySelectorAll('.ui-option').length, 1); assert.equal(p.list.querySelector('mark').textContent, 'proj');
   p.input.value = 'zzzz'; p.input.dispatchEvent(new w.Event('input')); assert.ok(p.list.textContent.includes('No results for “zzzz”'));
   p.input.value = 'cr'; p.input.dispatchEvent(new w.Event('input')); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); assert.equal(ran, 1); assert.ok(!p.isOpen);
-  d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })); assert.ok(p.isOpen); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(p.active, 1); p.close(); off();
+  p.setAttribute('hotkey', 'meta+k'); d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })); assert.ok(p.isOpen); p.removeAttribute('hotkey'); p.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(p.active, 1); p.close(); off();
 });
 await t('ui-search: local data, keyboard select, clear, async source states', async () => {
   const c = mount('<ui-search autocomplete debounce="0" placeholder="Find"></ui-search>'); const s = c.firstChild; s.data = ['Apple', 'Apricot', 'Banana', { label: 'Blueberry', description: 'fruit' }];
