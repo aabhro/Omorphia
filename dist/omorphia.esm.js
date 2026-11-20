@@ -1,4 +1,4 @@
-/*! Omorfia v1.1.2 | MIT | https://github.com/aabhro/edgelit */
+/*! Omorphia v1.1.3 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -17,7 +17,6 @@ var emit = (el, name, detail = {}, cancelable = false) => {
   return ev;
 };
 var bool = (el, name) => el.hasAttribute(name) && el.getAttribute(name) !== "false";
-var isMac = () => /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 function h(tag, attrs = {}, ...kids) {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs || {})) {
@@ -830,20 +829,19 @@ var UICommandPalette = class extends HTMLElement {
       e.preventDefault();
       this.toggle();
     };
-    document.addEventListener("keydown", this._hk, true);
+    window.addEventListener("keydown", this._hk, true);
   }
   disconnectedCallback() {
-    document.removeEventListener("keydown", this._hk, true);
+    window.removeEventListener("keydown", this._hk, true);
     if (this.dialog?.open) this.dialog.close();
   }
   matches_hotkey(e) {
     const parts = (this.getAttribute("hotkey") || "mod+k").toLowerCase().split("+").map((part) => part.trim()).filter(Boolean);
     const key = parts.pop();
-    const mod = parts.includes("mod");
-    const wantsCtrl = parts.includes("ctrl") || mod && !isMac();
-    const wantsMeta = parts.includes("meta") || mod && isMac();
+    const isMod = parts.includes("mod");
+    const modifierMatches = isMod ? (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey) : e.ctrlKey === parts.includes("ctrl") && e.metaKey === parts.includes("meta");
     const keyMatches = e.key?.toLowerCase() === key || key?.length === 1 && e.code?.toLowerCase() === "key" + key;
-    return !!key && keyMatches && e.ctrlKey === wantsCtrl && e.metaKey === wantsMeta && e.altKey === parts.includes("alt") && e.shiftKey === parts.includes("shift");
+    return !!key && keyMatches && modifierMatches && e.altKey === parts.includes("alt") && e.shiftKey === parts.includes("shift");
   }
   register(cmds) {
     const list = [].concat(cmds);
@@ -910,7 +908,7 @@ var UICommandPalette = class extends HTMLElement {
         { class: "ui-empty" },
         icon(none ? "command" : "search"),
         h("p", { class: "ui-empty-title" }, none ? "No commands yet" : `No results for \u201C${q.trim()}\u201D`),
-        h("p", { class: "ui-empty-desc" }, none ? "Add commands with Omorfia.commands.register() or <ui-command> elements." : "Check the spelling or try a broader term.")
+        h("p", { class: "ui-empty-desc" }, none ? "Add commands with Omorphia.commands.register() or <ui-command> elements." : "Check the spelling or try a broader term.")
       ));
       this.input.removeAttribute("aria-activedescendant");
       return;
@@ -1232,7 +1230,7 @@ var UISidebar = class extends HTMLElement {
       const kids = [...this.childNodes];
       const slot = (n) => kids.filter((k) => k.nodeType === 1 && k.getAttribute("slot") === n);
       const head = slot("header"), foot = slot("footer"), items = kids.filter((k) => !head.includes(k) && !foot.includes(k) && !(k.nodeType === 3 && !k.textContent.trim()));
-      this.nav = h("nav", { class: "ui-sidebar-panel ui-edge", "aria-label": this.getAttribute("label") || "Sidebar" });
+      this.nav = h("nav", { class: "ui-sidebar-panel", "aria-label": this.getAttribute("label") || "Sidebar" });
       const heading = this.getAttribute("heading");
       if (heading || head.length) this.nav.append(h("div", { class: "ui-side-head" }, head.length ? head : [h("span", { class: "ui-side-head-text", text: heading })]));
       this.scroll = h("div", { class: "ui-side-scroll" }, items);
@@ -1358,8 +1356,8 @@ var UISidebar = class extends HTMLElement {
   }
 };
 define("ui-sidebar", UISidebar);
-if (typeof document !== "undefined" && !window.__edgelitToggle) {
-  window.__edgelitToggle = true;
+if (typeof document !== "undefined" && !window.__omorphiaToggle) {
+  window.__omorphiaToggle = true;
   document.addEventListener("click", (e) => {
     const t = e.target.closest?.("[data-ui-toggle]");
     if (!t) return;
@@ -1369,7 +1367,7 @@ if (typeof document !== "undefined" && !window.__edgelitToggle) {
 }
 
 // src/js/index.js
-var version = true ? "1.1.2" : "dev";
+var version = true ? "1.1.3" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {

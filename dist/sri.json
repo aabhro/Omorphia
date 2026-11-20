@@ -1,11 +1,9 @@
 {
-  "version": "1.1.2",
+  "name": "Omorphia",
+  "version": "1.1.3",
   "files": {
-    "omorfia.min.css": "sha384-pu1sK3iXKb1WT1I1zacXRe4Mg0l1RYJu/69Wlc+3TvgtM51WrrG0NDJ+8jkkXmWQ",
-    "omorfia.min.js": "sha384-b8BeUiU2wIHd5bQsIPb6wJKwAMjjaecFlJvqQ5rmpDA3TV+pHWE0k0/8kXBYhyXZ",
-    "omorfia.esm.min.js": "sha384-41diuNibYllxtMsUst8dTI3M6vNoCG3jA35ngTtqB0dJiPHzZoJ3y5CFngzHENtY",
-    "edgelit.min.css": "sha384-pu1sK3iXKb1WT1I1zacXRe4Mg0l1RYJu/69Wlc+3TvgtM51WrrG0NDJ+8jkkXmWQ",
-    "edgelit.min.js": "sha384-b8BeUiU2wIHd5bQsIPb6wJKwAMjjaecFlJvqQ5rmpDA3TV+pHWE0k0/8kXBYhyXZ",
-    "edgelit.esm.min.js": "sha384-41diuNibYllxtMsUst8dTI3M6vNoCG3jA35ngTtqB0dJiPHzZoJ3y5CFngzHENtY"
+    "omorphia.min.css": "sha384-J4ie4f9vuAB+pPjuz9kU3U8yqbbe5/hB9VWWYCo1U3goymvlyOhAAck3mQnhnLjG",
+    "omorphia.min.js": "sha384-IPDpdERlL7vOENAJMABSPpp31AdWO3fgJ4SQV9WuUIhKqPrbjiV/IQQCc6PY0TPU",
+    "omorphia.esm.min.js": "sha384-vfoCdtiDb80uemXJcAclQzJ7liih5JRZANbra4pm0+LKsgXCPmt0MEssgoLOlmzw"
   }
 }
