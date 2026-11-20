@@ -1,65 +1,82 @@
 # Omorphia component catalog
 
 > [!CAUTION]
-> **STOP BEFORE WRITING UI MARKUP. READ THIS INVENTORY, THEN VERIFY THE MATCHING IMPLEMENTATION IN <code>src/</code>.**
+> **STOP BEFORE WRITING UI MARKUP. READ THIS INVENTORY, THEN VERIFY THE MATCHING SOURCE.**
 >
-> **Do not invent component names, attributes, methods, events, or slots. Do not replace an existing Omorphia component with a hand-built equivalent.** Every custom element listed below is registered by the current source. Anything described as a CSS primitive is a native HTML element styled with a class, not a custom element.
+> **Use Omorphia's custom elements for every interactive control. Do not write raw browser controls for buttons, text fields, selects, dates, times, checkboxes, radios, switches, ranges, menus, accordions, or drawers.**
+>
+> Do not invent component names, attributes, methods, events, or slots. Do not replace an existing Omorphia component with a hand-built equivalent. This catalog is an inventory, not permission to guess. The exact source and the version installed by the consuming project remain authoritative.
 
-This file answers a concrete question: **what does Omorphia actually provide, and which exact API should an agent use?** It is a discovery map, not permission to guess. The source code and the version installed by the target project remain authoritative.
+This document answers three questions for an AI agent:
+
+1. What custom elements actually exist?
+2. Which exact API and markup does each one support?
+3. What is the approved fallback when no component matches?
 
 ## 1. Mandatory component-first procedure
 
 For every task that creates or changes interface markup:
 
 1. Read this entire catalog.
-2. Read <code>src/js/index.js</code> to confirm which modules are loaded and which JavaScript helpers are exported.
-3. Inspect the matching component implementation in <code>src/js/components/</code> or <code>src/js/icons.js</code>. Check the actual <code>define('...')</code>, <code>observedAttributes</code>, methods, property accessors, event emission, and slot handling. Do not rely on names inferred from a demo.
-4. Inspect the matching styles in <code>src/css/</code>. A class name does not prove that a custom element exists.
-5. Find and read the closest working example in <a href="../index.html">index.html</a>. The showcase is a verified usage reference, not a substitute for source inspection.
-6. Make a component map **before coding**. For every requested UI area, write down the exact Omorphia element or CSS pattern that will implement it and link the source file. Mark any gap as <code>NO BUILT-IN COMPONENT</code> instead of inventing an API.
-7. Implement with those exact components and patterns. Only add custom UI after proving that no existing component or composition of primitives fits.
-8. Review the finished markup and diff. Check every <code>&lt;ui-...&gt;</code> tag, attribute, event, method, and class against source. Remove duplicate controls and custom wrappers that merely recreate Omorphia.
+2. Read `src/js/index.js` to confirm which modules are loaded and which JavaScript helpers are exported.
+3. Inspect the matching implementation in `src/js/components/` or `src/js/icons.js`. Confirm the actual `define('...')`, observed attributes, supported values, methods, properties, events, form behavior, and slots.
+4. Inspect the matching styles in `src/css/`. A CSS class is not proof that a custom element exists.
+5. Find the closest working example in [`index.html`](../index.html). The showcase is a verified usage reference, not a substitute for source inspection.
+6. Make a component map **before coding**: user need → exact Omorphia element → source file → supported API. Mark a real gap as `NO BUILT-IN COMPONENT`.
+7. Implement with the exact existing elements. Compose existing elements when a larger pattern is needed.
+8. Review the finished markup and diff. Check every custom element, attribute, method, event, and slot against the exact source.
 
 **If an agent cannot inspect the source, it must not bluff.** Re-open the public repository at https://github.com/aabhro/Omorphia, inspect the current default branch, and retry the source file. If a temporary network failure remains, report the exact missing file and ask for the source rather than guessing. Do not silently proceed with a replacement component.
 
 ### Source-of-truth order
 
-- When editing this repository: the current <code>main</code> source in <code>src/</code> is authoritative.
-- When consuming Omorphia in another project: the exact Omorphia version actually loaded by that project is authoritative. Inspect its pinned CDN URL, package version, or local bundle. Do not assume an API from a newer branch exists in an older installed version.
-- <code>index.html</code> demonstrates intended use. <code>README.md</code> explains distribution and installation. Neither overrides implementation.
-- The Modernimal component showcase in <code>aabhro/Stylesheets</code> is a separate design reference. It does **not** register Omorphia elements and is not an Omorphia API. Use Modernimal to guide visual decisions only where its patterns fit. Use Omorphia's actual elements and classes for implementation.
+- When editing this repository: the current `main` source in `src/` is authoritative.
+- When consuming Omorphia elsewhere: the exact version actually loaded by that project is authoritative. Inspect the pinned CDN URL, package version, or local bundle. Do not assume an API from a newer branch exists in an older installed version.
+- `index.html` demonstrates intended use. `README.md` explains distribution. Neither overrides implementation.
+- The Modernimal component showcase in `aabhro/Stylesheets` is a separate visual reference. It does **not** register Omorphia elements and is not an Omorphia API.
 
 ## 2. Actual custom elements
 
-The following are the custom elements registered by the current source. Do not add to this list from memory.
+**These 28 names are registered by the current source.** Do not add names to this list from memory.
 
 | Exact element | Use it for | Implementation |
 | --- | --- | --- |
-| <code>&lt;ui-icon&gt;</code> | Lucide icon | <a href="../src/js/icons.js">src/js/icons.js</a> |
-| <code>&lt;ui-button&gt;</code> | Primary, secondary, subtle, destructive, loading, disabled, and icon buttons | <a href="../src/js/components/button.js">button.js</a> |
-| <code>&lt;ui-tooltip&gt;</code> | Hover/focus tooltip for an existing target | <a href="../src/js/components/tooltip.js">tooltip.js</a> |
-| <code>&lt;ui-modal&gt;</code> | Dialog with body and optional footer | <a href="../src/js/components/modal.js">modal.js</a> |
-| <code>&lt;ui-popover&gt;</code> | Anchored floating content or controls | <a href="../src/js/components/popover.js">popover.js</a> |
-| <code>&lt;ui-dropdown&gt;</code> | Keyboard-accessible action/menu list | <a href="../src/js/components/popover.js">popover.js</a> |
-| <code>&lt;ui-tabs&gt;</code> + <code>&lt;ui-tab&gt;</code> | Tab navigation and associated panels | <a href="../src/js/components/tabs.js">tabs.js</a> |
-| <code>&lt;ui-pagination&gt;</code> | Page navigation | <a href="../src/js/components/pagination.js">pagination.js</a> |
-| <code>&lt;ui-command-palette&gt;</code> + <code>&lt;ui-command&gt;</code> | Global command search and actions | <a href="../src/js/components/command-palette.js">command-palette.js</a> |
-| <code>&lt;ui-search&gt;</code> | Search input with local or asynchronous suggestions | <a href="../src/js/components/search.js">search.js</a> |
-| <code>&lt;ui-sidebar&gt;</code> + <code>&lt;ui-sidebar-item&gt;</code> | Responsive, collapsible navigation | <a href="../src/js/components/sidebar.js">sidebar.js</a> |
+| <code>&lt;ui-button&gt;</code> | Buttons and button states | [button.js](../src/js/components/button.js) |
+| <code>&lt;ui-icon&gt;</code> | Lucide icons | [icons.js](../src/js/icons.js) |
+| <code>&lt;ui-tooltip&gt;</code> | Hover/focus tooltip | [tooltip.js](../src/js/components/tooltip.js) |
+| <code>&lt;ui-modal&gt;</code> | Dialog with body and footer | [modal.js](../src/js/components/modal.js) |
+| <code>&lt;ui-popover&gt;</code> | Anchored floating content | [popover.js](../src/js/components/popover.js) |
+| <code>&lt;ui-dropdown&gt;</code> | Keyboard-accessible action menu | [popover.js](../src/js/components/popover.js) |
+| <code>&lt;ui-menu-item&gt;</code> | Custom menu row used inside `ui-dropdown` | [menu-item.js](../src/js/components/menu-item.js) |
+| <code>&lt;ui-tabs&gt;</code> + <code>&lt;ui-tab&gt;</code> | Tab navigation and panels | [tabs.js](../src/js/components/tabs.js) |
+| <code>&lt;ui-pagination&gt;</code> | Page navigation | [pagination.js](../src/js/components/pagination.js) |
+| <code>&lt;ui-command-palette&gt;</code> + <code>&lt;ui-command&gt;</code> | Global command search/actions | [command-palette.js](../src/js/components/command-palette.js) |
+| <code>&lt;ui-search&gt;</code> | Search with local/async suggestions | [search.js](../src/js/components/search.js) |
+| <code>&lt;ui-sidebar&gt;</code> + <code>&lt;ui-sidebar-item&gt;</code> | Responsive navigation | [sidebar.js](../src/js/components/sidebar.js) |
+| <code>&lt;ui-input&gt;</code> | Custom text-like field | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-textarea&gt;</code> | Custom multiline text field | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-checkbox&gt;</code> | Checkbox | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-radio&gt;</code> | Radio group choice | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-switch&gt;</code> | Switch/toggle | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-range&gt;</code> | Range slider | [form-controls.js](../src/js/components/form-controls.js) |
+| <code>&lt;ui-option&gt;</code> | Option definition used by `ui-select` | [select.js](../src/js/components/select.js) |
+| <code>&lt;ui-select&gt;</code> | Custom single/multiple select | [select.js](../src/js/components/select.js) |
+| <code>&lt;ui-date-picker&gt;</code> | Custom calendar/date picker | [date-time-picker.js](../src/js/components/date-time-picker.js) |
+| <code>&lt;ui-time-picker&gt;</code> | Custom time picker | [date-time-picker.js](../src/js/components/date-time-picker.js) |
+| <code>&lt;ui-drawer&gt;</code> | Off-canvas drawer/sheet | [drawer.js](../src/js/components/drawer.js) |
+| <code>&lt;ui-accordion&gt;</code> + <code>&lt;ui-accordion-item&gt;</code> | Animated disclosure sections | [accordion.js](../src/js/components/accordion.js) |
 
-There are 14 registered element names when paired elements are counted individually. <code>ui-command</code> is a declarative child of <code>ui-command-palette</code>. It is registered by the palette module but is not a standalone command control.
+There are 28 registered element names when paired elements are counted individually. `ui-command` is a declarative child of `ui-command-palette`; `ui-option` is an option definition consumed by `ui-select`. They are registered custom elements, not standalone controls.
 
-### <code>&lt;ui-button&gt;</code>
+### Buttons and icons
 
-Use it instead of inventing <code>Button</code>, <code>BaseButton</code>, or another button wrapper.
+Use <code>&lt;ui-button&gt;</code> instead of inventing `Button`, `BaseButton`, or another button wrapper.
 
 Verified attributes:
-- <code>variant</code>: <code>primary</code>, <code>secondary</code> (default), <code>subtle</code>, <code>destructive</code>
-- <code>size</code>: <code>sm</code>, <code>md</code> (default), <code>lg</code>
-- <code>icon</code>, <code>icon-end</code>: Lucide icon names
-- <code>loading</code>, <code>disabled</code>
-- <code>type</code>
-- <code>label</code> or <code>aria-label</code> for icon-only buttons
+- `variant`: `primary`, `secondary` (default), `subtle`, `destructive`
+- `size`: `sm`, `md` (default), `lg`
+- `icon`, `icon-end`: Lucide icon names
+- `loading`, `disabled`, `type`, `label`, `aria-label`
 
 ~~~html
 <ui-button variant="primary" icon="save">Save changes</ui-button>
@@ -68,37 +85,124 @@ Verified attributes:
 <ui-button size="sm" loading>Saving</ui-button>
 ~~~
 
-The element exposes <code>loading</code> and <code>disabled</code> properties, plus <code>focus()</code> and <code>click()</code> methods. Its inner native button receives the actual disabled, type, and accessibility behavior. An icon-only button must have a label.
+The element exposes `loading` and `disabled` properties, plus `focus()` and `click()` methods. An icon-only button must have a label. Use <code>&lt;ui-button&gt;</code> for new UI. Native buttons inside a custom component are implementation details, not markup to reproduce in an app.
 
-A native <code>&lt;button class="ui-btn ..."&gt;</code> is also supported when native form markup or a specific browser behavior requires it. Use <code>ui-btn--primary</code>, <code>ui-btn--secondary</code>, <code>ui-btn--subtle</code>, <code>ui-btn--destructive</code>, <code>ui-btn--sm</code>, <code>ui-btn--lg</code>, <code>ui-btn--icon</code>, and <code>ui-btn-group</code> only as shown in source/showcase.
+Use `<ui-icon name="search"></ui-icon>`. Supported attributes are `name`, `size`, `stroke`, and `label`. A `label` gives it an image role and accessible name; without it, the icon is hidden from assistive technology. The icon registry exposes `has`, `register`, `registerAll`, and `load`. Bundled names and aliases live in [`icon-data.js`](../src/js/icon-data.js). Check that file instead of guessing that an icon is bundled.
 
-### <code>&lt;ui-icon&gt;</code>
+### Custom input and textarea
 
-Use <code>&lt;ui-icon name="search"&gt;&lt;/ui-icon&gt;</code>. Verified attributes: <code>name</code>, <code>size</code>, <code>stroke</code>, <code>label</code>. A <code>label</code> gives it an image role and accessible name; without a label, it is hidden from assistive technology. The <code>Omorphia.icons</code> registry exposes <code>has</code>, <code>register</code>, <code>registerAll</code>, and <code>load</code>. Bundled Lucide names and aliases live in <a href="../src/js/icon-data.js">src/js/icon-data.js</a>; do not claim an icon is bundled without checking that file. Missing icons are attempted from the configured Lucide CDN.
-
-### <code>&lt;ui-tooltip&gt;</code>
-
-Use it to describe an existing control, not as a general popover.
+**Use <code>&lt;ui-input&gt;</code> and <code>&lt;ui-textarea&gt;</code>. Do not author raw `<input>` or `<textarea>` controls in application markup.**
 
 ~~~html
-<ui-tooltip content="Copy to clipboard" placement="top" delay="250">
+<div class="ui-field">
+  <span class="ui-label">Project name</span>
+  <ui-input name="project-name" label="Project name" icon="folder" placeholder="Untitled project" clearable></ui-input>
+  <p class="ui-hint">Shown on invoices and in the sidebar.</p>
+</div>
+
+<div class="ui-field">
+  <span class="ui-label">Notes</span>
+  <ui-textarea name="notes" label="Project notes" rows="4" maxlength="500" placeholder="Write a note…"></ui-textarea>
+</div>
+~~~
+
+`ui-input` attributes: `type` (`text`, `email`, `password`, `search`, `url`, `tel`, `number`), `value`, `placeholder`, `name`, `disabled`, `readonly`, `required`, `clearable`, `size` (`sm`, `md`, `lg`), `label`, `autocomplete`, and `icon`. Properties: `value`, `disabled`; methods: `focus()`, `select()`, `checkValidity()`, `reportValidity()`. Events: `ui-input` and `ui-change`, each with `{ value, input }` in `event.detail`.
+
+`ui-textarea` attributes: `value`, `placeholder`, `name`, `disabled`, `readonly`, `required`, `rows`, `maxlength`, `resize` (`vertical`, `both`, or `none`), `label`, and `auto-grow`. Properties: `value`, `disabled`; methods: `focus()`, `checkValidity()`, `reportValidity()`. Events: `ui-input` and `ui-change` with `{ value }`.
+
+Both controls provide their own accessible internal editing surface. Do not place a raw input or textarea beside the custom element as a duplicate field.
+
+### Checkbox, radio, switch, and range
+
+Use custom controls for every choice and range interaction. **Do not author `<input type="checkbox">`, `<input type="radio">`, `<input type="range">`, or a switch made from a raw checkbox.**
+
+~~~html
+<ui-checkbox name="updates" value="deploys" label="Email me about deploys" checked></ui-checkbox>
+
+<ui-radio name="plan" value="starter" label="Starter" checked></ui-radio>
+<ui-radio name="plan" value="team" label="Team"></ui-radio>
+
+<ui-switch name="auto-deploy" value="yes" label="Auto-deploy main" checked></ui-switch>
+
+<ui-range name="volume" label="Volume" min="0" max="100" step="5" value="40"></ui-range>
+~~~
+
+`ui-checkbox`, `ui-radio`, and `ui-switch` accept `checked`, `disabled`, `name`, `value`, `label`, and `required`. They expose `checked` and `disabled` properties and a `focus()` method. Events: `ui-input` and `ui-change`, with `{ checked, value }`.
+
+Radios with the same `name` form a group. Arrow keys move through the enabled options. A switch uses `role="switch"` and exposes `aria-checked`.
+
+`ui-range` accepts `min`, `max`, `step`, `value`, `disabled`, `name`, and `label`. Property: `value`; method: `focus()`. Events: `ui-input` while changing and `ui-change` when committed. Keyboard controls include arrow keys, Page Up/Down, Home, and End.
+
+These components submit their values through internal hidden form fields. Do not add a second native input to submit the same value.
+
+### Select and options
+
+**Use <code>&lt;ui-select&gt;</code> with <code>&lt;ui-option&gt;</code>. Do not author a native `<select>` or `<option>`.** The options are rendered in a borderless floating menu, not a browser select popup.
+
+~~~html
+<ui-select name="region" label="Region" placeholder="Choose a region" searchable>
+  <ui-option value="fra" description="Europe" icon="globe">Europe (Frankfurt)</ui-option>
+  <ui-option value="iad" description="North America">US East (Virginia)</ui-option>
+  <ui-option value="sin" description="Asia Pacific">Asia Pacific (Singapore)</ui-option>
+</ui-select>
+
+<ui-select name="topics" label="Topics" multiple placeholder="Select topics">
+  <ui-option value="design">Design</ui-option>
+  <ui-option value="engineering">Engineering</ui-option>
+  <ui-option value="research">Research</ui-option>
+</ui-select>
+~~~
+
+`ui-select` attributes: `value`, `placeholder`, `disabled`, `multiple`, `searchable`, `name`, `label`, `placement`, and `required`. Property: `value` (string for single choice, array for multiple); property `selectedOptions`; method `focus()`. Events: `ui-input` and `ui-change` with `{ value, option }` or `{ value, option, selectedOptions }`.
+
+`ui-option` attributes: `value`, `label`, `description`, `disabled`, `selected`, and `icon`. Its `value`, `label`, and `disabled` properties are readable. Keep options as direct children in markup. Do not build a second dropdown for select values.
+
+### Date and time pickers
+
+**Use the custom calendar and time picker. Never use native `<input type="date">`, `<input type="time">`, or browser date/time picker popups.**
+
+~~~html
+<ui-date-picker
+  name="release-date"
+  label="Release date"
+  value="2026-11-20"
+  min="2026-01-01"
+  max="2027-12-31"
+  locale="en-GB">
+</ui-date-picker>
+
+<ui-time-picker
+  name="maintenance-time"
+  label="Maintenance time"
+  value="14:30"
+  format="12h"
+  step="5">
+</ui-time-picker>
+~~~
+
+`ui-date-picker` stores an ISO `YYYY-MM-DD` string. Attributes: `value`, `min`, `max`, `disabled`, `placeholder`, `locale`, `week-start` (0–6), `placement`, `name`, and `label`. Properties: `value`, `date` (a JavaScript Date or null), `disabled`; method: `focus()`. Events: `ui-input` and `ui-change` with `{ value, date }`. Arrow keys move one day/week; Home/End move to the week edges; Page Up/Down changes month/year. `min` and `max` dates are disabled.
+
+`ui-time-picker` stores an `HH:MM` 24-hour string. Attributes: `value`, `disabled`, `placeholder`, `format` (`12h` or default 24-hour), `step` (minute interval), `placement`, `label`, and `name`. Property: `value`; method: `focus()`. Events: `ui-input` and `ui-change` with `{ value }`. In 12-hour mode the visible AM/PM control does not change the stored 24-hour format.
+
+Both controls render their own calendar/selection surface inside `ui-popover`, so they share the same motion and theme behavior. Both include hidden form values. Do not create a parallel calendar or native fallback widget.
+
+### Tooltips, modal, and popover
+
+<code>&lt;ui-tooltip&gt;</code> wraps an existing target. Attributes: `content`, `placement`, and `delay`. Methods: `show()`, `hide()`.
+
+~~~html
+<ui-tooltip content="Copy to clipboard" placement="top">
   <ui-button icon="copy">Copy</ui-button>
 </ui-tooltip>
 ~~~
 
-Verified attributes: <code>content</code>, <code>placement</code>, <code>delay</code>. It wraps its target as the first element child. <code>show()</code> and <code>hide()</code> are available. It opens on pointer hover and keyboard focus. The tooltip is associated with its target through <code>aria-describedby</code>.
-
-### <code>&lt;ui-modal&gt;</code> and <code>Omorphia.confirm()</code>
-
-Use <code>&lt;ui-modal&gt;</code> for a dialog with custom content. Verified attributes: <code>heading</code>, <code>size</code> (<code>sm</code>, default/medium, <code>lg</code>), <code>open</code>, and <code>persistent</code>. Put footer actions in an element with <code>slot="footer"</code>.
+Use <code>&lt;ui-modal&gt;</code> for a dialog with custom content. Attributes: `heading`, `size` (`sm`, default/medium, `lg`), `open`, and `persistent`. Place footer actions inside an element with `slot="footer"`.
 
 ~~~html
 <ui-modal id="edit-dialog" heading="Edit project">
   <div class="ui-field">
-    <label class="ui-label" for="project-title">Project title</label>
-    <div class="ui-input">
-      <input id="project-title" name="title">
-    </div>
+    <span class="ui-label">Project title</span>
+    <ui-input name="title" label="Project title"></ui-input>
   </div>
   <div slot="footer">
     <ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button>
@@ -107,276 +211,197 @@ Use <code>&lt;ui-modal&gt;</code> for a dialog with custom content. Verified att
 </ui-modal>
 ~~~
 
-Methods: <code>show()</code>, <code>close(returnValue)</code>, <code>toggle()</code>. Property: <code>open</code>. Events: <code>ui-open</code>, cancelable <code>ui-before-close</code>, <code>ui-close</code>. <code>persistent</code> hides the built-in close control and prevents backdrop-click dismissal; do not assume it prevents Escape or programmatic close.
+Methods: `show()`, `close(returnValue)`, `toggle()`. Property: `open`. Events: `ui-open`, cancelable `ui-before-close`, and `ui-close`. For a standard yes/no confirmation, use `Omorphia.confirm({ title, message, confirmLabel, cancelLabel, destructive })`, which resolves to `Promise<boolean>`.
 
-For a standard yes/no confirmation, use the existing <code>Omorphia.confirm({ title, message, confirmLabel, cancelLabel, destructive })</code>, which resolves to <code>Promise&lt;boolean&gt;</code>. Do not hand-build another confirmation dialog.
-
-### <code>&lt;ui-popover&gt;</code> and <code>&lt;ui-dropdown&gt;</code>
-
-Use <code>&lt;ui-popover&gt;</code> for custom anchored content. The trigger is the element with <code>slot="trigger"</code>; remaining children become the panel.
+Use <code>&lt;ui-popover&gt;</code> for anchored custom content. Its trigger is the child with `slot="trigger"`; its remaining children become the floating panel. Methods: `show()`, `hide()`, `toggle()`; property: `open`; events: `ui-open` and `ui-close`.
 
 ~~~html
 <ui-popover placement="bottom-start">
   <ui-button slot="trigger" icon="settings">Display options</ui-button>
   <div class="ui-stack ui-gap-3">
-    <p class="ui-h3">Display</p>
-    <label class="ui-switch">
-      <input class="ui-switch-input" type="checkbox" role="switch">
-      <span class="ui-switch-track"></span>
-      Compact rows
-    </label>
+    <ui-switch label="Compact rows" checked></ui-switch>
+    <ui-switch label="Show IDs"></ui-switch>
   </div>
 </ui-popover>
 ~~~
 
-Verified attribute: <code>placement</code> (for example <code>bottom-start</code>). Methods: <code>show()</code>, <code>hide()</code>, <code>toggle()</code>. Property: <code>open</code>. Events: <code>ui-open</code>, <code>ui-close</code>.
+Popover, dropdown, select, date picker, and time picker share a trigger-to-surface morph transition. Do not add competing CSS or JavaScript entrance effects. Reduced-motion users receive immediate, non-animated state changes.
 
-Use <code>&lt;ui-dropdown&gt;</code> for a menu of actions. It extends the popover behavior and enhances its button/link children as menu items. Use native <code>&lt;button data-value="..."&gt;</code> or <code>&lt;a href="..."&gt;</code> children, and <code>&lt;hr&gt;</code> for separators.
+### Dropdown and custom menu items
+
+**Do not put raw `<button>` or `<a>` menu rows into new dropdowns. Use <code>&lt;ui-menu-item&gt;</code>.** The dropdown handles keyboard focus, arrow navigation, Home/End, type-ahead, selection, and dismissal.
 
 ~~~html
 <ui-dropdown placement="bottom-start">
   <ui-button slot="trigger" icon-end="chevron-down">Actions</ui-button>
   <div class="ui-menu-label">Project</div>
-  <button data-value="rename">Rename</button>
-  <button data-value="duplicate">Duplicate</button>
-  <hr>
-  <button class="ui-menu-item--danger" data-value="delete">Delete</button>
+  <ui-menu-item value="rename" label="Rename" icon="pencil" shortcut="R"></ui-menu-item>
+  <ui-menu-item value="duplicate" label="Duplicate" icon="copy"></ui-menu-item>
+  <ui-menu-item value="delete" label="Delete" icon="trash-2" destructive></ui-menu-item>
 </ui-dropdown>
 ~~~
 
-Event: <code>ui-select</code>, with <code>{ item, value }</code> in <code>event.detail</code>. The value comes from <code>data-value</code>, or the item's text when no <code>data-value</code> is supplied. Do not invent <code>&lt;ui-menu&gt;</code>, <code>&lt;ui-menu-item&gt;</code>, or a separate dropdown component.
+`ui-menu-item` attributes: `value`, `label`, `icon`, `shortcut`, `disabled`, and `destructive`. It must be a child of `ui-dropdown`. The dropdown emits `ui-select` with `{ item, value }`. The value is read from the custom item's `value` attribute. Do not invent `ui-menu`, `ui-menu-row`, or another menu component.
 
-### <code>&lt;ui-tabs&gt;</code> and <code>&lt;ui-tab&gt;</code>
+### Tabs and pagination
 
-Use <code>&lt;ui-tab&gt;</code> for each tab and its panel content. The <code>ui-tabs</code> container owns selection.
+`<ui-tabs value="overview">` contains one `<ui-tab label="..." value="...">` per panel. Child attributes include `label`, `value`, `icon`, and `disabled`. The container exposes a `value` property and emits `ui-change` with `{ value, tab }`. Arrow keys, Home, and End are supported.
 
-~~~html
-<ui-tabs value="overview" label="Project sections">
-  <ui-tab label="Overview" value="overview" icon="layers">Overview content</ui-tab>
-  <ui-tab label="Activity" value="activity" icon="clock">Activity content</ui-tab>
-  <ui-tab label="Billing" value="billing" disabled>Billing content</ui-tab>
-</ui-tabs>
-~~~
+`<ui-pagination total="24" page="6" siblings="1">` renders page navigation. Attributes: `total`, `page`, `siblings`, and `label`. Property: `page`; method: `go(page)`; event: `ui-change` with `{ page }`.
 
-Container: <code>value</code>, optional <code>label</code>. Child: <code>label</code>, <code>value</code>, optional <code>icon</code>, <code>disabled</code>; a child with <code>selected</code> can provide an initial selection when the container has no value. Set/read the container's <code>value</code> property. Event: <code>ui-change</code>, with <code>{ value, tab }</code>. Arrow keys, Home, and End are handled. Do not make another tabs implementation.
+### Drawer
 
-### <code>&lt;ui-pagination&gt;</code>
+**Use <code>&lt;ui-drawer&gt;</code> for an off-canvas panel or mobile sheet. Do not build a second drawer with a fixed div and custom backdrop.**
 
 ~~~html
-<ui-pagination total="24" page="6" siblings="1" label="Search results"></ui-pagination>
+<ui-drawer id="settings-drawer" heading="Project settings" placement="right" size="md">
+  <p>Update workspace preferences.</p>
+  <div class="ui-field">
+    <span class="ui-label">Project name</span>
+    <ui-input name="project-name" label="Project name"></ui-input>
+  </div>
+  <div slot="footer">
+    <ui-button variant="subtle" onclick="document.getElementById('settings-drawer').close()">Cancel</ui-button>
+    <ui-button variant="primary">Save changes</ui-button>
+  </div>
+</ui-drawer>
+
+<ui-button onclick="document.getElementById('settings-drawer').show()">Open settings</ui-button>
 ~~~
 
-Verified attributes: <code>total</code>, <code>page</code>, <code>siblings</code>, <code>label</code>. Property: <code>page</code>. Method: <code>go(page)</code>. Event: <code>ui-change</code>, with <code>{ page }</code>. This component handles page controls only. Connect its event to the app's actual data-loading or view-update logic.
+Attributes: `open`, `heading`, `placement` (`left`, `right`, `top`, `bottom`), `size` (`sm`, `md`, `lg`), and `persistent`. Slots: `header`, `footer`. Methods: `show()`, `close(reason)`, `toggle()`; property: `open`; events: `ui-open` and `ui-close` with `{ reason }`. It manages focus, Escape/backdrop dismissal, focus restoration, body scroll lock, and reduced motion. The drawer panel itself has no border.
 
-### <code>&lt;ui-command-palette&gt;</code> and <code>&lt;ui-command&gt;</code>
+### Accordion
 
-Use this for global app actions and navigation. It is distinct from <code>&lt;ui-search&gt;</code>, which is for searching a specific dataset or field.
+**Use <code>&lt;ui-accordion&gt;</code> and <code>&lt;ui-accordion-item&gt;</code>. Do not author native `<details>` disclosures for new component UI.**
 
 ~~~html
-<ui-command-palette hotkey="mod+shift+k" placeholder="Search commands">
-  <ui-command label="New document" group="Actions" icon="plus" shortcut="N"></ui-command>
-  <ui-command label="Open settings" group="Navigate" icon="settings" href="/settings"></ui-command>
-</ui-command-palette>
+<ui-accordion>
+  <ui-accordion-item heading="Overview" value="overview" open>
+    Overview content.
+  </ui-accordion-item>
+  <ui-accordion-item heading="Advanced settings" value="advanced">
+    Advanced content.
+  </ui-accordion-item>
+</ui-accordion>
+
+<ui-accordion multiple>
+  <ui-accordion-item heading="First">First panel</ui-accordion-item>
+  <ui-accordion-item heading="Second">Second panel</ui-accordion-item>
+</ui-accordion>
 ~~~
 
-The command palette accepts <code>hotkey</code>, <code>placeholder</code>, and <code>disabled</code>. Default shortcut is <code>mod+shift+k</code>; <code>hotkey="none"</code> disables it. <code>&lt;ui-command&gt;</code> supports the declarative fields <code>label</code>, <code>group</code>, <code>description</code>, <code>icon</code>, <code>shortcut</code>, <code>href</code>, <code>target</code>, <code>keywords</code>, and <code>disabled</code>.
+The root accepts `multiple` and `value`. Each item accepts `heading`, `value`, `open`, and `disabled`. An accordion without `multiple` keeps one panel open at a time; with `multiple`, panels can stay open together. Item methods: `show()`, `hide()`, `toggle()`; item/root emit `ui-change`. Arrow keys, Home, and End move between enabled headers. The panel uses a grid-based height transition and respects `prefers-reduced-motion`.
 
-For JavaScript commands, use <code>Omorphia.commands.register([...])</code>. A command object supports <code>id</code>, <code>label</code>, optional <code>group</code>, <code>description</code>, <code>icon</code>, <code>keywords</code>, <code>shortcut</code>, <code>href</code>, <code>target</code>, <code>onSelect(command)</code>, and <code>disabled</code>. The registry exposes <code>register</code>, <code>unregister</code>, <code>clear</code>, and <code>list</code>. The palette instance also has <code>register</code>, <code>commands</code>, <code>open</code>, <code>close</code>, <code>toggle</code>, <code>disabled</code>, and <code>isOpen</code>.
+### Command palette, search, and sidebar
 
-Events: <code>ui-open</code>, <code>ui-close</code>, <code>ui-command</code>, with <code>{ command }</code> on <code>ui-command</code>. Do not invent a separate command modal or a <code>ui-command-item</code> tag.
+Use <code>&lt;ui-command-palette&gt;</code> for global app actions and <code>&lt;ui-search&gt;</code> for searching a specific dataset. Do not substitute one for the other.
 
-### <code>&lt;ui-search&gt;</code>
+The command palette accepts `hotkey`, `placeholder`, and `disabled`. Default shortcut is `mod+shift+k`; `hotkey="none"` disables it. Declarative <code>&lt;ui-command&gt;</code> fields: `label`, `group`, `description`, `icon`, `shortcut`, `href`, `target`, `keywords`, and `disabled`. JavaScript commands register through `Omorphia.commands.register([...])`; each supports `id`, `label`, optional `group`, `description`, `icon`, `keywords`, `shortcut`, `href`, `target`, `onSelect(command)`, and `disabled`. Events: `ui-open`, `ui-close`, `ui-command` with `{ command }`.
 
-Use this for in-context search, local suggestions, and asynchronous autocomplete. Do not use it as a global action palette.
+`ui-search` accepts local `data`, `suggestions`, async `source(query, signal)`, and `renderItem(item, context)` properties. It emits `ui-input`, `ui-select`, `ui-submit`, and `ui-clear`. Use it for local or remote suggestions, not for dropdown option lists or a global command menu.
 
-~~~html
-<ui-search id="people-search" autocomplete placeholder="Find a teammate"></ui-search>
-~~~
-
-Set its JavaScript properties from application code:
-
-~~~js
-const search = document.querySelector('#people-search');
-
-search.data = [
-  { label: 'Ada Lovelace', value: 'ada', description: 'Engineering' },
-  { label: 'Grace Hopper', value: 'grace', description: 'Compiler team' }
-];
-
-search.addEventListener('ui-select', (event) => {
-  const selectedPerson = event.detail.item;
-});
-~~~
-
-Supported item shape: a string, or <code>{ label, value?, description?, icon?, keywords? }</code>.
-
-Verified configuration attributes include <code>placeholder</code>, <code>value</code>, <code>loading</code>, <code>name</code>, <code>label</code>, <code>autocomplete</code>, <code>min-chars</code>, <code>debounce</code>, <code>max</code>, <code>empty-text</code>, and <code>loading-text</code>. JavaScript properties: <code>data</code>, <code>suggestions</code>, <code>source</code> (async <code>(query, signal) =&gt; items</code>), and <code>renderItem</code> (<code>(item, { query, highlight }) =&gt; Node|string</code>). Events: <code>ui-input</code> (<code>{ value }</code>), <code>ui-select</code> (<code>{ item, value }</code>), <code>ui-submit</code> (<code>{ value }</code>), and <code>ui-clear</code>. The <code>source</code> receives an <code>AbortSignal</code>; respect it when making requests.
-
-### <code>&lt;ui-sidebar&gt;</code> and <code>&lt;ui-sidebar-item&gt;</code>
-
-Use these for application navigation, not a hand-built sidebar.
-
-~~~html
-<ui-sidebar heading="Workspace" collapsible width="240px" breakpoint="768">
-  <ui-sidebar-item icon="house" href="/" active>Dashboard</ui-sidebar-item>
-  <ui-sidebar-item icon="folder" expanded>Projects
-    <ui-sidebar-item href="/projects/atlas">Atlas</ui-sidebar-item>
-    <ui-sidebar-item href="/projects/meridian">Meridian</ui-sidebar-item>
-  </ui-sidebar-item>
-  <ui-sidebar-item icon="settings" href="/settings">Settings</ui-sidebar-item>
-  <div slot="footer">Workspace footer</div>
-</ui-sidebar>
-~~~
-
-Container attributes used by the implementation: <code>heading</code>, <code>label</code>, <code>collapsible</code>, <code>collapsed</code>, <code>open</code>, <code>width</code>, <code>breakpoint</code>, <code>fixed</code>, and <code>position="left|right"</code>. Slots: <code>header</code>, <code>footer</code>. Methods: <code>toggle()</code>, <code>collapse()</code>, <code>expand()</code>, <code>openMobile()</code>, <code>closeMobile()</code>. Events: <code>ui-select</code> (<code>{ item, href }</code>, cancelable) and <code>ui-toggle</code> (<code>{ collapsed, open }</code>). An external control can use <code>data-ui-toggle="#sidebar-id"</code>.
-
-Child attributes: <code>icon</code>, <code>href</code>, <code>active</code>, <code>expanded</code>, <code>disabled</code>, <code>label</code>. Nest child <code>&lt;ui-sidebar-item&gt;</code> elements to make groups. Do not invent a second sidebar, tree, or navigation-item API when this structure fits.
+Use <code>&lt;ui-sidebar&gt;</code> with nested <code>&lt;ui-sidebar-item&gt;</code> elements for responsive navigation. The container supports `heading`, `label`, `collapsible`, `collapsed`, `open`, `width`, `breakpoint`, `fixed`, and `position`. Slots: `header` and `footer`. Methods: `toggle()`, `collapse()`, `expand()`, `openMobile()`, and `closeMobile()`. Items support `icon`, `href`, `active`, `expanded`, `disabled`, and `label`.
 
 ## 3. JavaScript helpers that already exist
 
-These are methods and helpers, not standalone UI custom elements.
+These are APIs, not standalone UI custom elements.
 
 | API | Use | Verified source |
 | --- | --- | --- |
-| <code>Omorphia.toast(options)</code> | Notifications. Accepts a string or <code>{ title, description, variant, duration, action, onDismiss }</code>; returns <code>{ dismiss, element }</code>. | <a href="../src/js/components/toast.js">toast.js</a> |
-| <code>Omorphia.confirm(options)</code> | Standard confirmation. Returns <code>Promise&lt;boolean&gt;</code>. | <a href="../src/js/components/modal.js">modal.js</a> |
-| <code>Omorphia.commands.register(commands)</code> | Register command palette actions. | <a href="../src/js/components/command-palette.js">command-palette.js</a> |
-| <code>Omorphia.theme.get/set/toggle()</code> | Read or change <code>data-ui-theme</code> (<code>dark</code>, <code>light</code>, or <code>auto</code>). | <a href="../src/js/index.js">index.js</a> |
-| <code>Omorphia.icons</code> | Check/register/load Lucide icons. | <a href="../src/js/icons.js">icons.js</a> |
-| <code>Omorphia.version</code> | Read the bundled version. | <a href="../src/js/index.js">index.js</a> |
+| `Omorphia.toast(options)` | Notifications; returns `{ dismiss, element }`. | [toast.js](../src/js/components/toast.js) |
+| `Omorphia.confirm(options)` | Confirmation dialog; returns `Promise<boolean>`. | [modal.js](../src/js/components/modal.js) |
+| `Omorphia.commands.register(commands)` | Register command palette actions. | [command-palette.js](../src/js/components/command-palette.js) |
+| `Omorphia.theme.get/set/toggle()` | Read/change dark, light, and auto theme. | [index.js](../src/js/index.js) |
+| `Omorphia.icons` | Check/register/load Lucide icons. | [icons.js](../src/js/icons.js) |
+| `Omorphia.version` | Read the bundled version. | [index.js](../src/js/index.js) |
 
-Toast variants in source: <code>success</code>, <code>danger</code>, <code>error</code>, <code>warning</code>, <code>info</code>, and <code>neutral</code>. Default duration is 5000 ms; <code>duration: 0</code> keeps it open until dismissed. Use this API instead of inventing a notification/toast component.
+Toast variants: `success`, `danger`, `error`, `warning`, `info`, and `neutral`. Default duration is 5000 ms; `duration: 0` keeps it open until dismissed.
 
-## 4. CSS primitives: native HTML with Omorphia styling
+## 4. CSS primitives: static content and layout
 
-**These are not custom elements.** Use the native HTML element shown and apply the matching class. Do not write a custom tag because the class begins with <code>ui-</code>.
+The library retains CSS patterns for static content and layout. They are useful for cards, alerts, badges, typography, status, progress, and spacing. They are **not a reason to replace a custom interactive element**.
 
-### Form fields and controls
+- Fields/layout: `.ui-field`, `.ui-label`, `.ui-hint`, `.ui-error-text`, `.ui-success-text`, `.ui-stack`, `.ui-row`, `.ui-grid`, `.ui-grow`.
+- Cards: semantic `<article class="ui-card">` with `.ui-card-header`, `.ui-card-body`, `.ui-card-title`, `.ui-card-desc`, and `.ui-card-footer`.
+- Alerts: `.ui-alert` with `.ui-alert--info`, `--success`, `--warning`, or `--danger`.
+- Badges and status: `.ui-badge`, `.ui-status` and their documented modifiers.
+- Progress/loading: `.ui-progress`, `.ui-progress-bar`, `.ui-spinner`, `.ui-skeleton`.
+- Avatar: `.ui-avatar` and `.ui-avatar-group`.
+- Static navigation: `.ui-crumbs`, `.ui-crumb`, `.ui-nav`, and `.ui-nav-link`.
+- Typography: `.ui-display`, `.ui-h1`, `.ui-h2`, `.ui-h3`, `.ui-body`, `.ui-small`, `.ui-caption`, `.ui-muted`, `.ui-faint`, `.ui-link`, `.ui-code`, and `.ui-kbd`.
 
-| Need | Correct markup pattern | Important distinction |
-| --- | --- | --- |
-| Text, email, number, password, search inputs | <code>&lt;div class="ui-input"&gt;&lt;input ...&gt;&lt;/div&gt;</code> | <code>.ui-input</code> is a wrapper, not <code>&lt;ui-input&gt;</code>. |
-| Textarea | <code>&lt;div class="ui-textarea"&gt;&lt;textarea ...&gt;&lt;/textarea&gt;&lt;/div&gt;</code> | <code>.ui-textarea</code> wraps a native textarea. |
-| Select | <code>&lt;div class="ui-select"&gt;&lt;select ...&gt;...&lt;/select&gt;&lt;/div&gt;</code> | <code>.ui-select</code> is a wrapper, not <code>&lt;ui-select&gt;</code>. |
-| Checkbox | <code>&lt;label class="ui-check"&gt;&lt;input class="ui-check-input" type="checkbox"&gt; ...&lt;/label&gt;</code> | Native checkbox. |
-| Radio | <code>&lt;label class="ui-radio"&gt;&lt;input class="ui-radio-input" type="radio"&gt; ...&lt;/label&gt;</code> | Native radio. |
-| Switch | <code>&lt;label class="ui-switch"&gt;&lt;input class="ui-switch-input" type="checkbox" role="switch"&gt;&lt;span class="ui-switch-track"&gt;&lt;/span&gt; ...&lt;/label&gt;</code> | Native checkbox with switch styling. |
-| Range | <code>&lt;input class="ui-range" type="range"&gt;</code> | Native range input. |
+Legacy class-based form patterns remain for backwards compatibility. **For new interface work, use the custom form elements in Section 2 instead.** Do not write raw input/select/textarea/button/details controls as replacements.
 
-Use <code>.ui-field</code>, <code>.ui-label</code>, <code>.ui-hint</code>, <code>.ui-error-text</code>, and <code>.ui-success-text</code> to compose a labelled field. Use <code>data-state="error"</code> or <code>data-state="success"</code> on <code>.ui-field</code> when following the documented validation pattern. Keep native <code>id</code>, <code>for</code>, <code>name</code>, <code>required</code>, <code>disabled</code>, and ARIA attributes.
+## 5. Common false assumptions
 
-~~~html
-<div class="ui-field">
-  <label class="ui-label" for="email">Email</label>
-  <div class="ui-input">
-    <ui-icon name="mail"></ui-icon>
-    <input id="email" name="email" type="email" autocomplete="email" required>
-  </div>
-  <p class="ui-hint">Used for account updates.</p>
-  <p class="ui-error-text">Enter a valid email address.</p>
-</div>
-~~~
-
-### Buttons and button groups
-
-Use <code>&lt;ui-button&gt;</code> by default. Native <code>&lt;button class="ui-btn ..."></code> is supported for cases where the native element itself is required. Related buttons should use a cohesive group (<code>.ui-btn-group</code>) rather than separate unrelated treatments.
-
-### Navigation primitives
-
-- Breadcrumbs: <code>&lt;ol class="ui-crumbs"&gt;&lt;li class="ui-crumb"&gt;...&lt;/li&gt;&lt;/ol&gt;</code>.
-- Simple navigation: <code>&lt;nav class="ui-nav"&gt;&lt;a class="ui-nav-link" href="..."&gt;...&lt;/a&gt;&lt;/nav&gt;</code>.
-- Dropdown menu row classes such as <code>.ui-menu-item</code>, <code>.ui-menu-label</code>, <code>.ui-menu-shortcut</code>, and <code>.ui-menu-item--danger</code> are used inside <code>&lt;ui-dropdown&gt;</code>; do not create a separate menu web component.
-
-### Feedback primitives
-
-These are class-based patterns, not custom tags:
-- Alerts: <code>.ui-alert</code>, <code>.ui-alert--info</code>, <code>.ui-alert--success</code>, <code>.ui-alert--warning</code>, <code>.ui-alert--danger</code>, <code>.ui-alert-title</code>, <code>.ui-alert-desc</code>.
-- Badges: <code>.ui-badge</code>, <code>.ui-badge--accent</code>, <code>.ui-badge--success</code>, <code>.ui-badge--warning</code>, <code>.ui-badge--danger</code>, <code>.ui-badge--info</code>.
-- Status: <code>.ui-status</code> with <code>.ui-status--online</code>, <code>--away</code>, <code>--busy</code>, <code>--info</code>, or <code>--live</code>.
-- Progress: <code>.ui-progress</code> with <code>.ui-progress-bar</code>; set <code>--value</code> and accessible progressbar attributes. <code>.ui-progress--indeterminate</code> is available.
-- Loading: <code>.ui-spinner</code>; skeletons: <code>.ui-skeleton</code>, <code>.ui-skeleton--circle</code>, <code>--title</code>, <code>--block</code>.
-
-### Containers and layout primitives
-
-- Cards: semantic <code>&lt;article class="ui-card"&gt;</code> with <code>.ui-card-header</code>, <code>.ui-card-body</code>, <code>.ui-card-title</code>, <code>.ui-card-desc</code>, and <code>.ui-card-footer</code>.
-- Avatars: a native <code>&lt;span class="ui-avatar"&gt;</code> or a wrapper with an image; modifiers include <code>.ui-avatar--sm</code>, <code>--lg</code>, <code>--xl</code>, <code>--square</code>, <code>--circle</code>; groups use <code>.ui-avatar-group</code>. Optional <code>data-status</code> styles a status dot.
-- Collapsible content: native <code>&lt;details class="ui-collapsible"&gt;&lt;summary class="ui-summary"&gt;...&lt;/summary&gt;&lt;div class="ui-collapsible-body"&gt;...&lt;/div&gt;&lt;/details&gt;</code>. No JavaScript component is needed.
-- Dividers: <code>.ui-divider</code> and <code>.ui-divider--vertical</code>.
-- Layout: <code>.ui-stack</code>, <code>.ui-row</code>, <code>.ui-row--nowrap</code>, <code>.ui-grid</code>, <code>.ui-grow</code>, <code>.ui-cluster-between</code>; spacing helpers include <code>.ui-gap-1</code> through <code>.ui-gap-6</code> and <code>.ui-p-3</code> through <code>.ui-p-5</code>.
-- Typography: <code>.ui-display</code>, <code>.ui-h1</code>, <code>.ui-h2</code>, <code>.ui-h3</code>, <code>.ui-body</code>, <code>.ui-small</code>, <code>.ui-caption</code>, <code>.ui-muted</code>, <code>.ui-faint</code>, <code>.ui-text</code>, <code>.ui-link</code>, <code>.ui-code</code>, <code>.ui-kbd</code>.
-
-Inspect the linked CSS before depending on a class that is not listed here. Do not assume all utility names from another framework exist.
-
-## 5. Common false assumptions: do not use these as custom elements
-
-The following are **not registered custom elements** in the current library. Some matching class names exist, which is why the distinction matters.
+The following are **not** registered custom elements. Keep them as static semantic content with their class-based styles; do not invent tags for them.
 
 | Incorrect assumption | Correct implementation |
 | --- | --- |
-| <code>&lt;ui-input&gt;</code> | Native <code>&lt;input&gt;</code> inside <code>.ui-input</code> |
-| <code>&lt;ui-textarea&gt;</code> | Native <code>&lt;textarea&gt;</code> inside <code>.ui-textarea</code> |
-| <code>&lt;ui-select&gt;</code> | Native <code>&lt;select&gt;</code> inside <code>.ui-select</code> |
-| <code>&lt;ui-checkbox&gt;</code> / <code>&lt;ui-radio&gt;</code> / <code>&lt;ui-switch&gt;</code> | Native input with <code>.ui-check</code>, <code>.ui-radio</code>, or <code>.ui-switch</code> pattern |
-| <code>&lt;ui-card&gt;</code> | Native <code>&lt;article class="ui-card"&gt;</code> |
-| <code>&lt;ui-alert&gt;</code> / <code>&lt;ui-badge&gt;</code> / <code>&lt;ui-avatar&gt;</code> | Native element with the corresponding <code>.ui-*</code> class |
-| <code>&lt;ui-progress&gt;</code> / <code>&lt;ui-spinner&gt;</code> / <code>&lt;ui-skeleton&gt;</code> | Native element with the corresponding <code>.ui-*</code> class |
-| <code>&lt;ui-collapsible&gt;</code> | Native <code>&lt;details class="ui-collapsible"&gt;</code> |
-| <code>&lt;ui-menu&gt;</code> / <code>&lt;ui-menu-item&gt;</code> | <code>&lt;ui-dropdown&gt;</code> with native menu children |
-| <code>&lt;ui-dialog&gt;</code> / <code>&lt;ui-confirm&gt;</code> | <code>&lt;ui-modal&gt;</code> or <code>Omorphia.confirm()</code> |
-| <code>&lt;ui-table&gt;</code> / <code>&lt;ui-date-picker&gt;</code> / <code>&lt;ui-calendar&gt;</code> / <code>&lt;ui-file-upload&gt;</code> / <code>&lt;ui-chart&gt;</code> | No built-in custom element is registered for these in the current source. Use semantic native HTML and application logic, or explicitly plan a genuinely new feature. |
+| <code>&lt;ui-card&gt;</code> | `<article class="ui-card">` |
+| <code>&lt;ui-alert&gt;</code> / <code>&lt;ui-badge&gt;</code> / <code>&lt;ui-avatar&gt;</code> | Native semantic element with the corresponding static `.ui-*` class |
+| <code>&lt;ui-progress&gt;</code> / <code>&lt;ui-spinner&gt;</code> / <code>&lt;ui-skeleton&gt;</code> | Static element with the corresponding `.ui-*` class |
+| <code>&lt;ui-collapsible&gt;</code> | No custom element is registered. Use <code>&lt;ui-accordion&gt;</code> and <code>&lt;ui-accordion-item&gt;</code> instead. Do not use native <code>&lt;details&gt;</code> for new UI. |
+| <code>&lt;ui-table&gt;</code> / <code>&lt;ui-calendar&gt;</code> / <code>&lt;ui-file-upload&gt;</code> / <code>&lt;ui-chart&gt;</code> | No built-in custom element is registered for these in the current source. Use semantic content and application logic, or plan an explicitly approved library feature. |
 
-This is not an exhaustive list of possible invented names. **Any <code>&lt;ui-...&gt;</code> element not present in Section 2 must be verified in the current source before use.** Never assume a CSS class creates a custom element.
+**Never assume a class name creates a custom element.** Any `<ui-...>` element not present in Section 2 must be verified in the current source before use.
 
 ## 6. What to do when the library does not have a match
 
-Follow this decision order. Do not jump straight to custom code.
+1. **Use the exact existing component.**
+2. **Compose existing elements.** For example, use `ui-popover` with `ui-switch` elements for a display-settings panel.
+3. **Use documented CSS primitives for static content/layout.**
+4. **If a genuinely new interactive behavior is required, identify the exact gap** as `NO BUILT-IN COMPONENT` before coding.
+5. Only build an app-local custom element when no existing component or composition can satisfy the behavior. Keep it clearly app-specific and document why the existing API does not fit.
+6. Only add a public component to Omorphia when the user asks for a library feature or approves the scope. Update source, registration/exports, styles, tests, showcase, README, this catalog, and generated `dist/` output.
 
-1. **Use the exact existing component.** Prefer the matching Omorphia custom element for supported behavior.
-2. **Compose existing elements.** For example, use <code>ui-popover</code> with switch primitives for a display-settings panel; do not create a new settings-popover component.
-3. **Use native HTML with Omorphia CSS primitives.** This is the correct answer for inputs, checkboxes, cards, alerts, breadcrumbs, progress, and other class-based patterns.
-4. **Use plain semantic HTML with existing tokens and CSS conventions** when no matching primitive exists. Do not pretend it is a built-in component.
-5. **Create a project-local custom component only when the requested behavior genuinely requires reusable logic that cannot be composed from the library.** Name it as an application-specific extension, keep its API small, document why Omorphia did not fit, and avoid duplicating a supported control.
-6. **Modify Omorphia itself only when the user asks for a library-level feature or approves that change.** A new public component requires source implementation, registration/export where appropriate, styles, accessibility and theme support, tests, a showcase example, README/API documentation, a component-catalog update, and a build-generated <code>dist/</code> update.
-
-A missing feature is not permission to silently replace all existing controls with a homemade component system. Do not add another component library or framework to avoid learning Omorphia. If the gap materially changes product scope or architecture, explain the exact missing capability and ask before proceeding.
+A missing feature is not permission to replace the entire control system with homemade components or add another UI framework.
 
 ## 7. Anti-hallucination and instruction-following rules
 
 > [!CAUTION]
 > **THE EXISTING LIBRARY TAKES PRIORITY OVER AN AI-GENERATED REPLACEMENT.**
 >
-> - Do not invent <code>ui-*</code> tags.
-> - Do not guess attribute names, valid values, property setters, slots, event names, or methods.
+> - Do not invent `ui-*` tags.
+> - Do not guess attribute names, valid values, properties, methods, slots, or event names.
 > - Do not infer a JavaScript component from a CSS selector.
-> - Do not treat a screenshot, visual resemblance, or a component in the separate Modernimal showcase as proof that Omorphia implements it.
-> - Do not create <code>Button</code>, <code>Input</code>, <code>Select</code>, <code>Modal</code>, <code>Dropdown</code>, <code>Tabs</code>, <code>Toast</code>, or <code>Sidebar</code> wrappers when the matching Omorphia component already exists.
-> - Do not install a second UI library or write parallel button/form/menu/dialog systems without explicit approval.
-> - Do not ignore the inventory and claim that a homemade element is "equivalent" when the existing Omorphia component fits.
+> - Do not treat a screenshot, visual resemblance, framework example, or Modernimal showcase component as proof that Omorphia implements it.
+> - Do not create parallel Button, Input, Textarea, Select, DatePicker, TimePicker, Checkbox, Radio, Switch, Range, Modal, Dropdown, Menu, Tabs, Toast, Sidebar, Drawer, or Accordion systems.
+> - Do not use raw native controls for new UI: no `<button>`, `<input>`, `<textarea>`, `<select>`, `<option>`, or `<details>` as application controls. Use the matching Omorphia custom element.
+> - Internal native editing/form primitives inside an Omorphia custom element are implementation details. Do not copy them into application markup.
+> - Do not install a second UI library to avoid learning Omorphia.
 
-If an instruction conflicts with a real implementation detail, inspect the current source and explain the discrepancy. Never modify the API in your imagination to make an example work. Keep the exact version in view, especially when the consuming app pins a CDN release.
+If an instruction conflicts with implementation, inspect current source and explain the discrepancy. Never modify the API in your imagination. Keep the exact installed version in view, especially when a consuming app pins a CDN release.
 
-## 8. Required component audit before delivery
+## 8. Visual and motion rules for floating surfaces
 
-Before calling UI work complete, run this audit:
+- Menus, dropdowns, popovers, command panels, search panels, date/time panels, tooltips, and drawer surfaces use opaque `#0a0a0a` backgrounds.
+- **Do not add borders or outlines to overlays, popups, menus, popovers, or drawer panels.** Use spacing, contrast, layering, and restrained shadow for separation.
+- Borders remain appropriate on input controls and buttons, consistent with the existing tokens.
+- Dropdown/select/date/time surfaces reuse the shared trigger-to-panel morph. Do not add competing entrance animations.
+- Accordions use the existing grid-based height transition. Preserve its exit behavior and reduced-motion handling.
+- Respect `prefers-reduced-motion`; no animation should block opening, closing, selection, or keyboard behavior.
 
-- Search the changed markup for every <code>&lt;ui-</code> tag. Verify each tag against Section 2 and the exact-version source.
-- Search for every custom-looking handler, event listener, attribute, method, and slot. Verify it against component source.
-- Confirm class-based patterns use native HTML. In particular, confirm <code>.ui-input</code>, <code>.ui-textarea</code>, <code>.ui-select</code>, <code>.ui-card</code>, <code>.ui-alert</code>, and <code>.ui-badge</code> have not been turned into custom tags.
-- Confirm an existing Omorphia control was not recreated in app-local CSS/JS.
-- Confirm CSS is loaded from the matching Omorphia version and component behavior is actually registered. A missing stylesheet or failed bundle load is an integration bug to diagnose, not a reason to replace the component.
-- Test real interactions: disabled/loading states, keyboard/focus, open/close, selection, responsive behavior, theme consistency, and reduced motion as relevant.
-- If a custom piece remains, document the exact library gap and why composing existing primitives was not sufficient.
+## 9. Required component audit before delivery
 
-Include a brief **Component reuse audit** in the delivery report: name the Omorphia components/classes reused and identify any custom UI with a clear reason. A statement such as "used Omorphia" is not enough.
+- Search changed markup for every `<ui-` tag and verify it against Section 2 and exact-version source.
+- Search changed markup for raw interactive elements: `button`, `input`, `textarea`, `select`, `option`, and `details`. Replace authored controls with custom elements.
+- Verify every custom attribute, property, method, event, and slot against source.
+- Confirm existing controls were not recreated in app-local CSS/JS.
+- Test typing, form values, selection, keyboard navigation, opening/closing, interrupted transitions, responsive behavior, themes, and reduced motion as relevant.
+- If custom UI remains, document the exact library gap and why composing existing elements was not sufficient.
 
-## 9. Source map
+Include a brief **Component reuse audit** in the delivery report: name the Omorphia elements reused and identify any app-specific custom UI with a clear reason.
 
-- Registration and public JS exports: <a href="../src/js/index.js">src/js/index.js</a>
-- Shared custom-element helpers: <a href="../src/js/core.js">src/js/core.js</a>
-- Actual working component examples: <a href="../index.html">index.html</a>
-- Component styles: <a href="../src/css/">src/css/</a>
-- Public API and installation: <a href="../README.md">README.md</a>
-- Build generation: <a href="../scripts/build.mjs">scripts/build.mjs</a>
-- Runtime and showcase verification: <a href="../tests/smoke.mjs">tests/smoke.mjs</a>, <a href="../tests/showcase.mjs">tests/showcase.mjs</a>
+## 10. Source map
+
+- Registration and public JS exports: [`src/js/index.js`](../src/js/index.js)
+- Shared custom-element helpers and morph transitions: [`src/js/core.js`](../src/js/core.js)
+- Verified component examples: [`index.html`](../index.html)
+- Component styles: [`src/css/`](../src/css/)
+- API and installation: [`README.md`](../README.md)
+- Build generation: [`scripts/build.mjs`](../scripts/build.mjs)
+- Runtime and showcase tests: [`tests/smoke.mjs`](../tests/smoke.mjs), [`tests/showcase.mjs`](../tests/showcase.mjs)
 
 **When uncertain, inspect source. Do not guess. Reuse first. Extend only when the gap is real.**

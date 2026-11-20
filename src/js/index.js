@@ -11,6 +11,12 @@ import { UIPagination } from './components/pagination.js';
 import { UICommandPalette, commands, shortcutLabel } from './components/command-palette.js';
 import { UISearch } from './components/search.js';
 import { UISidebar, UISidebarItem } from './components/sidebar.js';
+import { UIInput, UITextarea, UICheckbox, UIRadio, UISwitch, UIRange } from './components/form-controls.js';
+import { UIOption, UISelect } from './components/select.js';
+import { UIDatePicker, UITimePicker } from './components/date-time-picker.js';
+import { UIDrawer } from './components/drawer.js';
+import { UIAccordion, UIAccordionItem } from './components/accordion.js';
+import { UIMenuItem } from './components/menu-item.js';
 
 export const version = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'dev';
 
@@ -20,4 +26,4 @@ export const theme = {
   set(mode, el = document.documentElement) { el.setAttribute('data-ui-theme', mode); el.dispatchEvent(new CustomEvent('ui-theme', { detail: { mode }, bubbles: true })); },
   toggle(el = document.documentElement) { theme.set(theme.get(el) === 'light' ? 'dark' : 'light', el); },
 };
-export { config, toast, confirm, commands, icons, icon, iconConfig, UIButton, UITooltip, UIModal, UIPopover, UIDropdown, UITabs, UITab, UIPagination, UICommandPalette, shortcutLabel, UISearch, UISidebar, UISidebarItem };
+export { config, toast, confirm, commands, icons, icon, iconConfig, UIButton, UITooltip, UIModal, UIPopover, UIDropdown, UITabs, UITab, UIPagination, UICommandPalette, shortcutLabel, UISearch, UISidebar, UISidebarItem, UIInput, UITextarea, UICheckbox, UIRadio, UISwitch, UIRange, UIOption, UISelect, UIDatePicker, UITimePicker, UIDrawer, UIAccordion, UIAccordionItem, UIMenuItem };

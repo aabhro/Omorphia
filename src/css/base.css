@@ -1,8 +1,8 @@
 /* Edgelit — base: scoped box-sizing, typography helpers, layout utilities. Nothing here touches bare element selectors. */
 :is([class*="ui-"], ui-button, ui-icon, ui-tooltip, ui-modal, ui-popover, ui-dropdown, ui-tabs, ui-tab, ui-pagination,
-    ui-command-palette, ui-command, ui-search, ui-sidebar, ui-sidebar-item),
+    ui-command-palette, ui-command, ui-search, ui-sidebar, ui-sidebar-item, ui-menu-item, ui-input, ui-textarea, ui-checkbox, ui-radio, ui-switch, ui-range, ui-option, ui-select, ui-date-picker, ui-time-picker, ui-drawer, ui-accordion, ui-accordion-item),
 :is([class*="ui-"], ui-button, ui-icon, ui-tooltip, ui-modal, ui-popover, ui-dropdown, ui-tabs, ui-tab, ui-pagination,
-    ui-command-palette, ui-command, ui-search, ui-sidebar, ui-sidebar-item) :is(*, *::before, *::after) {
+    ui-command-palette, ui-command, ui-search, ui-sidebar, ui-sidebar-item, ui-menu-item, ui-input, ui-textarea, ui-checkbox, ui-radio, ui-switch, ui-range, ui-option, ui-select, ui-date-picker, ui-time-picker, ui-drawer, ui-accordion, ui-accordion-item) :is(*, *::before, *::after) {
   box-sizing: border-box;
 }
 

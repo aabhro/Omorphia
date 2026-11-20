@@ -3,7 +3,7 @@ import { icon } from '../icons.js';
 
 /** <ui-button variant="primary|secondary|subtle|destructive" size="sm|md|lg" icon="name" icon-end="name" loading disabled type label> */
 export class UIButton extends HTMLElement {
-  static observedAttributes = ['variant', 'size', 'icon', 'icon-end', 'loading', 'disabled', 'type', 'label', 'aria-label'];
+  static observedAttributes = ['variant', 'size', 'icon', 'icon-end', 'loading', 'disabled', 'type', 'label', 'aria-label', 'aria-haspopup', 'aria-controls', 'aria-expanded', 'aria-describedby'];
   connectedCallback() {
     if (!this.button) {
       const kids = [...this.childNodes];
@@ -23,6 +23,10 @@ export class UIButton extends HTMLElement {
     bool(this, 'loading') ? b.setAttribute('aria-busy', 'true') : b.removeAttribute('aria-busy');
     const label = this.getAttribute('label') || this.getAttribute('aria-label');
     label ? b.setAttribute('aria-label', label) : b.removeAttribute('aria-label');
+    for (const name of ['aria-haspopup', 'aria-controls', 'aria-expanded', 'aria-describedby']) {
+      const value = this.getAttribute(name);
+      value == null ? b.removeAttribute(name) : b.setAttribute(name, value);
+    }
     if (!hasText && !label) console.warn('[edgelit] Icon-only <ui-button> needs a label attribute for screen readers.', this);
     const start = this.getAttribute('icon'), end = this.getAttribute('icon-end');
     b.replaceChildren(...[start && icon(start), hasText && this.labelEl, end && icon(end)].filter(Boolean));

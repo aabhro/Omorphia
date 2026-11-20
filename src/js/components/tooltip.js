@@ -16,7 +16,7 @@ export class UITooltip extends HTMLElement {
   }
   disconnectedCallback() { clearTimeout(this._t); this.hide(); this.bubble?.remove(); for (const [ev, fn] of [['pointerenter', this._show], ['pointerleave', this._hide], ['focusout', this._hide], ['keydown', this._key], ['pointerdown', this._hide]]) this.removeEventListener(ev, fn); }
   attributeChangedCallback() { if (this.bubble) this.sync(); }
-  describedTarget() { const f = this.firstElementChild || this; return (f.localName === 'ui-button' && f.querySelector('button')) || f; }
+  describedTarget() { return this.firstElementChild || this; }
   sync() { this.bubble.textContent = this.getAttribute('content') || ''; const el = this.describedTarget(); const ex = el.getAttribute('aria-describedby'); if (!ex?.includes(this.bubble.id)) el.setAttribute('aria-describedby', [ex, this.bubble.id].filter(Boolean).join(' ')); }
   show() {
     if (!this.getAttribute('content')) return; this.sync();

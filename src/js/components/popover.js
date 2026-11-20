@@ -1,4 +1,4 @@
-import { define, h, uid, emit, floatEl, showFloat, hideFloat, place, whileOpen, inheritTheme } from '../core.js';
+import { define, h, uid, emit, floatEl, showFloat, hideFloat, place, whileOpen, inheritTheme, morphSurface } from '../core.js';
 
 /** <ui-popover placement="bottom-start"><ui-button slot="trigger">Open</ui-button> …content… </ui-popover>
  *  Methods: show(), hide(), toggle(). Property: open. Events: ui-open, ui-close. */
@@ -18,19 +18,42 @@ export class UIPopover extends HTMLElement {
     }
   }
   disconnectedCallback() { this.hide(); }
-  get open() { return this.panel?.hasAttribute('data-open') || false; }
+  get open() { return !!(this.panel?.hasAttribute('data-open') && !this.panel?.hasAttribute('data-closing')); }
   set open(v) { v ? this.show() : this.hide(); }
   reposition = () => place(this.trigger, this.panel, { placement: this.getAttribute('placement') || 'bottom-start', offset: 6 });
   show() {
     if (this.open || !this.panel) return;
+    this._morphToken = (this._morphToken || 0) + 1;
+    this._morphAnimation?.cancel?.();
+    this.panel.removeAttribute('data-closing');
     inheritTheme(this, this.panel); this.enhance?.(); showFloat(this.panel); this.reposition();
     this.focusTarget?.setAttribute('aria-expanded', 'true');
+    this._morphAnimation = morphSurface(this.trigger, this.panel, true);
     this._off = whileOpen({ anchor: this, floating: this.panel, reposition: this.reposition, onClose: (why) => { this.hide(); if (why === 'escape') this.focusTarget?.focus(); } });
     this.afterShow?.(); emit(this, 'ui-open');
   }
   hide() {
     if (!this.open) return;
-    this._off?.(); hideFloat(this.panel); this.focusTarget?.setAttribute('aria-expanded', 'false'); emit(this, 'ui-close');
+    this._off?.(); this._off = null;
+    this.focusTarget?.setAttribute('aria-expanded', 'false');
+    const token = this._morphToken = (this._morphToken || 0) + 1;
+    this.panel.setAttribute('data-closing', '');
+    this._morphAnimation?.cancel?.();
+    const animation = morphSurface(this.trigger, this.panel, false);
+    if (animation) {
+      this._morphAnimation = animation;
+      animation.finished.catch(() => {}).then(() => {
+        if (this._morphToken !== token || this.open) return;
+        hideFloat(this.panel);
+        this.panel.removeAttribute('data-closing');
+        animation.cancel();
+        this._morphAnimation = null;
+      });
+    } else {
+      hideFloat(this.panel);
+      this.panel.removeAttribute('data-closing');
+    }
+    emit(this, 'ui-close');
   }
   toggle() { this.open ? this.hide() : this.show(); }
   triggerKey() {} panelKey(e) { if (e.key === 'Tab') this.hide(); }
@@ -45,7 +68,7 @@ export class UIDropdown extends UIPopover {
   enhance() {
     this.panel.querySelectorAll('button, a[href], [role="menuitem"]').forEach((el) => { el.classList.add('ui-menu-item'); el.setAttribute('role', 'menuitem'); el.setAttribute('tabindex', '-1'); if (el.localName === 'button') el.type = 'button'; });
     this.panel.querySelectorAll('hr').forEach((el) => { el.classList.add('ui-menu-sep'); el.setAttribute('role', 'separator'); });
-    if (!this._wired) { this._wired = true; this.panel.addEventListener('click', (e) => { const it = e.target.closest('.ui-menu-item'); if (!it || it.disabled || it.getAttribute('aria-disabled') === 'true') return; emit(this, 'ui-select', { item: it, value: it.dataset.value ?? it.textContent.trim() }); this.hide(); this.focusTarget?.focus(); }); }
+    if (!this._wired) { this._wired = true; this.panel.addEventListener('click', (e) => { const it = e.target.closest('.ui-menu-item'); if (!it || it.disabled || it.getAttribute('aria-disabled') === 'true') return; emit(this, 'ui-select', { item: it, value: it.dataset.value ?? it.getAttribute('value') ?? it.textContent.trim() }); this.hide(); this.focusTarget?.focus(); }); }
   }
   afterShow() { this.items[0]?.focus(); }
   triggerKey(e) { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); this.show(); const it = this.items; (e.key === 'ArrowUp' ? it.at(-1) : it[0])?.focus(); } }

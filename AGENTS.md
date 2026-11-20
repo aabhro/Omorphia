@@ -25,7 +25,7 @@ These instructions apply to coding agents, autonomous agents, pair-programming a
 > [!CAUTION]
 > **DO NOT WRITE OR GENERATE A REPLACEMENT COMPONENT BEFORE CHECKING THE OMORPHIA INVENTORY.**
 >
-> Omorphia already provides buttons, dialogs, dropdowns, popovers, tabs, pagination, command search, autocomplete search, tooltips, icons, and responsive sidebars. Many other controls are native HTML with Omorphia CSS classes. Do not guess which is which.
+> Omorphia now provides 28 registered custom elements, including custom text fields, textareas, selects, checkboxes, radios, switches, ranges, date/time pickers, menu items, drawers, and animated accordions. The complete verified list is in the catalog. Do not guess from CSS names or screenshots.
 
 Before implementing any interface:
 1. Read [AI/COMPONENT-CATALOG.md](AI/COMPONENT-CATALOG.md) in full.
@@ -33,11 +33,22 @@ Before implementing any interface:
 3. Inspect the matching working example in `index.html`.
 4. Write a compact component map: user need → exact Omorphia element or CSS primitive → source file. Mark unsupported needs as `NO BUILT-IN COMPONENT`.
 5. Reuse or compose the existing API. Do not replace it with app-local `Button`, `Modal`, `Dropdown`, `Tabs`, `Toast`, `Sidebar`, or similar wrappers.
-6. If a fit is missing, use native semantic HTML and existing primitives first. Only propose a custom component after documenting the precise gap and why composition does not work.
+6. If a fit is missing, mark it `NO BUILT-IN COMPONENT`, document the exact behavior gap, and stop before adding a native interactive control or replacement. Ask for approval before introducing a new app-local or library-level custom component.
 
-**Never invent a `ui-*` tag or guess an API.** A CSS class such as `.ui-input`, `.ui-select`, or `.ui-card` does not mean a corresponding custom element exists. The Modernimal component showcase is a separate visual reference, not proof of an Omorphia API.
+**Never invent a `ui-*` tag or guess an API.** The registered `<ui-input>`, `<ui-textarea>`, `<ui-select>`, `<ui-date-picker>`, `<ui-time-picker>`, `<ui-checkbox>`, `<ui-radio>`, `<ui-switch>`, `<ui-range>`, `<ui-menu-item>`, `<ui-drawer>`, and `<ui-accordion>` elements are real controls. Static classes such as `.ui-card` and `.ui-alert` are not custom elements. The Modernimal component showcase is a separate visual reference, not proof of an Omorphia API.
 
 Before delivery, search all changed markup for `<ui-` tags and verify every tag and API against the catalog and source. Include a short Component reuse audit in the completion report. For a new public component inside Omorphia, update source, registration/exports, tests, showcase, README, this catalog, and generated distribution files.
+
+## Custom-controls-only rule
+
+> [!CAUTION]
+> **DO NOT AUTHOR RAW NATIVE INTERACTIVE CONTROLS IN NEW UI. USE OMORPHIA CUSTOM ELEMENTS.**
+
+Do not write raw `<button>`, `<input>`, `<textarea>`, `<select>`, `<option>`, or `<details>` as application controls. Use the matching custom element: `ui-button`, `ui-input`, `ui-textarea`, `ui-select`/`ui-option`, `ui-checkbox`, `ui-radio`, `ui-switch`, `ui-range`, `ui-date-picker`, `ui-time-picker`, `ui-menu-item`, `ui-accordion`/`ui-accordion-item`, and the existing modal, popover, drawer, navigation, and search components.
+
+Native primitives are permitted only inside Omorphia's own custom-element implementation where needed for browser text editing, keyboard access, or form submission. Do not copy those internal primitives into app markup. Static semantic structure and documented layout classes remain acceptable for non-interactive content.
+
+Floating surfaces have **no visible borders**. Do not add borders or outlines to menus, dropdowns, popovers, command panels, search panels, tooltips, drawers, or date/time panels. Use spacing, contrast, layering, and restrained shadow for separation. Buttons and input controls may use their established border tokens. Reuse the shared trigger-to-surface morph for popovers/dropdowns/select/date/time pickers. Keep accordion exit behavior and reduced-motion handling intact.
 
 ## Design-style choice
 

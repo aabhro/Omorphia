@@ -12,7 +12,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist to load from the CDN. -->
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist to load from the CDN. -->
   <link rel="stylesheet" href="./dist/omorphia.min.css">
   <link rel="stylesheet" href="./showcase/showcase.css">
 </head>
@@ -45,8 +45,8 @@
     <header class="hero">
       <h1 class="ui-display">Interfaces shaped by light.</h1>
       <p>Omorphia is a dependency-free UI library for websites. Use one stylesheet, one script, and native custom elements. Directional illumination adds a restrained highlight without turning every surface into an outline.</p>
-      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.1.7/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.0/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
     </header>
 
     <section class="block" id="type">
@@ -82,44 +82,69 @@
         <ui-button variant="primary" loading>Saving</ui-button>
         <ui-button disabled>Unavailable</ui-button></template></div>
       <div class="demo"><div class="demo-title">Native markup, no JavaScript</div><template>
-        <button class="ui-btn ui-btn--primary">Primary</button>
-        <button class="ui-btn ui-btn--secondary ui-btn--sm">Secondary</button>
-        <span class="ui-btn-group"><button class="ui-btn">Day</button><button class="ui-btn">Week</button><button class="ui-btn">Month</button></span></template></div>
+          <ui-button variant="primary">Primary</ui-button>
+          <ui-button variant="secondary" size="sm">Secondary</ui-button>
+          <span class="ui-btn-group">
+            <ui-button size="sm">Day</ui-button>
+            <ui-button size="sm">Week</ui-button>
+            <ui-button size="sm">Month</ui-button>
+          </span>
+        </template></div>
     </section>
 
     <section class="block" id="inputs">
       <header><h2 class="ui-h1">Inputs</h2><p>Text-like controls use a wrapper so the illumination can follow its shape; focus sharpens the edge without changing its shape.</p></header>
       <div class="cols">
         <div class="demo" data-layout="stack"><div class="demo-title">Text, search, textarea, select</div><template>
-          <div class="ui-field"><label class="ui-label" for="i-name">Project name</label>
-            <div class="ui-input"><ui-icon name="folder"></ui-icon><input id="i-name" name="project-name" placeholder="Untitled project"></div>
-            <p class="ui-hint">Shown on invoices and in the sidebar.</p></div>
-          <div class="ui-field"><label class="ui-label" for="i-q">Search</label>
-            <div class="ui-input"><ui-icon name="search"></ui-icon><input id="i-q" name="project-search" type="search" placeholder="Search projects"></div></div>
-          <div class="ui-field"><label class="ui-label" for="i-t">Notes</label>
-            <div class="ui-textarea"><textarea id="i-t" name="project-notes" rows="3" placeholder="Anything the team should know"></textarea></div></div>
-          <div class="ui-field"><label class="ui-label" for="i-s">Region</label>
-            <div class="ui-select"><select id="i-s" name="region"><option>Europe (Frankfurt)</option><option>US East (Virginia)</option><option>Asia Pacific (Singapore)</option></select></div></div></template></div>
+          <div class="ui-field">
+            <span class="ui-label">Project name</span>
+            <ui-input id="i-name" name="project-name" icon="folder" placeholder="Untitled project" label="Project name"></ui-input>
+            <p class="ui-hint">Shown on invoices and in the sidebar.</p>
+          </div>
+          <div class="ui-field">
+            <span class="ui-label">Search</span>
+            <ui-input id="i-q" name="project-search" type="search" icon="search" placeholder="Search projects" label="Search projects"></ui-input>
+          </div>
+          <div class="ui-field">
+            <span class="ui-label">Notes</span>
+            <ui-textarea id="i-t" name="project-notes" rows="3" maxlength="180" placeholder="Anything the team should know" label="Project notes"></ui-textarea>
+          </div>
+          <div class="ui-field">
+            <span class="ui-label">Region</span>
+            <ui-select id="i-s" name="region" searchable placeholder="Choose a region" label="Region">
+              <ui-option value="fra" description="Europe" icon="globe">Europe (Frankfurt)</ui-option>
+              <ui-option value="iad" description="North America" icon="globe">US East (Virginia)</ui-option>
+              <ui-option value="sin" description="Asia Pacific" icon="globe">Asia Pacific (Singapore)</ui-option>
+            </ui-select>
+          </div>
+        </template></div>
         <div class="demo" data-layout="stack"><div class="demo-title">Choices, switches, range</div><template>
-          <label class="ui-check"><input class="ui-check-input" type="checkbox" checked id="demo-field-4" name="demo-field-4"> Email me about deploys</label>
-          <label class="ui-check"><input class="ui-check-input" type="checkbox" id="demo-field-5" name="demo-field-5"> Weekly summary</label>
-          <div class="ui-stack ui-gap-2" role="radiogroup" aria-label="Plan">
-            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" checked id="demo-field-6"> Starter</label>
-            <label class="ui-radio"><input class="ui-radio-input" type="radio" name="plan" id="demo-field-7"> Team</label></div>
-          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked id="demo-field-8" name="demo-field-8"><span class="ui-switch-track"></span> Auto-deploy main</label>
-          <label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" disabled id="demo-field-9" name="demo-field-9"><span class="ui-switch-track"></span> Preview builds (plan upgrade)</label>
-          <div class="ui-field"><label class="ui-label" for="range-demo">Concurrency <span class="ui-muted" id="range-out">40</span></label>
-            <input id="range-demo" name="concurrency" class="ui-range" type="range" min="0" max="100" value="40"></div></template></div>
+          <ui-checkbox name="updates" value="deploys" label="Email me about deploys" checked></ui-checkbox>
+          <ui-checkbox name="updates" value="weekly" label="Weekly summary"></ui-checkbox>
+          <div class="ui-stack ui-gap-2" role="group" aria-label="Plan">
+            <ui-radio name="plan" value="starter" label="Starter" checked></ui-radio>
+            <ui-radio name="plan" value="team" label="Team"></ui-radio>
+          </div>
+          <ui-switch name="auto-deploy" value="yes" label="Auto-deploy main" checked></ui-switch>
+          <ui-switch name="preview-builds" value="yes" label="Preview builds (plan upgrade)" disabled></ui-switch>
+          <div class="ui-field">
+            <span class="ui-label">Concurrency <output class="ui-muted" id="range-out">40</output></span>
+            <ui-range id="range-demo" name="concurrency" label="Concurrency" min="0" max="100" value="40"></ui-range>
+          </div>
+        </template></div>
       </div>
       <div class="demo"><div class="demo-title">Validation states (try an invalid email)</div><template>
-        <form class="fx-validate ui-row" style="align-items:flex-start" novalidate>
-          <div class="ui-field" style="width:300px"><label class="ui-label" for="v-mail">Email</label>
-            <div class="ui-input"><ui-icon name="mail"></ui-icon><input id="v-mail" name="validation-email" type="email" placeholder="you@company.com" aria-describedby="v-help"></div>
-            <p class="ui-hint" id="v-help">We only use this for receipts.</p>
-            <p class="ui-error-text" id="v-err">Enter an email like name@company.com.</p>
-            <p class="ui-success-text">Looks good.</p></div>
-          <ui-button type="submit" variant="primary" style="margin-top:22px">Validate</ui-button>
-        </form></template></div>
+          <form class="fx-validate ui-row" style="align-items:flex-start" novalidate>
+            <div class="ui-field" style="width:300px">
+              <span class="ui-label">Email</span>
+              <ui-input id="v-mail" name="validation-email" type="email" icon="mail" placeholder="you@company.com" label="Email"></ui-input>
+              <p class="ui-hint" id="v-help">We only use this for receipts.</p>
+              <p class="ui-error-text" id="v-err">Enter an email like name@company.com.</p>
+              <p class="ui-success-text">Looks good.</p>
+            </div>
+            <ui-button type="submit" variant="primary" style="margin-top:22px">Validate</ui-button>
+          </form>
+        </template></div>
     </section>
 
     <section class="block" id="navigation">
@@ -136,23 +161,24 @@
       <div class="demo"><div class="demo-title">Pagination</div><template>
         <ui-pagination id="pg" total="24" page="6"></ui-pagination><span class="ui-small ui-muted" id="pg-out" aria-live="polite">Page 6</span></template></div>
       <div class="demo"><div class="demo-title">Dropdown menu</div><template>
-        <ui-dropdown id="actions-menu" placement="bottom-start">
-          <ui-button slot="trigger" icon-end="chevron-down">Actions</ui-button>
-          <div class="ui-menu-label">Project</div>
-          <button data-value="Rename"><ui-icon name="pencil"></ui-icon>Rename<span class="ui-menu-shortcut">R</span></button>
-          <button data-value="Duplicate"><ui-icon name="copy"></ui-icon>Duplicate</button>
-          <button data-value="Share" disabled><ui-icon name="link"></ui-icon>Share (disabled)</button>
-          <hr>
-          <button class="ui-menu-item--danger" data-value="Delete"><ui-icon name="trash-2"></ui-icon>Delete</button>
-        </ui-dropdown></template></div>
+          <ui-dropdown id="actions-menu" placement="bottom-start">
+            <ui-button slot="trigger" icon-end="chevron-down">Actions</ui-button>
+            <div class="ui-menu-label">Project</div>
+            <ui-menu-item value="rename" icon="pencil" shortcut="R" label="Rename"></ui-menu-item>
+            <ui-menu-item value="duplicate" icon="copy" label="Duplicate"></ui-menu-item>
+            <ui-menu-item value="share" icon="link" label="Share (disabled)" disabled></ui-menu-item>
+            <ui-menu-item value="delete" icon="trash-2" label="Delete" destructive></ui-menu-item>
+          </ui-dropdown>
+        </template></div>
     </section>
 
     <section class="block" id="feedback">
       <header><h2 class="ui-h1">Feedback and information</h2></header>
       <div class="demo"><div class="demo-title">Tooltips</div><template>
-        <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
-        <ui-tooltip content="Appears below" placement="bottom"><ui-button variant="subtle" icon="info" label="Info"></ui-button></ui-tooltip>
-        <ui-tooltip content="Also on keyboard focus" placement="right"><button class="ui-btn">Focus me</button></ui-tooltip></template></div>
+          <ui-tooltip content="Copy to clipboard"><ui-button icon="copy">Copy</ui-button></ui-tooltip>
+          <ui-tooltip content="Appears below" placement="bottom"><ui-button variant="subtle" icon="info" label="Info"></ui-button></ui-tooltip>
+          <ui-tooltip content="Also on keyboard focus" placement="right"><ui-button variant="secondary">Focus me</ui-button></ui-tooltip>
+        </template></div>
       <div class="demo"><div class="demo-title">Toast notifications</div><template>
         <ui-button onclick="Omorphia.toast({ title: 'Changes saved', description: 'Atlas is up to date.', variant: 'success' })">Success</ui-button>
         <ui-button onclick="Omorphia.toast({ title: 'Deploy failed', description: 'Build exited with code 1.', variant: 'danger', duration: 8000 })">Error</ui-button>
@@ -185,24 +211,40 @@
           <div class="ui-avatar-group"><span class="ui-avatar ui-avatar--sm">GH</span><span class="ui-avatar ui-avatar--sm">AT</span><span class="ui-avatar ui-avatar--sm">MH</span><span class="ui-avatar ui-avatar--sm">+4</span></div></template></div>
         <div class="demo" data-layout="stack"><div class="demo-title">Stack, row, divider, collapsible</div><template>
           <div class="ui-row"><span class="ui-badge">One</span><span class="ui-divider ui-divider--vertical"></span><span class="ui-badge">Two</span></div>
-          <hr class="ui-divider" aria-label="or"><p class="ui-small ui-muted" style="margin:0">Dividers can carry a label: <span class="ui-code">&lt;div class="ui-divider"&gt;or&lt;/div&gt;</span></p>
-          <details class="ui-collapsible" open><summary class="ui-summary">What is included?</summary><div class="ui-collapsible-body">Native <span class="ui-code">&lt;details&gt;</span> · works without JavaScript.</div></details>
-          <details class="ui-collapsible"><summary class="ui-summary">Can I theme it?</summary><div class="ui-collapsible-body">Yes: every colour, radius and duration is a CSS variable.</div></details></template></div>
+          <div class="ui-divider">or</div>
+          <ui-accordion>
+            <ui-accordion-item heading="What is included?" value="included" open>Native custom elements, reusable motion, accessible controls, and the neutral theme are included.</ui-accordion-item>
+            <ui-accordion-item heading="Can I theme it?" value="theme">Yes. Colours, spacing, radii, and durations are CSS variables.</ui-accordion-item>
+          </ui-accordion>
+        </template></div>
       </div>
       <div class="demo"><div class="demo-title">Modal and popover</div><template>
-        <ui-modal id="invite-modal" heading="Invite teammates">
-          They'll get an email with a link to join Atlas. Press Escape or click outside to dismiss.
-          <div class="ui-field" style="margin-top:16px"><label class="ui-label" for="inv">Email address</label><div class="ui-input"><ui-icon name="mail"></ui-icon><input id="inv" name="invite-email" placeholder="name@company.com"></div></div>
-          <div slot="footer"><ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button><ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Omorphia.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button></div>
-        </ui-modal>
-        <ui-button variant="primary" onclick="document.getElementById('invite-modal').show()">Invite teammates</ui-button>
-        <ui-button variant="destructive" onclick="Omorphia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorphia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
-        <ui-popover placement="bottom-start"><ui-button slot="trigger" icon="settings">Display options</ui-button>
-          <div class="ui-stack ui-gap-3"><p class="ui-h3">Display</p><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" checked id="demo-field-13" name="demo-field-13"><span class="ui-switch-track"></span> Compact rows</label><label class="ui-switch"><input class="ui-switch-input" type="checkbox" role="switch" id="demo-field-14" name="demo-field-14"><span class="ui-switch-track"></span> Show IDs</label></div></ui-popover></template></div>
+          <ui-modal id="invite-modal" heading="Invite teammates">
+            They'll get an email with a link to join Atlas. Press Escape or click outside to dismiss.
+            <div class="ui-field" style="margin-top:16px">
+              <span class="ui-label">Email address</span>
+              <ui-input id="inv" name="invite-email" type="email" icon="mail" placeholder="name@company.com" label="Invite email"></ui-input>
+            </div>
+            <div slot="footer">
+              <ui-button variant="subtle" onclick="this.closest('ui-modal').close()">Cancel</ui-button>
+              <ui-button variant="primary" icon="send" onclick="this.closest('ui-modal').close('sent'); Omorphia.toast({title:'Invitation sent', variant:'success'})">Send invite</ui-button>
+            </div>
+          </ui-modal>
+          <ui-button variant="primary" onclick="document.getElementById('invite-modal').show()">Invite teammates</ui-button>
+          <ui-button variant="destructive" onclick="Omorphia.confirm({ title: 'Delete project?', message: 'This permanently removes Atlas and its deploy history.', confirmLabel: 'Delete project', destructive: true }).then(ok => Omorphia.toast({ title: ok ? 'Project deleted' : 'Kept the project', variant: ok ? 'danger' : 'info' }))">Confirm dialog</ui-button>
+          <ui-popover placement="bottom-start">
+            <ui-button slot="trigger" icon="settings">Display options</ui-button>
+            <div class="ui-stack ui-gap-3">
+              <p class="ui-h3">Display</p>
+              <ui-switch name="compact" label="Compact rows" checked></ui-switch>
+              <ui-switch name="show-ids" label="Show IDs"></ui-switch>
+            </div>
+          </ui-popover>
+        </template></div>
     </section>
 
     <section class="block" id="advanced">
-      <header><h2 class="ui-h1">Advanced components</h2></header>
+      <header><h2 class="ui-h1">Advanced components</h2><p>Custom controls and floating surfaces that share Omorphia's keyboard, motion, and theme systems.</p></header>
       <div class="demo" id="palette"><div class="demo-title">Command palette · Ctrl + Shift + K / ⌘ + Shift + K</div><template>
         <ui-button icon="command" onclick="document.querySelector('ui-command-palette').open()">Open command palette</ui-button>
         <span class="ui-small ui-muted">Or press <span class="ui-kbd">Ctrl</span> <span class="ui-kbd">Shift</span> <span class="ui-kbd">K</span> anywhere on this page. Try “theme”, “btn” or a typo.</span>
@@ -222,6 +264,36 @@
         <div class="demo" data-layout="stack"><div class="demo-title">Custom suggestion rendering</div><template>
           <ui-search id="search-custom" autocomplete min-chars="1" placeholder="Find a teammate…"></ui-search></template></div>
       </div>
+      
+      <div class="cols" id="pickers">
+        <div class="demo" data-layout="stack"><div class="demo-title">Custom date picker</div><template>
+          <div class="ui-field"><span class="ui-label">Deployment date</span>
+            <ui-date-picker id="date-demo" name="deployment-date" value="2026-11-20" min="2026-01-01" label="Deployment date"></ui-date-picker>
+            <p class="ui-hint">Use the arrows to move by day or week. Page Up and Page Down change months.</p>
+          </div>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Custom time picker</div><template>
+          <div class="ui-field"><span class="ui-label">Maintenance window</span>
+            <ui-time-picker id="time-demo" name="maintenance-time" value="14:30" format="12h" step="5" label="Maintenance time"></ui-time-picker>
+            <p class="ui-hint">Choose hours and minutes independently. Switch AM / PM when using 12-hour format.</p>
+          </div>
+        </template></div>
+      </div>
+      <div class="demo" id="drawer-demo"><div class="demo-title">Drawer · four edges, three sizes</div><template>
+        <ui-button variant="secondary" icon="panel-left" onclick="document.getElementById('settings-drawer').show()">Open settings drawer</ui-button>
+        <ui-drawer id="settings-drawer" heading="Project settings" placement="right" size="md">
+          <p class="ui-body">A custom off-canvas surface with a focus trap, scroll lock, Escape handling, and focus restoration.</p>
+          <div class="ui-field">
+            <span class="ui-label">Project name</span>
+            <ui-input name="drawer-project" label="Project name" value="Atlas"></ui-input>
+          </div>
+          <div slot="footer">
+            <ui-button variant="subtle" onclick="document.getElementById('settings-drawer').close('cancel')">Cancel</ui-button>
+            <ui-button variant="primary" onclick="document.getElementById('settings-drawer').close('save'); Omorphia.toast({title:'Settings saved',variant:'success'})">Save changes</ui-button>
+          </div>
+        </ui-drawer>
+      </template></div>
+
       <div class="demo" id="sidemenu"><div class="demo-title">Side menu · collapsible, nested, responsive</div><template>
         <div style="display:flex;width:100%;height:360px;background:var(--ui-bg-inset);border-radius:var(--ui-radius-lg);padding:8px;gap:8px;overflow:hidden">
           <ui-sidebar collapsible breakpoint="1" heading="Workspace" width="230px" style="position:static;height:100%;--ui-sidebar-radius:12px">
@@ -240,51 +312,52 @@
     <section class="block" id="effects">
       <header><h2 class="ui-h1">Effects and illumination</h2><p>A primary light at the top-left and a dimmer one at the bottom-right, painted only in the border ring and following the corner radius.</p></header>
       <div class="demo" data-layout="stack"><div class="demo-title">Live configuration</div><template>
-        <div class="fx-config">
-          <div class="fx-config-preview">
-            <div class="fx-stage" id="fx-stage"><div class="fx-box ui-edge">Omorphia illumination</div></div>
-            <div class="fx-actions">
-              <div class="ui-btn-group fx-presets" role="group" aria-label="Illumination presets">
-                <button type="button" class="ui-btn ui-btn--sm" data-fx-preset="quiet" aria-pressed="false">Quiet</button>
-                <button type="button" class="ui-btn ui-btn--sm" data-fx-preset="balanced" aria-pressed="true">Balanced</button>
-                <button type="button" class="ui-btn ui-btn--sm" data-fx-preset="bright" aria-pressed="false">Bright</button>
+          <div class="fx-config">
+            <div class="fx-config-preview">
+              <div class="fx-stage" id="fx-stage"><div class="fx-box ui-edge">Omorphia illumination</div></div>
+              <div class="fx-actions">
+                <div class="ui-btn-group fx-presets" role="group" aria-label="Illumination presets">
+                  <ui-button size="sm" data-fx-preset="quiet" aria-pressed="false">Quiet</ui-button>
+                  <ui-button size="sm" data-fx-preset="balanced" aria-pressed="true">Balanced</ui-button>
+                  <ui-button size="sm" data-fx-preset="bright" aria-pressed="false">Bright</ui-button>
+                </div>
+                <div class="ui-btn-group">
+                  <ui-button size="sm" variant="subtle" data-fx-reset>Reset</ui-button>
+                  <ui-button id="fx-copy" size="sm" variant="secondary" icon="copy">Copy CSS</ui-button>
+                </div>
               </div>
-              <div class="ui-btn-group">
-                <button type="button" class="ui-btn ui-btn--sm ui-btn--subtle" data-fx-reset>Reset</button>
-                <ui-button id="fx-copy" size="sm" variant="secondary" icon="copy">Copy CSS</ui-button>
-              </div>
+              <p class="fx-status" id="fx-status" role="status" aria-live="polite">Balanced preset · ready to customize.</p>
+              <pre class="fx-code" id="fx-css-output">.your-surface {
+            --ui-edge-tl-alpha: .5;
+            --ui-edge-br-alpha: .14;
+            --ui-edge-tl-reach: 52%;
+            --ui-edge-br-reach: 42%;
+            --ui-edge-base-alpha: .05;
+            --ui-edge-width: 1px;
+            --ui-edge-intensity: 1;
+            --ui-edge-hover-boost: 1.45;
+            border-radius: 14px;
+          }</pre>
             </div>
-            <p class="fx-status" id="fx-status" role="status" aria-live="polite">Balanced preset · ready to customize.</p>
-            <pre class="fx-code" id="fx-css-output">.your-surface {
-  --ui-edge-tl-alpha: .5;
-  --ui-edge-br-alpha: .14;
-  --ui-edge-tl-reach: 52%;
-  --ui-edge-br-reach: 42%;
-  --ui-edge-base-alpha: .05;
-  --ui-edge-width: 1px;
-  --ui-edge-intensity: 1;
-  --ui-edge-hover-boost: 1.45;
-  border-radius: 14px;
-}</pre>
+            <div class="fx-config-controls">
+              <fieldset class="fx-control-group">
+                <legend>Light direction</legend>
+                <label class="ctl">Top-left strength <ui-range min="0" max="1" step="0.05" value="0.5" data-fx="--ui-edge-tl-alpha" label="Top-left strength"></ui-range><output></output></label>
+                <label class="ctl">Bottom-right strength <ui-range min="0" max="0.4" step="0.01" value="0.14" data-fx="--ui-edge-br-alpha" label="Bottom-right strength"></ui-range><output></output></label>
+                <label class="ctl">Top-left reach <ui-range min="5" max="100" value="52" data-fx="--ui-edge-tl-reach" data-unit="%" label="Top-left reach"></ui-range><output></output></label>
+                <label class="ctl">Bottom-right reach <ui-range min="5" max="100" value="42" data-fx="--ui-edge-br-reach" data-unit="%" label="Bottom-right reach"></ui-range><output></output></label>
+              </fieldset>
+              <fieldset class="fx-control-group">
+                <legend>Surface detail</legend>
+                <label class="ctl">Base edge <ui-range min="0" max="0.3" step="0.01" value="0.05" data-fx="--ui-edge-base-alpha" label="Base edge"></ui-range><output></output></label>
+                <label class="ctl">Edge width <ui-range min="1" max="3" step="0.25" value="1" data-fx="--ui-edge-width" data-unit="px" label="Edge width"></ui-range><output></output></label>
+                <label class="ctl">Intensity <ui-range min="0.5" max="2" step="0.05" value="1" data-fx="--ui-edge-intensity" label="Intensity"></ui-range><output></output></label>
+                <label class="ctl">Hover boost <ui-range min="1" max="2" step="0.05" value="1.45" data-fx="--ui-edge-hover-boost" label="Hover boost"></ui-range><output></output></label>
+                <label class="ctl">Corner radius <ui-range min="0" max="32" value="14" data-fx="--fx-radius" data-unit="px" label="Corner radius"></ui-range><output></output></label>
+              </fieldset>
+            </div>
           </div>
-          <div class="fx-config-controls">
-            <fieldset class="fx-control-group">
-              <legend>Light direction</legend>
-              <label class="ctl">Top-left strength <input type="range" class="ui-range" min="0" max="1" step="0.05" value="0.5" data-fx="--ui-edge-tl-alpha" id="demo-field-15" name="demo-field-15"><output></output></label>
-              <label class="ctl">Bottom-right strength <input type="range" class="ui-range" min="0" max="0.4" step="0.01" value="0.14" data-fx="--ui-edge-br-alpha" id="demo-field-16" name="demo-field-16"><output></output></label>
-              <label class="ctl">Top-left reach <input type="range" class="ui-range" min="5" max="100" value="52" data-fx="--ui-edge-tl-reach" data-unit="%" id="demo-field-17" name="demo-field-17"><output></output></label>
-              <label class="ctl">Bottom-right reach <input type="range" class="ui-range" min="5" max="100" value="42" data-fx="--ui-edge-br-reach" data-unit="%" id="demo-field-18" name="demo-field-18"><output></output></label>
-            </fieldset>
-            <fieldset class="fx-control-group">
-              <legend>Surface detail</legend>
-              <label class="ctl">Base edge <input type="range" class="ui-range" min="0" max="0.3" step="0.01" value="0.05" data-fx="--ui-edge-base-alpha" id="demo-field-19" name="demo-field-19"><output></output></label>
-              <label class="ctl">Edge width <input type="range" class="ui-range" min="1" max="3" step="0.25" value="1" data-fx="--ui-edge-width" data-unit="px" id="demo-field-20" name="demo-field-20"><output></output></label>
-              <label class="ctl">Intensity <input type="range" class="ui-range" min="0.5" max="2" step="0.05" value="1" data-fx="--ui-edge-intensity" id="demo-field-21" name="demo-field-21"><output></output></label>
-              <label class="ctl">Hover boost <input type="range" class="ui-range" min="1" max="2" step="0.05" value="1.45" data-fx="--ui-edge-hover-boost" id="demo-field-22" name="demo-field-22"><output></output></label>
-              <label class="ctl">Corner radius <input type="range" class="ui-range" min="0" max="32" value="14" data-fx="--fx-radius" data-unit="px" id="demo-field-23" name="demo-field-23"><output></output></label>
-            </fieldset>
-          </div>
-        </div></template></div>
+        </template></div>
       <div class="demo"><div class="demo-title">Applied to any surface, with utilities</div><template>
         <div class="fx-grid" style="width:100%">
           <div class="ui-edge ui-edge--soft" style="border-radius:12px">.ui-edge--soft</div>
