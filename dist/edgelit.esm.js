@@ -1,4 +1,4 @@
-/*! Edgelit v1.1.0 | MIT | https://github.com/aabhro/edgelit */
+/*! Edgelit v1.1.1 | MIT | https://github.com/aabhro/edgelit */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -1366,7 +1366,7 @@ if (typeof document !== "undefined" && !window.__edgelitToggle) {
 }
 
 // src/js/index.js
-var version = true ? "1.1.0" : "dev";
+var version = true ? "1.1.1" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {

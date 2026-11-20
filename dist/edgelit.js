@@ -1,4 +1,4 @@
-/*! Edgelit v1.1.0 | MIT | https://github.com/aabhro/edgelit */
+/*! Edgelit v1.1.1 | MIT | https://github.com/aabhro/edgelit */
 var Edgelit = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -1410,7 +1410,7 @@ var Edgelit = (() => {
   }
 
   // src/js/index.js
-  var version = true ? "1.1.0" : "dev";
+  var version = true ? "1.1.1" : "dev";
   var theme = {
     get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
     set(mode, el = document.documentElement) {
