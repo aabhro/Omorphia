@@ -119,11 +119,11 @@
           </div>
         </template></div>
         <div class="demo" data-layout="stack"><div class="demo-title">Choices, switches, range</div><template>
-          <ui-checkbox name="updates" value="deploys" label="Email me about deploys" checked></ui-checkbox>
-          <ui-checkbox name="updates" value="weekly" label="Weekly summary"></ui-checkbox>
+          <ui-checkbox id="choice-deploys" name="updates" value="deploys" label="Email me about deploys" checked></ui-checkbox>
+          <ui-checkbox id="choice-weekly" name="updates" value="weekly" label="Weekly summary"></ui-checkbox>
           <div class="ui-stack ui-gap-2" role="group" aria-label="Plan">
-            <ui-radio name="plan" value="starter" label="Starter" checked></ui-radio>
-            <ui-radio name="plan" value="team" label="Team"></ui-radio>
+            <ui-radio id="choice-starter" name="plan" value="starter" label="Starter" checked></ui-radio>
+            <ui-radio id="choice-team" name="plan" value="team" label="Team"></ui-radio>
           </div>
           <ui-switch name="auto-deploy" value="yes" label="Auto-deploy main" checked></ui-switch>
           <ui-switch name="preview-builds" value="yes" label="Preview builds (plan upgrade)" disabled></ui-switch>
