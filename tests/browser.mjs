@@ -106,9 +106,13 @@ try {
       const el = document.elementFromPoint(${point.x}, ${point.y});
       const target = document.querySelector(${JSON.stringify(selector)});
       const rect = target?.getBoundingClientRect();
+      const list = target?.closest?.('.ui-time-list'), panel = target?.closest?.('.ui-time-panel');
+      const listRect = list?.getBoundingClientRect(), panelRect = panel?.getBoundingClientRect();
       return { hit: el ? { tag: el.localName, id: el.id, className: String(el.className || ''), target: Boolean(el.matches(${JSON.stringify(selector)}) || el.closest?.(${JSON.stringify(selector)})) } : null,
         point: { x: ${point.x}, y: ${point.y} }, viewport: { width: innerWidth, height: innerHeight },
-        rect: rect ? { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height } : null };
+        rect: rect ? { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height } : null,
+        list: listRect ? { left: listRect.left, top: listRect.top, right: listRect.right, bottom: listRect.bottom, height: listRect.height, scrollTop: list.scrollTop, clientHeight: list.clientHeight } : null,
+        panel: panelRect ? { left: panelRect.left, top: panelRect.top, right: panelRect.right, bottom: panelRect.bottom, height: panelRect.height } : null };
     })()`);
     assert.ok(hit?.hit?.target, `Real browser hit-testing reaches ${selector}; got ${JSON.stringify(hit)}`);
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: point.x, y: point.y, button: 'left', clickCount: 1 });
