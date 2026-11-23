@@ -165,9 +165,9 @@ export class UITimePicker extends HTMLElement {
     if (this.popoverElement) return;
     this._time = parseTime(this.getAttribute('value'));
     this.input = h('input', { class: 'ui-time-input', id: uid('ui-time-input'), type: 'text', inputmode: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': this.getAttribute('label') || 'Time', placeholder: this.getAttribute('placeholder') || (this.is12Hour ? 'h:mm AM' : 'HH:mm') });
-    this.inputFrame = h('div', { class: 'ui-time-input-frame' }, this.input);
-    this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', slot: 'trigger', 'aria-haspopup': 'dialog', 'aria-label': 'Open time options' }, h('ui-icon', { name: 'clock' }));
-    this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
+    this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', 'aria-haspopup': 'dialog', 'aria-label': 'Open time options' }, h('ui-icon', { name: 'clock' }));
+    this.field = h('div', { class: 'ui-time-field', slot: 'trigger' }, this.input, this.trigger);
+    this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.field);
     this.panel = h('div', { class: 'ui-time-panel', role: 'dialog', 'aria-label': 'Choose time' });
     this.columns = h('div', { class: 'ui-time-columns' });
     this.hourList = h('div', { class: 'ui-time-list', role: 'listbox', 'aria-label': 'Hours' });
@@ -181,14 +181,14 @@ export class UITimePicker extends HTMLElement {
     this.hourList.addEventListener('keydown', (event) => this.onListKey(event));
     this.minuteList.addEventListener('keydown', (event) => this.onListKey(event));
     this.period.addEventListener('click', () => { this._time.hour = (this._time.hour + 12) % 24; this.commit('period'); });
-    this.input.addEventListener('click', () => this.popoverElement.show());
+    this.input.addEventListener('click', (event) => { event.stopPropagation(); this.popoverElement.show(); });
     this.input.addEventListener('input', () => this.handleTypedInput());
     this.input.addEventListener('change', () => this.commitTypedInput());
     this.input.addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); this.commitTypedInput(); this.popoverElement.hide(); } else if (event.key === 'ArrowDown') { event.preventDefault(); this.popoverElement.show(); this.focusTime(); } });
     this.popoverElement.addEventListener('ui-open', () => { if (this.ownerDocument.activeElement !== this.input) this.focusTime(); });
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-time-value'), name: this.getAttribute('name') || '', value: this.value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.inputFrame, this.popoverElement, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
   attributeChangedCallback() { if (this.popoverElement) this.sync(); }
