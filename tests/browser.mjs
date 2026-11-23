@@ -115,7 +115,7 @@ try {
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
   const timeMode = await evaluate(`document.querySelector('#time-test').popover.panel._uiFloatMode`);
-  await click('#time-test .ui-time-option[data-minute="35"]`);
+  await click('#time-test .ui-time-option[data-minute="35"]');
   await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:35');
   assert.equal(await evaluate(`document.querySelector('#time-test').valueLabel.textContent`), '2:35 PM');
