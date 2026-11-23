@@ -1,7 +1,8 @@
 import { spawn, spawnSync } from 'node:child_process';
+import { createServer } from 'node:http';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { extname, join, resolve, sep } from 'node:path';
 import assert from 'node:assert/strict';
 
 const candidates = [process.env.CHROME_BIN, 'google-chrome', 'chromium', 'chromium-browser'].filter(Boolean);
@@ -9,7 +10,21 @@ const browser = candidates.find((candidate) => spawnSync(candidate, ['--version'
 if (!browser) throw new Error('A Chromium or Chrome binary is required. Set CHROME_BIN to its executable path.');
 
 const profile = mkdtempSync(join(tmpdir(), 'omorphia-chrome-'));
-const pageUrl = new URL('../tests/browser.html', import.meta.url).href;
+const root = resolve(process.cwd());
+const server = createServer((request, response) => {
+  let pathname;
+  try { pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname); }
+  catch { response.writeHead(400).end('Bad request'); return; }
+  const file = resolve(root, '.' + pathname);
+  if (file !== root && !file.startsWith(root + sep)) { response.writeHead(403).end('Forbidden'); return; }
+  if (!existsSync(file)) { response.writeHead(404).end('Not found'); return; }
+  const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)] || 'application/octet-stream';
+  response.writeHead(200, { 'content-type': mime, 'cache-control': 'no-store' });
+  response.end(readFileSync(file));
+});
+await new Promise((resolvePromise) => server.listen(0, '127.0.0.1', resolvePromise));
+const serverPort = server.address().port;
+const pageUrl = `http://127.0.0.1:${serverPort}/tests/browser.html`;
 const debugPort = 15000 + (process.pid % 10000);
 const child = spawn(browser, [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
@@ -28,7 +43,7 @@ try {
   for (let i = 0; i < 100; i++) {
     const response = await fetch(`http://127.0.0.1:${debugPort}/json/list`).catch(() => null);
     const targets = response?.ok ? await response.json() : [];
-    target = targets.find((entry) => entry.type === 'page' && entry.url.startsWith('file:'));
+    target = targets.find((entry) => entry.type === 'page' && entry.url.startsWith(pageUrl));
     if (target?.webSocketDebuggerUrl) break;
     await delay(50);
   }
@@ -92,7 +107,7 @@ try {
   };
 
   await send('Runtime.enable');
-  await waitFor(`document.documentElement.dataset.browserReady === 'true'`, 'fixture custom elements and bundle load');
+  await waitFor(`document.documentElement.dataset.browserReady === 'true' && document.querySelector('#region-test')?.trigger && document.querySelector('#date-test')?.trigger && document.querySelector('#time-test')?.trigger`, 'fixture custom elements and bundle initialize');
 
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popover.open`, 'region select opens');
@@ -125,5 +140,6 @@ try {
   try { socket?.close(); } catch {}
   child.kill('SIGTERM');
   await delay(150);
+  await new Promise((resolvePromise) => server.close(resolvePromise));
   rmSync(profile, { recursive: true, force: true });
 }
