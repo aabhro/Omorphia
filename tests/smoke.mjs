@@ -54,6 +54,12 @@ await t('decorative perimeter outlines are omitted', () => {
   assert.doesNotMatch(advanced, /ui-sidebar-panel::before/);
   const forms = readFileSync('src/css/forms.css', 'utf8');
   assert.match(forms, /\.ui-textarea\s*\{\s*border-radius:\s*0/);
+  assert.match(forms, /\.ui-textarea-frame\{[^}]*border-radius:0/);
+  assert.match(forms, /ui-switch \.ui-choice-control\{[^}]*width:38px;min-width:38px/);
+  assert.match(forms, /\.ui-choice-label\{[^}]*min-width:0/);
+  const floatingRules = readFileSync('src/css/containers.css', 'utf8');
+  assert.match(floatingRules, /\.ui-float\{position:fixed;margin:0\}/);
+  assert.match(floatingRules, /\.ui-float\[data-open\]\{display:block;pointer-events:auto\}/);
   const base = readFileSync('src/css/base.css', 'utf8');
   const buttons = readFileSync('src/css/button.css', 'utf8');
   assert.match(base, /\.ui-summary:focus-visible\s*\{[^}]*outline:\s*none/);
@@ -169,7 +175,15 @@ await t('custom checkbox, radio, and switch controls keep accessible and form st
   assert.equal(radios[1].checked, true);
   toggle.control.click();
   assert.equal(toggle.checked, true);
+  toggle.querySelector('.ui-choice-label').click();
+  assert.equal(toggle.checked, false, 'the visible switch label activates the control');
+  toggle.checked = true;
+  assert.equal(toggle.control.getAttribute('aria-checked'), 'true');
+  assert.equal(toggle.formValue.name, 'auto');
   assert.equal(toggle.control.getAttribute('role'), 'switch');
+  radios[0].checked = true;
+  assert.equal(radios[0].checked, true, 'programmatic radio selection is reflected');
+  assert.equal(radios[1].checked, false, 'radio groups remain exclusive when checked is set directly');
 });
 await t('custom range supports keyboard input, bounds, and form values', () => {
   const c = mount('<ui-range name="volume" min="0" max="10" step="2" value="4" label="Volume"></ui-range>');
@@ -214,6 +228,11 @@ await t('custom date picker handles calendar selection, limits, and hidden form 
   assert.equal(picker.value, '2026-11-21');
   assert.equal(changed, '2026-11-21');
   assert.equal(picker.hiddenValue.value, '2026-11-21');
+  picker.show();
+  assert.equal(picker.open, true, 'date picker opens through its shared popover');
+  assert.equal(picker.popover.panel.hasAttribute('data-open'), true);
+  picker.hide();
+  assert.equal(picker.open, false);
 });
 await t('floating surfaces share a clipped-layer escape hatch and stack by open order', () => {
   const c = mount('<ui-popover id="first"><button slot="trigger">First</button><p>First panel</p></ui-popover><ui-popover id="second"><button slot="trigger">Second</button><p>Second panel</p></ui-popover>');
@@ -249,6 +268,14 @@ await t('custom time picker supports 12-hour mode and hidden form value', () => 
   assert.equal(picker.value, '02:35');
   assert.equal(picker.valueLabel.textContent, '2:35 AM');
   assert.equal(picker.hiddenValue.value, '02:35');
+  picker.value = '09:10';
+  assert.equal(picker.value, '09:10', 'programmatic time updates sync the display and submitted value');
+  assert.equal(picker.valueLabel.textContent, '9:10 AM');
+  picker.show();
+  assert.equal(picker.open, true, 'time picker opens through its shared popover');
+  assert.equal(picker.popover.panel.hasAttribute('data-open'), true);
+  picker.hide();
+  assert.equal(picker.open, false);
 });
 await t('custom accordion supports exclusive and multiple panels with keyboard navigation', () => {
   const c = mount('<ui-accordion><ui-accordion-item heading="One" value="one" open>First panel</ui-accordion-item><ui-accordion-item heading="Two" value="two">Second panel</ui-accordion-item></ui-accordion><ui-accordion multiple><ui-accordion-item heading="Alpha">A</ui-accordion-item><ui-accordion-item heading="Beta">B</ui-accordion-item></ui-accordion>');

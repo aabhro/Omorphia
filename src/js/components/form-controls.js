@@ -145,6 +145,7 @@ class UIChoice extends HTMLElement {
     this.formValue = hiddenInput('hidden', '', valueOf(this, 'value', 'on'));
     this.replaceChildren(this.control, this.text, this.formValue);
     this.control.addEventListener('click', () => this.toggle());
+    this.text.addEventListener('click', () => { if (this.disabled) return; this.toggle(); this.control.focus({ preventScroll: true }); });
     this.control.addEventListener('keydown', (event) => this.onKey(event));
     this.control.prepend(this.indicator);
     this.sync();
@@ -156,8 +157,7 @@ class UIChoice extends HTMLElement {
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   toggle() { if (this.disabled) return; this.checked = !this.checked; this.sync(); this.changed(); }
   onKey(event) {
-    if ((event.key === ' ' || event.key === 'Enter') && this.role !== 'radio') { event.preventDefault(); this.toggle(); }
-    else if (this.role === 'radio' && ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].includes(event.key)) {
+    if (this.role === 'radio' && ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].includes(event.key)) {
       event.preventDefault();
       const name = this.getAttribute('name');
       if (!name) return;
@@ -169,6 +169,15 @@ class UIChoice extends HTMLElement {
     }
   }
   sync() {
+    if (this.role === 'radio' && this.checked) {
+      const name = this.getAttribute('name');
+      if (name) {
+        const scope = this.closest('form') || this.ownerDocument;
+        [...scope.querySelectorAll('ui-radio')]
+          .filter((item) => item !== this && item.getAttribute('name') === name && item.checked)
+          .forEach((item) => { item.checked = false; item.sync(); });
+      }
+    }
     this.control.setAttribute('aria-checked', String(this.checked));
     this.control.setAttribute('aria-disabled', String(this.disabled));
     this.control.setAttribute('aria-required', String(bool(this, 'required')));
@@ -194,12 +203,9 @@ export class UIRadio extends UIChoice {
   role = 'radio';
   toggle() {
     if (this.disabled || this.checked) return;
-    const name = this.getAttribute('name');
-    if (name) {
-      const scope = this.closest('form') || this.ownerDocument;
-      [...scope.querySelectorAll('ui-radio')].filter((item) => item !== this && item.getAttribute('name') === name).forEach((item) => { item.checked = false; item.sync(); });
-    }
-    this.checked = true; this.sync(); this.changed();
+    this.checked = true;
+    this.sync();
+    this.changed();
   }
 }
 define('ui-radio', UIRadio);
