@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-ui-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../dist/omorphia.min.css">
+  <style>
+    body { margin: 0; padding: 40px; display: grid; gap: 28px; width: min(520px, calc(100% - 80px)); }
+    .test-control { display: grid; gap: 8px; }
+  </style>
+</head>
+<body class="ui-root">
+  <div class="test-control">
+    <span class="ui-label">Region</span>
+    <ui-select id="region-test" name="region" searchable placeholder="Choose region" label="Region">
+      <ui-option value="fra" description="Europe">Frankfurt</ui-option>
+      <ui-option value="iad" description="North America">Virginia</ui-option>
+      <ui-option value="sin" description="Asia Pacific">Singapore</ui-option>
+    </ui-select>
+  </div>
+  <div class="test-control">
+    <span class="ui-label">Date</span>
+    <ui-date-picker id="date-test" name="release-date" value="2026-11-20" min="2026-01-01" max="2027-12-31" label="Release date"></ui-date-picker>
+  </div>
+  <div class="test-control">
+    <span class="ui-label">Time</span>
+    <ui-time-picker id="time-test" name="maintenance-time" value="14:30" format="12h" step="5" label="Maintenance time"></ui-time-picker>
+  </div>
+  <script src="../dist/omorphia.min.js"></script>
+  <script>document.documentElement.dataset.browserReady = 'true';</script>
+</body>
+</html>
