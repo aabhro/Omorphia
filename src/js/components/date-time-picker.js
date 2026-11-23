@@ -164,7 +164,7 @@ export class UITimePicker extends HTMLElement {
   connectedCallback() {
     if (this.popoverElement) return;
     this._time = parseTime(this.getAttribute('value'));
-    this.input = h('input', { class: 'ui-time-input', type: 'text', inputmode: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': this.getAttribute('label') || 'Time', placeholder: this.getAttribute('placeholder') || (this.is12Hour ? 'h:mm AM' : 'HH:mm') });
+    this.input = h('input', { class: 'ui-time-input', id: uid('ui-time-input'), type: 'text', inputmode: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': this.getAttribute('label') || 'Time', placeholder: this.getAttribute('placeholder') || (this.is12Hour ? 'h:mm AM' : 'HH:mm') });
     this.inputFrame = h('div', { class: 'ui-time-input-frame' }, this.input);
     this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', slot: 'trigger', 'aria-haspopup': 'dialog', 'aria-label': 'Open time options' }, h('ui-icon', { name: 'clock' }));
     this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
