@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   datePicker?.addEventListener('ui-change', (event) => { if (dateOutput) dateOutput.textContent = event.detail.value || 'No date selected'; });
   const timePicker = document.getElementById('time-demo');
   const timeOutput = document.getElementById('time-demo-output');
-  timePicker?.addEventListener('ui-change', () => { if (timeOutput) timeOutput.textContent = timePicker.valueLabel.textContent; });
+  timePicker?.addEventListener('ui-change', () => { if (timeOutput) timeOutput.textContent = timePicker.input.value; });
   // Effects playground
   const stage = document.getElementById('fx-stage');
   const fxInputs = [...document.querySelectorAll('[data-fx]')];
