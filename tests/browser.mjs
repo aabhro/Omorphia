@@ -90,6 +90,7 @@ try {
   const center = async (selector) => evaluate(`(() => {
     const el = document.querySelector(${JSON.stringify(selector)});
     if (!el) throw new Error('Missing element: ' + ${JSON.stringify(selector)});
+    el.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
     const rect = el.getBoundingClientRect();
     if (!rect.width || !rect.height) throw new Error('Element has no hit area: ' + ${JSON.stringify(selector)});
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
@@ -132,21 +133,12 @@ try {
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
   await waitFor(`document.querySelector('.ui-time-option[data-minute="35"]')`, 'time options render in the portalled panel');
-  const timeDebug = await evaluate(`(() => {
-    const row = document.querySelector('.ui-time-option[data-minute="35"]');
-    const list = row?.parentElement;
-    const panel = document.querySelector('#time-test').popoverElement.panel;
-    const rect = (el) => { const r = el?.getBoundingClientRect(); return r ? { x:r.x,y:r.y,left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height } : null; };
-    const r = rect(row);
-    return {
-      viewport: { width:innerWidth,height:innerHeight },
-      row: rect(row), list: rect(list), panel: rect(panel),
-      listScroll: { top:list?.scrollTop,height:list?.clientHeight,scrollHeight:list?.scrollHeight },
-      centerHit: r ? document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.outerHTML?.slice(0,180) || null : null,
-      nativePopoverOpen: panel?.matches(':popover-open')
-    };
+  const timeGeometry = await evaluate(`(() => {
+    const panel = document.querySelector('#time-test').popoverElement.panel.getBoundingClientRect();
+    const list = document.querySelector('#time-test').minuteList.getBoundingClientRect();
+    return { panelBottom: panel.bottom, listBottom: list.bottom, listHeight: list.height };
   })()`);
-  console.log('Time picker hit-test geometry:', JSON.stringify(timeDebug));
+  assert.ok(timeGeometry.listBottom <= timeGeometry.panelBottom - 5, 'time lists stay inside the available floating panel height: ' + JSON.stringify(timeGeometry));
   const timeMode = await evaluate(`document.querySelector('#time-test').popoverElement.panel._uiFloatMode`);
   await click('.ui-time-option[data-minute="35"]');
   await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');

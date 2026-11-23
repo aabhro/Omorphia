@@ -205,6 +205,7 @@ export function place(anchor, floating, { placement = 'bottom', offset = 8, matc
   const availableHeight = Math.max(80, Math.floor(verticalRoom(verticalSide)));
   const maxHeight = Math.min(vh - pad * 2, availableHeight);
   floating.style.maxHeight = `${maxHeight}px`;
+  floating.style.setProperty('--ui-float-available-height', `${maxHeight}px`);
   if (f.height > maxHeight) floating.style.overflowY = 'auto';
   const finalRect = floating.getBoundingClientRect();
 
