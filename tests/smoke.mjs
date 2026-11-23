@@ -462,6 +462,16 @@ await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   const link = sb.querySelector('a[href="#h"]'); link.focus(); sb.nav.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(d.activeElement, grp);
   d.body.insertAdjacentHTML('beforeend', '<button data-ui-toggle="#sb" id="tg">t</button>'); d.getElementById('tg').click(); assert.ok(sb.collapsed);
 });
+await t('checkbox and radio choices respond to pointer activation and maintain group state', () => {
+  const c = mount('<ui-checkbox id="choice-email" name="updates" value="deploys" label="Email me about deploys"></ui-checkbox><ui-checkbox id="choice-weekly" name="updates" value="weekly" label="Weekly summary"></ui-checkbox><ui-radio id="choice-starter" name="plan" value="starter" label="Starter" checked></ui-radio><ui-radio id="choice-team" name="plan" value="team" label="Team"></ui-radio>');
+  const email = c.querySelector('#choice-email'), weekly = c.querySelector('#choice-weekly');
+  const starter = c.querySelector('#choice-starter'), team = c.querySelector('#choice-team');
+  email.control.click(); assert.equal(email.checked, true); assert.equal(email.formValue.name, 'updates');
+  weekly.text.click(); assert.equal(weekly.checked, true); assert.equal(email.checked, true);
+  team.control.click(); assert.equal(team.checked, true); assert.equal(starter.checked, false);
+  assert.equal(team.formValue.name, 'plan'); assert.equal(starter.formValue.name, '');
+  starter.text.click(); assert.equal(starter.checked, true); assert.equal(team.checked, false);
+});
 await t('theme helper', () => { E.theme.set('light'); assert.equal(d.documentElement.getAttribute('data-ui-theme'), 'light'); E.theme.toggle(); assert.equal(E.theme.get(), 'dark'); });
 await t('native popovers are portalled before entering the top layer', () => {
   const proto = w.HTMLElement.prototype;
