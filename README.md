@@ -112,10 +112,10 @@ Use the classic bundle when you want the global <code>Omorphia</code> API.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/omorphia.min.css"
 >
 
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/omorphia.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-command-palette></ui-command-palette>
@@ -141,11 +141,11 @@ Load the stylesheet separately, then import the module in the browser.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/omorphia.min.css"
 >
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -165,10 +165,10 @@ Load the stylesheet separately, then import the module in the browser.
 Load <code>core.min.css</code> first. It contains the design tokens, base styles, and edge effect. Add the modules required by your interface.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/css/forms.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.2/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/css/forms.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/css/feedback.min.css">
 ~~~
 
 Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, and <code>advanced</code>.
@@ -180,7 +180,7 @@ The complete stylesheet is <a href="dist/omorphia.min.css"><code>dist/omorphia.m
 ### Versioning and network requirements
 
 - **Development:** use the <code>@main</code> URLs to follow the current default branch.
-- **Production:** pin an exact release tag, such as <code>@v1.2.2</code>, so deployed projects use a known revision.
+- **Production:** pin an exact release tag, such as <code>@v1.2.3</code>, so deployed projects use a known revision.
 - **Online requirement:** the browser must be able to reach <code>cdn.jsdelivr.net</code>. CDN imports do not work offline unless the project deliberately hosts the files locally.
 - **Content Security Policy:** allow <code>https://cdn.jsdelivr.net</code> in the relevant <code>style-src</code> and <code>script-src</code> directives.
 - **ES modules:** load the module in the browser runtime. Keep browser-only imports out of server-side rendering entry points.
