@@ -132,6 +132,21 @@ try {
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
   await waitFor(`document.querySelector('.ui-time-option[data-minute="35"]')`, 'time options render in the portalled panel');
+  const timeDebug = await evaluate(`(() => {
+    const row = document.querySelector('.ui-time-option[data-minute="35"]');
+    const list = row?.parentElement;
+    const panel = document.querySelector('#time-test').popoverElement.panel;
+    const rect = (el) => { const r = el?.getBoundingClientRect(); return r ? { x:r.x,y:r.y,left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height } : null; };
+    const r = rect(row);
+    return {
+      viewport: { width:innerWidth,height:innerHeight },
+      row: rect(row), list: rect(list), panel: rect(panel),
+      listScroll: { top:list?.scrollTop,height:list?.clientHeight,scrollHeight:list?.scrollHeight },
+      centerHit: r ? document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.outerHTML?.slice(0,180) || null : null,
+      nativePopoverOpen: panel?.matches(':popover-open')
+    };
+  })()`);
+  console.log('Time picker hit-test geometry:', JSON.stringify(timeDebug));
   const timeMode = await evaluate(`document.querySelector('#time-test').popoverElement.panel._uiFloatMode`);
   await click('.ui-time-option[data-minute="35"]');
   await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');
