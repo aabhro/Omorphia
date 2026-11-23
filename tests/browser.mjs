@@ -127,6 +127,7 @@ try {
 
   await click('#choice-email .ui-choice-control');
   assert.equal(await evaluate(`document.querySelector('#choice-email').checked`), true, 'checkbox responds to pointer activation');
+  assert.notEqual(await evaluate(`getComputedStyle(document.querySelector('#choice-email').indicator).backgroundColor`), 'rgba(0, 0, 0, 0)', 'checked checkbox indicator has a visible fill');
   await click('#choice-weekly .ui-choice-label');
   assert.equal(await evaluate(`document.querySelector('#choice-weekly').checked && document.querySelector('#choice-email').checked`), true, 'checkbox choices remain independent');
   await click('#choice-team .ui-choice-control');
