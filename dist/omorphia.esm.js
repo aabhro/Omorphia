@@ -213,6 +213,7 @@ function place(anchor, floating, { placement = "bottom", offset = 8, matchWidth 
   const availableHeight = Math.max(80, Math.floor(verticalRoom(verticalSide)));
   const maxHeight = Math.min(vh - pad2 * 2, availableHeight);
   floating.style.maxHeight = `${maxHeight}px`;
+  floating.style.setProperty("--ui-float-available-height", `${maxHeight}px`);
   if (f.height > maxHeight) floating.style.overflowY = "auto";
   const finalRect = floating.getBoundingClientRect();
   let x, y;
@@ -2076,7 +2077,7 @@ define("ui-option", UIOption);
 var UISelect = class extends HTMLElement {
   static observedAttributes = ["value", "placeholder", "disabled", "multiple", "searchable", "name", "label", "placement", "required"];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     const children = [...this.children];
     this.options = children.filter((child) => child.localName === "ui-option");
     const selected = this.options.filter((option) => option.hasAttribute("selected")).map((option) => option.value);
@@ -2085,7 +2086,7 @@ var UISelect = class extends HTMLElement {
     this.trigger = trigger;
     this.valueLabel = h("span", { class: "ui-select-value" });
     trigger.append(this.valueLabel, h("ui-icon", { class: "ui-select-chevron", name: "chevron-down" }));
-    this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, trigger);
+    this.popoverElement = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, trigger);
     this.panelContent = h("div", { class: "ui-select-panel", role: "presentation" });
     if (bool(this, "searchable")) {
       this.search = h("ui-input", { class: "ui-select-search", placeholder: "Search options\u2026", label: "Filter options", "aria-label": "Filter options" });
@@ -2100,8 +2101,8 @@ var UISelect = class extends HTMLElement {
     });
     this.list.addEventListener("keydown", (event) => this.onListKey(event));
     this.panelContent.append(this.list, ...this.options);
-    this.popover.append(this.panelContent);
-    this.popover.addEventListener("ui-open", () => {
+    this.popoverElement.append(this.panelContent);
+    this.popoverElement.addEventListener("ui-open", () => {
       this.renderOptions();
       if (this.search) {
         this.search.value = "";
@@ -2109,21 +2110,21 @@ var UISelect = class extends HTMLElement {
         this.search.focus();
       } else this.focusSelected();
     });
-    this.popover.addEventListener("ui-close", () => {
+    this.popoverElement.addEventListener("ui-close", () => {
       if (this.search) this.search.value = "";
     });
     trigger.addEventListener("keydown", (event) => {
       if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
         event.preventDefault();
-        this.popover.show();
+        this.popoverElement.show();
         if (!this.search) this.focusSelected(event.key === "ArrowUp" ? -1 : 1);
       }
     });
-    this.replaceChildren(this.popover, this.formFields);
+    this.replaceChildren(this.popoverElement, this.formFields);
     this.sync();
   }
   attributeChangedCallback(name) {
-    if (!this.popover) return;
+    if (!this.popoverElement) return;
     if (name === "value" || name === "multiple") this._value = this.multiple ? (this.getAttribute("value") || "").split(",").filter(Boolean) : this.getAttribute("value") || "";
     this.sync();
   }
@@ -2142,7 +2143,7 @@ var UISelect = class extends HTMLElement {
   set value(value) {
     this._value = this.multiple ? Array.isArray(value) ? value.map(String) : value ? [String(value)] : [] : String(value ?? "");
     this.setAttribute("value", this.multiple ? this._value.join(",") : this._value);
-    if (this.popover) this.sync();
+    if (this.popoverElement) this.sync();
   }
   get selectedOptions() {
     return this.options.filter((option) => this.multiple ? this.value.includes(option.value) : this.value === option.value);
@@ -2154,7 +2155,7 @@ var UISelect = class extends HTMLElement {
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
     this.trigger.setAttribute("aria-required", String(bool(this, "required")));
     this.trigger.setAttribute("aria-haspopup", "listbox");
-    this.trigger.setAttribute("aria-expanded", String(this.popover.open));
+    this.trigger.setAttribute("aria-expanded", String(this.popoverElement.open));
     this.list.setAttribute("aria-multiselectable", String(this.multiple));
     this.renderLabel();
     this.updateFormFields();
@@ -2218,9 +2219,9 @@ var UISelect = class extends HTMLElement {
       (event.key === "Home" ? rows[0] : rows.at(-1))?.focus();
     } else if (event.key === "Escape") {
       event.preventDefault();
-      this.popover.hide();
+      this.popoverElement.hide();
       this.trigger.focus();
-    } else if (event.key === "Tab") this.popover.hide();
+    } else if (event.key === "Tab") this.popoverElement.hide();
   }
   choose(option) {
     if (!option || option.disabled || this.disabled) return;
@@ -2234,7 +2235,7 @@ var UISelect = class extends HTMLElement {
     emit(this, "ui-input", { value: this.value, option });
     emit(this, "ui-change", { value: this.value, option, selectedOptions: this.selectedOptions });
     if (!this.multiple) {
-      this.popover.hide();
+      this.popoverElement.hide();
       this.trigger.focus();
     }
   }
@@ -2263,14 +2264,14 @@ var dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || void 0, { ye
 var UIDatePicker = class extends HTMLElement {
   static observedAttributes = ["value", "min", "max", "disabled", "placeholder", "locale", "week-start", "placement", "name", "label"];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     this._value = parseDate(this.getAttribute("value")) ? this.getAttribute("value") : "";
     const initial = parseDate(this._value) || /* @__PURE__ */ new Date();
     this.view = new Date(initial.getFullYear(), initial.getMonth(), 1);
     this.trigger = h("button", { class: "ui-date-trigger", type: "button", slot: "trigger", "aria-haspopup": "dialog", "aria-label": this.getAttribute("label") || "Choose date" });
     this.valueLabel = h("span", { class: "ui-date-value" });
     this.trigger.append(h("ui-icon", { name: "calendar" }), this.valueLabel, h("ui-icon", { name: "chevron-down", class: "ui-date-chevron" }));
-    this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
+    this.popoverElement = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
     this.calendar = h("div", { class: "ui-calendar", role: "dialog", "aria-label": "Choose a date" });
     this.header = h("div", { class: "ui-calendar-head" });
     this.prev = h("button", { class: "ui-calendar-nav", type: "button", "aria-label": "Previous month" }, h("ui-icon", { name: "chevron-left" }));
@@ -2293,15 +2294,15 @@ var UIDatePicker = class extends HTMLElement {
     this.days.addEventListener("keydown", (event) => this.onDayKey(event));
     this.clearButton.addEventListener("click", () => this.select(""));
     this.todayButton.addEventListener("click", () => this.select(isoDate(/* @__PURE__ */ new Date())));
-    this.popover.addEventListener("ui-open", () => this.focusCurrentDay());
-    this.popover.append(this.calendar);
+    this.popoverElement.addEventListener("ui-open", () => this.focusCurrentDay());
+    this.popoverElement.append(this.calendar);
     this.hiddenValue = h("input", { type: "hidden", id: uid("ui-date-value"), name: this.getAttribute("name") || "", value: this._value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.popover, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
   attributeChangedCallback() {
-    if (this.popover) this.sync();
+    if (this.popoverElement) this.sync();
   }
   get value() {
     return this._value || "";
@@ -2320,16 +2321,16 @@ var UIDatePicker = class extends HTMLElement {
     this.trigger?.focus(options);
   }
   get open() {
-    return !!this.popover?.open;
+    return !!this.popoverElement?.open;
   }
   show() {
-    this.popover?.show();
+    this.popoverElement?.show();
   }
   hide() {
-    this.popover?.hide();
+    this.popoverElement?.hide();
   }
   toggle() {
-    this.popover?.toggle();
+    this.popoverElement?.toggle();
   }
   get disabled() {
     return this.hasAttribute("disabled");
@@ -2349,7 +2350,7 @@ var UIDatePicker = class extends HTMLElement {
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute("locale")) : this.getAttribute("placeholder") || "Choose date";
     this.trigger.classList.toggle("is-placeholder", !this.value);
-    this.trigger.setAttribute("aria-expanded", String(this.popover.open));
+    this.trigger.setAttribute("aria-expanded", String(this.popoverElement.open));
     this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
     this.hiddenValue.value = this.value;
     this.renderCalendar();
@@ -2425,7 +2426,7 @@ var UIDatePicker = class extends HTMLElement {
     emit(this, "ui-input", { value: this.value, date: this.date });
     emit(this, "ui-change", { value: this.value, date: this.date });
     if (date || !value) {
-      this.popover.hide();
+      this.popoverElement.hide();
       this.trigger.focus();
     }
   }
@@ -2438,12 +2439,12 @@ var parseTime = (value) => {
 var UITimePicker = class extends HTMLElement {
   static observedAttributes = ["value", "disabled", "placeholder", "format", "step", "placement", "label", "name"];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     this._time = parseTime(this.getAttribute("value"));
     this.trigger = h("button", { class: "ui-time-trigger", type: "button", slot: "trigger", "aria-haspopup": "dialog", "aria-label": this.getAttribute("label") || "Choose time" });
     this.valueLabel = h("span", { class: "ui-time-value" });
     this.trigger.append(h("ui-icon", { name: "clock" }), this.valueLabel, h("ui-icon", { name: "chevron-down" }));
-    this.popover = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
+    this.popoverElement = h("ui-popover", { placement: this.getAttribute("placement") || "bottom-start" }, this.trigger);
     this.panel = h("div", { class: "ui-time-panel", role: "dialog", "aria-label": "Choose time" });
     this.columns = h("div", { class: "ui-time-columns" });
     this.hourList = h("div", { class: "ui-time-list", role: "listbox", "aria-label": "Hours" });
@@ -2451,7 +2452,7 @@ var UITimePicker = class extends HTMLElement {
     this.period = h("button", { class: "ui-time-period", type: "button", hidden: true });
     this.columns.append(this.hourList, h("span", { class: "ui-time-separator", text: ":" }), this.minuteList, this.period);
     this.panel.append(h("div", { class: "ui-time-title", text: "Select a time" }), this.columns);
-    this.popover.append(this.panel);
+    this.popoverElement.append(this.panel);
     this.hourList.addEventListener("click", (event) => {
       const item = event.target.closest("[data-hour]");
       if (item) this.setPart("hour", Number(item.dataset.hour));
@@ -2466,14 +2467,14 @@ var UITimePicker = class extends HTMLElement {
       this._time.hour = (this._time.hour + 12) % 24;
       this.commit("period");
     });
-    this.popover.addEventListener("ui-open", () => this.focusTime());
+    this.popoverElement.addEventListener("ui-open", () => this.focusTime());
     this.hiddenValue = h("input", { type: "hidden", id: uid("ui-time-value"), name: this.getAttribute("name") || "", value: this.value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.popover, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
   attributeChangedCallback() {
-    if (this.popover) this.sync();
+    if (this.popoverElement) this.sync();
   }
   get value() {
     const time = this._time || parseTime(this.getAttribute("value"));
@@ -2482,7 +2483,7 @@ var UITimePicker = class extends HTMLElement {
   set value(value) {
     this._time = parseTime(value);
     this.setAttribute("value", this.value);
-    if (this.popover) this.sync();
+    if (this.popoverElement) this.sync();
   }
   get disabled() {
     return this.hasAttribute("disabled");
@@ -2494,16 +2495,16 @@ var UITimePicker = class extends HTMLElement {
     this.trigger?.focus(options);
   }
   get open() {
-    return !!this.popover?.open;
+    return !!this.popoverElement?.open;
   }
   show() {
-    this.popover?.show();
+    this.popoverElement?.show();
   }
   hide() {
-    this.popover?.hide();
+    this.popoverElement?.hide();
   }
   toggle() {
-    this.popover?.toggle();
+    this.popoverElement?.toggle();
   }
   get is12Hour() {
     return this.getAttribute("format") === "12h";
@@ -2512,7 +2513,7 @@ var UITimePicker = class extends HTMLElement {
     if (this.hasAttribute("value")) this._time = parseTime(this.getAttribute("value"));
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
-    this.trigger.setAttribute("aria-expanded", String(this.popover.open));
+    this.trigger.setAttribute("aria-expanded", String(this.popoverElement.open));
     const hour = this._time.hour, displayHour = this.is12Hour ? (hour + 11) % 12 + 1 : hour;
     this.valueLabel.textContent = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ":" + pad(this._time.minute) + (this.is12Hour ? hour < 12 ? " AM" : " PM" : "");
     this.period.hidden = !this.is12Hour;
