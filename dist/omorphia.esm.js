@@ -1,4 +1,4 @@
-/*! Omorphia v1.2.2 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.2.3 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -2946,7 +2946,7 @@ var UIMenuItem = class extends HTMLElement {
 define("ui-menu-item", UIMenuItem);
 
 // src/js/index.js
-var version = true ? "1.2.2" : "dev";
+var version = true ? "1.2.3" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {
