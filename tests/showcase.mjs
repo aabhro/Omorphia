@@ -26,6 +26,18 @@ assert.ok(d.querySelectorAll('ui-accordion ui-accordion-item').length >= 2, 'acc
 const codePanels = [...d.querySelectorAll('ui-accordion.demo-code')];
 assert.ok(codePanels.length >= 25 && codePanels.every((panel) => panel.firstElementChild?.matches('ui-accordion-item')), 'example code disclosures use the accordion component');
 assert.equal(d.querySelector('#settings-drawer').hidden, true, 'drawer starts closed');
+const deployChoice = d.querySelector('#choice-deploys');
+const weeklyChoice = d.querySelector('#choice-weekly');
+const starterChoice = d.querySelector('#choice-starter');
+const teamChoice = d.querySelector('#choice-team');
+assert.ok(deployChoice && weeklyChoice && starterChoice && teamChoice, 'the choice demo renders every option');
+deployChoice.control.click();
+assert.equal(deployChoice.checked, false, 'the checked deploy checkbox toggles off');
+weeklyChoice.text.click();
+assert.equal(weeklyChoice.checked, true, 'the weekly summary label toggles its checkbox');
+teamChoice.control.click();
+assert.equal(teamChoice.checked, true, 'the Team radio selects');
+assert.equal(starterChoice.checked, false, 'the Starter radio deselects');
 const datePicker = d.querySelector('#date-demo');
 assert.equal(datePicker.value, '2026-11-20');
 assert.equal(datePicker.days.children.length, 42, 'calendar renders a six-week grid');
