@@ -50,7 +50,7 @@ export class UIDatePicker extends HTMLElement {
     this.popoverElement.append(this.calendar);
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-date-value'), name: this.getAttribute('name') || '', value: this._value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.inputFrame, this.popoverElement, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
   attributeChangedCallback() { if (this.popoverElement) this.sync(); }
@@ -188,7 +188,7 @@ export class UITimePicker extends HTMLElement {
     this.popoverElement.addEventListener('ui-open', () => this.focusTime());
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-time-value'), name: this.getAttribute('name') || '', value: this.value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.popoverElement, this.hiddenValue);
+    this.replaceChildren(this.inputFrame, this.popoverElement, this.hiddenValue);
     this.sync();
   }
   attributeChangedCallback() { if (this.popoverElement) this.sync(); }
@@ -218,6 +218,7 @@ export class UITimePicker extends HTMLElement {
     this.renderOptions();
   }
   renderOptions() {
+    const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
     const step = Math.min(30, Math.max(1, Number(this.getAttribute('step') || 5)));
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
     this.hourList.replaceChildren(...hours.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-hour': String(this.is12Hour ? n % 12 : n), 'aria-selected': String(displayHour === n), tabindex: displayHour === n ? '0' : '-1' }, this.is12Hour ? String(n) : pad(n))));
