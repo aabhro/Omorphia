@@ -153,7 +153,7 @@ try {
 
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
-  await waitFor(`document.querySelector('.ui-time-option[data-minute="35"]')`, 'time options render in the portalled panel');
+  await waitFor(`document.querySelector('.ui-time-option[data-minute="25"]')`, 'time options render in the portalled panel');
   const timeGeometry = await evaluate(`(() => {
     const panel = document.querySelector('#time-test').popoverElement.panel.getBoundingClientRect();
     const list = document.querySelector('#time-test').minuteList.getBoundingClientRect();
@@ -161,10 +161,10 @@ try {
   })()`);
   assert.ok(timeGeometry.listBottom <= timeGeometry.panelBottom - 5, 'time lists stay inside the available floating panel height: ' + JSON.stringify(timeGeometry));
   const timeMode = await evaluate(`document.querySelector('#time-test').popoverElement.panel._uiFloatMode`);
-  await click('.ui-time-option[data-minute="35"]');
-  await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');
-  assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:35');
-  assert.equal(await evaluate(`document.querySelector('#time-test').input.value`), '2:35 PM');
+  await click('.ui-time-option[data-minute="25"]');
+  await waitFor(`document.querySelector('#time-test').value === '14:25'`, 'minute selection updates the value');
+  assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:25');
+  assert.equal(await evaluate(`document.querySelector('#time-test').input.value`), '2:25 PM');
   console.log(`  ✓ time picker opens and selects by pointer (${timeMode})`);
 
   await evaluate(`(() => {
