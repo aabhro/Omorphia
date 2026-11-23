@@ -23,6 +23,17 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
   assert.match(css, /background:\s*#0a0a0a/);
   assert.doesNotMatch(css, /#6ee7c8|#0f8f74/);
 });
+await t('picker showcase is transparent and control edges are restrained', () => {
+  const advanced = readFileSync('src/css/advanced.css', 'utf8');
+  const forms = readFileSync('src/css/forms.css', 'utf8');
+  const showcase = readFileSync('showcase/showcase.css', 'utf8');
+  const tokens = readFileSync('src/css/tokens.css', 'utf8');
+  assert.match(forms, /\.ui-time-input-frame/);
+  assert.match(advanced, /ui-time-picker\{display:inline-flex/);
+  assert.match(showcase, /\.picker-demo-frame\s*\{[^}]*background:\s*transparent/);
+  assert.match(tokens, /--ui-control-border:rgb\(245 245 245 \/ \.12\)/);
+  assert.match(tokens, /--ui-edge-tl-alpha:\.36/);
+});
 await t('command palette has no exterior border', () => {
   const advanced = readFileSync('src/css/advanced.css', 'utf8');
   const start = advanced.indexOf('.ui-command{');
