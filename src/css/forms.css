@@ -119,3 +119,14 @@ ui-range{display:block;width:100%;min-width:140px}
 .ui-range-track:focus-visible .ui-range-thumb{outline:2px solid var(--ui-focus);outline-offset:3px}
 .ui-range-track:active .ui-range-thumb{transform:translateX(-50%) scale(1.14)}
 ui-range[disabled]{opacity:.4;pointer-events:none}
+
+/* Editable time field. The icon trigger opens the shared time surface. */
+.ui-time-input-frame{display:flex;align-items:center;min-width:0;width:100%;min-height:var(--ui-h-md);padding:0 12px;border:1px solid var(--ui-control-border);border-radius:var(--ui-radius);background:transparent;transition:border-color var(--ui-duration) var(--ui-ease)}
+.ui-time-input-frame:focus-within{border-color:var(--ui-text-muted)}
+.ui-time-input{display:block;width:100%;min-width:0;height:38px;padding:0;border:0;outline:0;background:transparent;color:var(--ui-text);font:var(--ui-text-md)/1.4 var(--ui-font);font-variant-numeric:tabular-nums}
+.ui-time-input::placeholder{color:var(--ui-text-faint);opacity:1}
+.ui-time-input[aria-invalid="true"]{color:var(--ui-danger)}
+ui-time-picker{display:inline-flex;align-items:center;gap:4px}
+ui-time-picker .ui-popover{display:inline-flex;flex:none}
+.ui-time-trigger{min-width:36px;width:36px;min-height:36px;justify-content:center;padding:0;border:0;color:var(--ui-text-muted)}
+.ui-time-trigger:hover{color:var(--ui-text)}
