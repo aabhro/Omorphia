@@ -43,11 +43,11 @@ try {
   for (let i = 0; i < 100; i++) {
     const response = await fetch(`http://127.0.0.1:${debugPort}/json/list`).catch(() => null);
     const targets = response?.ok ? await response.json() : [];
-    target = targets.find((entry) => entry.type === 'page' && entry.url.startsWith(pageUrl));
+    target = targets.find((entry) => entry.type === 'page');
     if (target?.webSocketDebuggerUrl) break;
     await delay(50);
   }
-  assert.ok(target?.webSocketDebuggerUrl, 'Chromium exposes the local fixture page');
+  assert.ok(target?.webSocketDebuggerUrl, 'Chromium exposes a DevTools page target');
 
   socket = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolvePromise, reject) => {
@@ -106,7 +106,9 @@ try {
     await delay(220);
   };
 
+  await send('Page.enable');
   await send('Runtime.enable');
+  await send('Page.navigate', { url: pageUrl });
   await waitFor(`document.documentElement.dataset.browserReady === 'true' && document.querySelector('#region-test .ui-select-trigger') && document.querySelector('#date-test .ui-date-trigger') && document.querySelector('#time-test .ui-time-trigger')`, 'fixture custom elements and bundle initialize');
 
   await click('#region-test .ui-select-trigger');
