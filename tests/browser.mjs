@@ -57,7 +57,11 @@ try {
   });
   const evaluate = async (expression) => {
     const response = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
-    if (response.exceptionDetails) throw new Error(response.exceptionDetails.text || 'Browser evaluation failed');
+    if (response.exceptionDetails) {
+      const details = response.exceptionDetails;
+      const description = details.exception?.description || details.exception?.value || details.text || 'Browser evaluation failed';
+      throw new Error(String(description));
+    }
     return response.result?.value;
   };
   const waitFor = async (expression, description) => {
@@ -79,7 +83,7 @@ try {
     const point = await center(selector);
     const hit = await evaluate(`(() => {
       const el = document.elementFromPoint(${point.x}, ${point.y});
-      return el ? { tag: el.localName, id: el.id, className: String(el.className || ''), target: el.closest(${JSON.stringify(selector)}) !== null } : null;
+      return el ? { tag: el.localName, id: el.id, className: String(el.className || ''), target: Boolean(el.matches(${JSON.stringify(selector)}) || el.closest?.(${JSON.stringify(selector)})) } : null;
     })()`);
     assert.ok(hit?.target, `Real browser hit-testing reaches ${selector}; got ${JSON.stringify(hit)}`);
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: point.x, y: point.y, button: 'left', clickCount: 1 });
