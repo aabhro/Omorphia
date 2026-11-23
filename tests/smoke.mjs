@@ -28,7 +28,7 @@ await t('picker showcase is transparent and control edges are restrained', () =>
   const forms = readFileSync('src/css/forms.css', 'utf8');
   const showcase = readFileSync('showcase/showcase.css', 'utf8');
   const tokens = readFileSync('src/css/tokens.css', 'utf8');
-  assert.match(forms, /\.ui-time-input-frame/);
+  assert.match(forms, /\\.ui-time-field/);
   assert.match(advanced, /ui-time-picker\{display:inline-flex/);
   assert.match(showcase, /\.picker-demo-frame\s*\{[^}]*background:\s*transparent/);
   assert.match(tokens, /--ui-control-border:rgb\(245 245 245 \/ \.12\)/);
