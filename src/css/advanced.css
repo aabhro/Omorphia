@@ -25,7 +25,7 @@ ui-sidebar[data-mobile]{position:fixed;top:0;bottom:0;left:0;z-index:1300;width:
 
 
 /* Custom select, date and time pickers. Their floating surfaces are opaque and borderless. */
-ui-select,ui-date-picker,ui-time-picker{display:inline-block;position:relative;min-width:0;max-width:100%;vertical-align:middle}
+ui-select,ui-date-picker{display:inline-block;position:relative;min-width:0;max-width:100%;vertical-align:middle}ui-time-picker{display:inline-flex;align-items:center;gap:4px;position:relative;min-width:0;max-width:100%;vertical-align:middle}
 .ui-select-trigger,.ui-date-trigger,.ui-time-trigger{display:flex;align-items:center;gap:10px;width:100%;min-width:150px;min-height:var(--ui-h-md);padding:0 12px;border:1px solid transparent;border-radius:var(--ui-radius);background:transparent;color:var(--ui-text);font:var(--ui-text-md)/1.35 var(--ui-font);text-align:left;cursor:pointer;transition:border-color var(--ui-duration) var(--ui-ease),background-color var(--ui-duration) var(--ui-ease)}
 .ui-select-trigger:hover,.ui-date-trigger:hover,.ui-time-trigger:hover{background:var(--ui-hover)}
 .ui-select-trigger:focus-visible,.ui-date-trigger:focus-visible,.ui-time-trigger:focus-visible{outline:0;--ui-edge-color:var(--ui-accent);--ui-edge-intensity:1.9}
@@ -49,7 +49,7 @@ ui-option{display:none}
 .ui-select-option-desc{color:#a3a3a3;font-size:var(--ui-text-xs)}
 .ui-select-option-check{opacity:0;color:#f5f5f5}
 .ui-select-option[aria-selected="true"] .ui-select-option-check{opacity:1}
-.ui-date-trigger,.ui-time-trigger{min-width:180px}
+.ui-date-trigger{min-width:180px}.ui-time-trigger{display:grid;place-items:center;flex:none;min-width:36px;width:36px;min-height:36px;padding:0;border:0;color:var(--ui-text-muted)}.ui-time-trigger:hover{color:var(--ui-text)}
 .ui-date-value,.ui-time-value{flex:1;min-width:0}
 .ui-calendar,.ui-time-panel{width:292px;max-width:calc(100vw - 32px);padding:10px;background:#0a0a0a;color:#f5f5f5}
 .ui-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 0 12px}
