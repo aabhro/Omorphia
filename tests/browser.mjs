@@ -10,9 +10,10 @@ if (!browser) throw new Error('A Chromium or Chrome binary is required. Set CHRO
 
 const profile = mkdtempSync(join(tmpdir(), 'omorphia-chrome-'));
 const pageUrl = new URL('../tests/browser.html', import.meta.url).href;
+const debugPort = 15000 + (process.pid % 10000);
 const child = spawn(browser, [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage',
-  '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0',
+  '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${debugPort}`, '--remote-debugging-address=127.0.0.1',
   '--remote-allow-origins=*', `--user-data-dir=${profile}`, pageUrl
 ], { stdio: 'ignore' });
 
@@ -23,16 +24,9 @@ const runtimeErrors = [];
 const delay = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
 
 try {
-  const activePortFile = join(profile, 'DevToolsActivePort');
-  for (let i = 0; i < 200 && !existsSync(activePortFile); i++) {
-    if (child.exitCode != null) throw new Error(`Chromium exited before starting (code ${child.exitCode}).`);
-    await delay(50);
-  }
-  assert.ok(existsSync(activePortFile), 'Chromium remote debugging endpoint starts');
-  const port = Number(readFileSync(activePortFile, 'utf8').split('\n')[0]);
   let target;
   for (let i = 0; i < 100; i++) {
-    const response = await fetch(`http://127.0.0.1:${port}/json/list`).catch(() => null);
+    const response = await fetch(`http://127.0.0.1:${debugPort}/json/list`).catch(() => null);
     const targets = response?.ok ? await response.json() : [];
     target = targets.find((entry) => entry.type === 'page' && entry.url.startsWith('file:'));
     if (target?.webSocketDebuggerUrl) break;
