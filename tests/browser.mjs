@@ -112,6 +112,14 @@ try {
   await send('Page.navigate', { url: pageUrl });
   await waitFor(`document.documentElement.dataset.browserReady === 'true' && document.querySelector('#region-test .ui-select-trigger') && document.querySelector('#date-test .ui-date-trigger') && document.querySelector('#time-test .ui-time-trigger')`, 'fixture custom elements and bundle initialize');
 
+  await click('#choice-email .ui-choice-control');
+  assert.equal(await evaluate(`document.querySelector('#choice-email').checked`), true, 'checkbox responds to pointer activation');
+  await click('#choice-weekly .ui-choice-label');
+  assert.equal(await evaluate(`document.querySelector('#choice-weekly').checked && document.querySelector('#choice-email').checked`), true, 'checkbox choices remain independent');
+  await click('#choice-team .ui-choice-control');
+  assert.equal(await evaluate(`document.querySelector('#choice-team').checked && !document.querySelector('#choice-starter').checked`), true, 'radio choices update their group');
+  console.log('  ✓ checkbox and radio choices respond to pointer input');
+
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popoverElement.open`, 'region select opens');
   await waitFor(`document.querySelector('.ui-select-option[data-ui-option-index="0"]')`, 'region options render in the portalled panel');
@@ -129,6 +137,16 @@ try {
   await waitFor(`document.querySelector('#date-test').value === '2026-11-21'`, 'date cell selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#date-test').hiddenValue.value`), '2026-11-21');
   console.log(`  ✓ date picker opens and selects by pointer (${dateMode})`);
+
+  await evaluate(`(() => {
+    const input = document.querySelector('#time-test').input;
+    input.value = '3:45 PM';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  })()`);
+  await waitFor(`document.querySelector('#time-test').value === '15:45'`, 'typed time updates the value');
+  assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '15:45');
+  console.log('  ✓ time picker accepts typed 12-hour values');
 
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
