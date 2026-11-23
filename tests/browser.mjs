@@ -99,9 +99,13 @@ try {
     const point = await center(selector);
     const hit = await evaluate(`(() => {
       const el = document.elementFromPoint(${point.x}, ${point.y});
-      return el ? { tag: el.localName, id: el.id, className: String(el.className || ''), target: Boolean(el.matches(${JSON.stringify(selector)}) || el.closest?.(${JSON.stringify(selector)})) } : null;
+      const target = document.querySelector(${JSON.stringify(selector)});
+      const rect = target?.getBoundingClientRect();
+      return { hit: el ? { tag: el.localName, id: el.id, className: String(el.className || ''), target: Boolean(el.matches(${JSON.stringify(selector)}) || el.closest?.(${JSON.stringify(selector)})) } : null,
+        point: { x: ${point.x}, y: ${point.y} }, viewport: { width: innerWidth, height: innerHeight },
+        rect: rect ? { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, height: rect.height } : null };
     })()`);
-    assert.ok(hit?.target, `Real browser hit-testing reaches ${selector}; got ${JSON.stringify(hit)}`);
+    assert.ok(hit?.hit?.target, `Real browser hit-testing reaches ${selector}; got ${JSON.stringify(hit)}`);
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: point.x, y: point.y, button: 'left', clickCount: 1 });
     await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: point.x, y: point.y, button: 'left', clickCount: 1 });
     await delay(220);
