@@ -132,6 +132,7 @@ try {
   assert.equal(await evaluate(`document.querySelector('#choice-weekly').checked && document.querySelector('#choice-email').checked`), true, 'checkbox choices remain independent');
   await click('#choice-team .ui-choice-control');
   assert.equal(await evaluate(`document.querySelector('#choice-team').checked && !document.querySelector('#choice-starter').checked`), true, 'radio choices update their group');
+  assert.notEqual(await evaluate(`getComputedStyle(document.querySelector('#choice-team').indicator).backgroundColor`), 'rgba(0, 0, 0, 0)', 'checked radio indicator has a visible fill');
   console.log('  ✓ checkbox and radio choices respond to pointer input');
 
   await click('#region-test .ui-select-trigger');
