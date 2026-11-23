@@ -11,6 +11,12 @@
 </head>
 <body class="ui-root">
   <div class="test-control">
+    <ui-checkbox id="choice-email" name="updates" value="deploys" label="Email me about deploys"></ui-checkbox>
+    <ui-checkbox id="choice-weekly" name="updates" value="weekly" label="Weekly summary"></ui-checkbox>
+    <ui-radio id="choice-starter" name="plan" value="starter" label="Starter" checked></ui-radio>
+    <ui-radio id="choice-team" name="plan" value="team" label="Team"></ui-radio>
+  </div>
+  <div class="test-control">
     <span class="ui-label">Region</span>
     <ui-select id="region-test" name="region" searchable placeholder="Choose region" label="Region">
       <ui-option value="fra" description="Europe">Frankfurt</ui-option>
