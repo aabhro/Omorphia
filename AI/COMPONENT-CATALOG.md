@@ -182,7 +182,7 @@ These components submit their values through internal hidden form fields. Do not
 
 `ui-date-picker` stores an ISO `YYYY-MM-DD` string. Attributes: `value`, `min`, `max`, `disabled`, `placeholder`, `locale`, `week-start` (0–6), `placement`, `name`, and `label`. Properties: `value`, `date` (a JavaScript Date or null), `disabled`; method: `focus()`. Events: `ui-input` and `ui-change` with `{ value, date }`. Arrow keys move one day/week; Home/End move to the week edges; Page Up/Down changes month/year. `min` and `max` dates are disabled.
 
-`ui-time-picker` stores an `HH:MM` 24-hour string. Attributes: `value`, `disabled`, `placeholder`, `format` (`12h` or default 24-hour), `step` (minute interval), `placement`, `label`, and `name`. Property: `value`; method: `focus()`. Events: `ui-input` and `ui-change` with `{ value }`. In 12-hour mode the visible AM/PM control does not change the stored 24-hour format.
+`ui-time-picker` stores an `HH:MM` 24-hour string. Its text field accepts typed `HH:MM`, `h:mm AM`, or `h:mm PM` values, while the adjacent clock trigger opens the selectable hour/minute panel. Attributes: `value`, `disabled`, `placeholder`, `format` (`12h` or default 24-hour), `step` (minute interval), `placement`, `label`, and `name`. Property: `value`; method: `focus()` focuses the editable text field. Events: `ui-input` while a valid time is typed and `ui-change` when committed. The submitted value remains 24-hour `HH:MM` in either display format.
 
 Both controls render their own calendar/selection surface inside `ui-popover`, so they share the same motion and theme behavior. Both include hidden form values. Do not create a parallel calendar or native fallback widget.
 
