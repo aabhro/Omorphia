@@ -138,16 +138,6 @@ try {
   assert.equal(await evaluate(`document.querySelector('#date-test').hiddenValue.value`), '2026-11-21');
   console.log(`  ✓ date picker opens and selects by pointer (${dateMode})`);
 
-  await evaluate(`(() => {
-    const input = document.querySelector('#time-test').input;
-    input.value = '3:45 PM';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  })()`);
-  await waitFor(`document.querySelector('#time-test').value === '15:45'`, 'typed time updates the value');
-  assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '15:45');
-  console.log('  ✓ time picker accepts typed 12-hour values');
-
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
   await waitFor(`document.querySelector('.ui-time-option[data-minute="35"]')`, 'time options render in the portalled panel');
@@ -163,6 +153,16 @@ try {
   assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:35');
   assert.equal(await evaluate(`document.querySelector('#time-test').input.value`), '2:35 PM');
   console.log(`  ✓ time picker opens and selects by pointer (${timeMode})`);
+
+  await evaluate(`(() => {
+    const input = document.querySelector('#time-test').input;
+    input.value = '3:45 PM';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  })()`);
+  await waitFor(`document.querySelector('#time-test').value === '15:45'`, 'typed time updates the value');
+  assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '15:45');
+  console.log('  ✓ time picker accepts typed 12-hour values');
 
   assert.deepEqual(runtimeErrors, [], `No uncaught browser errors: ${runtimeErrors.join('; ')}`);
   console.log('Browser interaction checks passed.');
