@@ -185,7 +185,7 @@ export class UITimePicker extends HTMLElement {
     this.input.addEventListener('input', () => this.handleTypedInput());
     this.input.addEventListener('change', () => this.commitTypedInput());
     this.input.addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); this.commitTypedInput(); this.popoverElement.hide(); } else if (event.key === 'ArrowDown') { event.preventDefault(); this.popoverElement.show(); this.focusTime(); } });
-    this.popoverElement.addEventListener('ui-open', () => this.focusTime());
+    this.popoverElement.addEventListener('ui-open', () => { if (this.ownerDocument.activeElement !== this.input) this.focusTime(); });
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-time-value'), name: this.getAttribute('name') || '', value: this.value });
     this.hiddenValue.hidden = true;
     this.replaceChildren(this.inputFrame, this.popoverElement, this.hiddenValue);
@@ -241,7 +241,6 @@ export class UITimePicker extends HTMLElement {
     this.input.setAttribute('aria-invalid', String(!parsed));
     if (!parsed) return;
     this._time = parsed;
-    this.setAttribute('value', this.value);
     this.hiddenValue.value = this.value;
     this.renderOptions();
     emit(this, 'ui-input', { value: this.value });
@@ -250,7 +249,10 @@ export class UITimePicker extends HTMLElement {
     const parsed = this.parseTypedTime(this.input.value);
     if (!parsed) { this.sync(); return; }
     this._time = parsed;
-    this.commit('hour');
+    this.setAttribute('value', this.value);
+    this.sync();
+    emit(this, 'ui-input', { value: this.value });
+    emit(this, 'ui-change', { value: this.value });
   }
   onListKey(event) {
     const rows = [...event.currentTarget.querySelectorAll('button')];
