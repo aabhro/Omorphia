@@ -99,7 +99,7 @@ ui-checkbox,ui-radio,ui-switch{display:inline-flex;align-items:center;gap:10px;m
 .ui-choice-control{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;width:18px;height:18px;padding:0;border:0;background:transparent;color:var(--ui-text);cursor:pointer}
 .ui-choice-indicator{position:relative;display:block;width:18px;height:18px;border:1px solid var(--ui-control-border);border-radius:5px;background:transparent;transition:background-color var(--ui-duration) var(--ui-ease),border-color var(--ui-duration) var(--ui-ease),transform var(--ui-duration-fast) var(--ui-ease)}
 ui-radio .ui-choice-indicator{border-radius:50%}
-.ui-choice-control[aria-checked="true"] .ui-choice-indicator{--_fill:var(--ui-accent);--ui-edge-color:var(--ui-accent);--ui-edge-tl-alpha:.65;--ui-edge-br-alpha:.14}
+.ui-choice-control[aria-checked="true"] .ui-choice-indicator{--_fill:var(--ui-accent);background:var(--ui-accent);border-color:var(--ui-accent);--ui-edge-color:var(--ui-accent);--ui-edge-tl-alpha:.65;--ui-edge-br-alpha:.14}
 ui-checkbox .ui-choice-control[aria-checked="true"] .ui-choice-indicator::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid var(--ui-accent-contrast);border-width:0 1.7px 1.7px 0;transform:rotate(45deg)}
 ui-radio .ui-choice-control[aria-checked="true"] .ui-choice-indicator::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--ui-accent-contrast)}
 .ui-choice-label{flex:1 1 auto;min-width:0;color:var(--ui-text);font:var(--ui-text-md)/1.4 var(--ui-font);overflow-wrap:anywhere;cursor:pointer}
