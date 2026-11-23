@@ -485,6 +485,10 @@ await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   const link = sb.querySelector('a[href="#h"]'); link.focus(); sb.nav.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(d.activeElement, grp);
   d.body.insertAdjacentHTML('beforeend', '<button data-ui-toggle="#sb" id="tg">t</button>'); d.getElementById('tg').click(); assert.ok(sb.collapsed);
 });
+await t('checked choice indicators use a visible accent fill', () => {
+  const forms = readFileSync('src/css/forms.css', 'utf8');
+  assert.match(forms, /\.ui-choice-control\[aria-checked="true"\] \.ui-choice-indicator\{[^}]*background:var\(--ui-accent\);border-color:var\(--ui-accent\)/);
+});
 await t('checkbox and radio choices respond to pointer activation and maintain group state', () => {
   const c = mount('<ui-checkbox id="choice-email" name="updates" value="deploys" label="Email me about deploys"></ui-checkbox><ui-checkbox id="choice-weekly" name="updates" value="weekly" label="Weekly summary"></ui-checkbox><ui-radio id="choice-starter" name="plan" value="starter" label="Starter" checked></ui-radio><ui-radio id="choice-team" name="plan" value="team" label="Team"></ui-radio>');
   const email = c.querySelector('#choice-email'), weekly = c.querySelector('#choice-weekly');
