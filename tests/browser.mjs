@@ -161,7 +161,7 @@ try {
   await click('.ui-time-option[data-minute="35"]');
   await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:35');
-  assert.equal(await evaluate(`document.querySelector('#time-test').valueLabel.textContent`), '2:35 PM');
+  assert.equal(await evaluate(`document.querySelector('#time-test').input.value`), '2:35 PM');
   console.log(`  ✓ time picker opens and selects by pointer (${timeMode})`);
 
   assert.deepEqual(runtimeErrors, [], `No uncaught browser errors: ${runtimeErrors.join('; ')}`);
