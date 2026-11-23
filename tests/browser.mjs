@@ -111,38 +111,27 @@ try {
 
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popoverElement.open`, 'region select opens');
+  await waitFor(`document.querySelector('.ui-select-option[data-ui-option-index="0"]')`, 'region options render in the portalled panel');
   const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
-  const regionDebug = await evaluate(`(() => {
-    const el = document.querySelector('#region-test');
-    return {
-      value: el.value,
-      optionCount: el.options?.length,
-      options: el.options?.map(option => ({ value: option.value, label: option.label })),
-      panelOpen: el.popoverElement?.open,
-      panelConnected: el.popoverElement?.panel?.isConnected,
-      panelHtml: el.popoverElement?.panel?.innerHTML,
-      listHtml: el.list?.innerHTML,
-      listConnected: el.list?.isConnected
-    };
-  })()`);
-  console.log('Region picker DOM after open:', JSON.stringify(regionDebug));
-  await click('#region-test .ui-select-option[data-ui-option-index="0"]');
+  await click('.ui-select-option[data-ui-option-index="0"]');
   await waitFor(`document.querySelector('#region-test').value === 'fra'`, 'region option selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#region-test').formFields.querySelector('input')?.value`), 'fra');
   console.log(`  ✓ region picker opens and selects by pointer (${regionMode})`);
 
   await click('#date-test .ui-date-trigger');
   await waitFor(`document.querySelector('#date-test').open`, 'date picker opens');
+  await waitFor(`document.querySelector('.ui-calendar-day[data-date="2026-11-21"]')`, 'calendar days render in the portalled panel');
   const dateMode = await evaluate(`document.querySelector('#date-test').popoverElement.panel._uiFloatMode`);
-  await click('#date-test .ui-calendar-day[data-date="2026-11-21"]');
+  await click('.ui-calendar-day[data-date="2026-11-21"]');
   await waitFor(`document.querySelector('#date-test').value === '2026-11-21'`, 'date cell selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#date-test').hiddenValue.value`), '2026-11-21');
   console.log(`  ✓ date picker opens and selects by pointer (${dateMode})`);
 
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
+  await waitFor(`document.querySelector('.ui-time-option[data-minute="35"]')`, 'time options render in the portalled panel');
   const timeMode = await evaluate(`document.querySelector('#time-test').popoverElement.panel._uiFloatMode`);
-  await click('#time-test .ui-time-option[data-minute="35"]');
+  await click('.ui-time-option[data-minute="35"]');
   await waitFor(`document.querySelector('#time-test').value === '14:35'`, 'minute selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#time-test').hiddenValue.value`), '14:35');
   assert.equal(await evaluate(`document.querySelector('#time-test').valueLabel.textContent`), '2:35 PM');
