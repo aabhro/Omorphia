@@ -196,7 +196,7 @@ export class UITimePicker extends HTMLElement {
   set value(value) { this._time = parseTime(value); this.setAttribute('value', this.value); if (this.popoverElement) this.sync(); }
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
-  focus(options) { this.trigger?.focus(options); }
+  focus(options) { this.input?.focus(options); }
   get open() { return !!this.popoverElement?.open; }
   show() { this.popoverElement?.show(); }
   hide() { this.popoverElement?.hide(); }
