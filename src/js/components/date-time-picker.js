@@ -63,7 +63,7 @@ export class UIDatePicker extends HTMLElement {
     if (this.calendar) this.sync();
   }
   get date() { return parseDate(this.value); }
-  focus(options) { this.trigger?.focus(options); }
+  focus(options) { this.input?.focus(options); }
   get open() { return !!this.popoverElement?.open; }
   show() { this.popoverElement?.show(); }
   hide() { this.popoverElement?.hide(); }
