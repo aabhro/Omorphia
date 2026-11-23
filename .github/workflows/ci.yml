@@ -16,6 +16,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
+      - run: node tests/browser.mjs
 
   publish-dist:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
