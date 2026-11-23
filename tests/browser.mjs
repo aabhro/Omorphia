@@ -40,7 +40,7 @@ const delay = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise,
 
 try {
   let target;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     const response = await fetch(`http://127.0.0.1:${debugPort}/json/list`).catch(() => null);
     const targets = response?.ok ? await response.json() : [];
     target = targets.find((entry) => entry.type === 'page');
