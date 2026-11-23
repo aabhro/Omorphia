@@ -112,6 +112,20 @@ try {
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popoverElement.open`, 'region select opens');
   const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
+  const regionDebug = await evaluate(`(() => {
+    const el = document.querySelector('#region-test');
+    return {
+      value: el.value,
+      optionCount: el.options?.length,
+      options: el.options?.map(option => ({ value: option.value, label: option.label })),
+      panelOpen: el.popoverElement?.open,
+      panelConnected: el.popoverElement?.panel?.isConnected,
+      panelHtml: el.popoverElement?.panel?.innerHTML,
+      listHtml: el.list?.innerHTML,
+      listConnected: el.list?.isConnected
+    };
+  })()`);
+  console.log('Region picker DOM after open:', JSON.stringify(regionDebug));
   await click('#region-test .ui-select-option[data-ui-option-index="0"]');
   await waitFor(`document.querySelector('#region-test').value === 'fra'`, 'region option selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#region-test').formFields.querySelector('input')?.value`), 'fra');
