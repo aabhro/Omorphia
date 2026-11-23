@@ -254,6 +254,12 @@ export class UITimePicker extends HTMLElement {
     emit(this, 'ui-input', { value: this.value });
     emit(this, 'ui-change', { value: this.value });
   }
+  scrollOptionIntoView(list, item) {
+    if (!list || !item) return;
+    const listRect = list.getBoundingClientRect(), itemRect = item.getBoundingClientRect();
+    if (itemRect.top < listRect.top) list.scrollTop -= listRect.top - itemRect.top;
+    else if (itemRect.bottom > listRect.bottom) list.scrollTop += itemRect.bottom - listRect.bottom;
+  }
   onListKey(event) {
     const rows = [...event.currentTarget.querySelectorAll('button')];
     const at = rows.indexOf(event.target);
@@ -262,7 +268,7 @@ export class UITimePicker extends HTMLElement {
     else if (event.key === 'ArrowUp') next = rows[(at - 1 + rows.length) % rows.length];
     else if (event.key === 'Home') next = rows[0];
     else if (event.key === 'End') next = rows.at(-1);
-    if (next) { event.preventDefault(); next.focus(); next.scrollIntoView?.({ block: 'nearest' }); }
+    if (next) { event.preventDefault(); next.focus({ preventScroll: true }); this.scrollOptionIntoView(event.currentTarget, next); }
     else if ((event.key === 'Enter' || event.key === ' ') && rows[at]) {
       event.preventDefault();
       rows[at].click();
@@ -287,9 +293,10 @@ export class UITimePicker extends HTMLElement {
   focusTime(part = 'hour') {
     const hour = this.hourList.querySelector('[aria-selected="true"]');
     const minute = this.minuteList.querySelector('[aria-selected="true"]');
-    (part === 'minute' ? minute : hour)?.focus?.({ preventScroll: true });
-    hour?.scrollIntoView?.({ block: 'center' });
-    minute?.scrollIntoView?.({ block: 'center' });
+    const target = part === 'minute' ? minute : hour;
+    target?.focus?.({ preventScroll: true });
+    this.scrollOptionIntoView(this.hourList, hour);
+    this.scrollOptionIntoView(this.minuteList, minute);
   }
 }
 define('ui-time-picker', UITimePicker);
