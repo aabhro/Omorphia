@@ -16,14 +16,14 @@ const dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || undefined,
 export class UIDatePicker extends HTMLElement {
   static observedAttributes = ['value', 'min', 'max', 'disabled', 'placeholder', 'locale', 'week-start', 'placement', 'name', 'label'];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     this._value = parseDate(this.getAttribute('value')) ? this.getAttribute('value') : '';
     const initial = parseDate(this._value) || new Date();
     this.view = new Date(initial.getFullYear(), initial.getMonth(), 1);
     this.trigger = h('button', { class: 'ui-date-trigger', type: 'button', slot: 'trigger', 'aria-haspopup': 'dialog', 'aria-label': this.getAttribute('label') || 'Choose date' });
     this.valueLabel = h('span', { class: 'ui-date-value' });
     this.trigger.append(h('ui-icon', { name: 'calendar' }), this.valueLabel, h('ui-icon', { name: 'chevron-down', class: 'ui-date-chevron' }));
-    this.popover = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
+    this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
     this.calendar = h('div', { class: 'ui-calendar', role: 'dialog', 'aria-label': 'Choose a date' });
     this.header = h('div', { class: 'ui-calendar-head' });
     this.prev = h('button', { class: 'ui-calendar-nav', type: 'button', 'aria-label': 'Previous month' }, h('ui-icon', { name: 'chevron-left' }));
@@ -46,14 +46,14 @@ export class UIDatePicker extends HTMLElement {
     this.days.addEventListener('keydown', (event) => this.onDayKey(event));
     this.clearButton.addEventListener('click', () => this.select(''));
     this.todayButton.addEventListener('click', () => this.select(isoDate(new Date())));
-    this.popover.addEventListener('ui-open', () => this.focusCurrentDay());
-    this.popover.append(this.calendar);
+    this.popoverElement.addEventListener('ui-open', () => this.focusCurrentDay());
+    this.popoverElement.append(this.calendar);
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-date-value'), name: this.getAttribute('name') || '', value: this._value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.popover, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
-  attributeChangedCallback() { if (this.popover) this.sync(); }
+  attributeChangedCallback() { if (this.popoverElement) this.sync(); }
   get value() { return this._value || ''; }
   set value(value) {
     const valid = parseDate(String(value || ''));
@@ -64,10 +64,10 @@ export class UIDatePicker extends HTMLElement {
   }
   get date() { return parseDate(this.value); }
   focus(options) { this.trigger?.focus(options); }
-  get open() { return !!this.popover?.open; }
-  show() { this.popover?.show(); }
-  hide() { this.popover?.hide(); }
-  toggle() { this.popover?.toggle(); }
+  get open() { return !!this.popoverElement?.open; }
+  show() { this.popoverElement?.show(); }
+  hide() { this.popoverElement?.hide(); }
+  toggle() { this.popoverElement?.toggle(); }
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   isDisabled(date) {
@@ -82,7 +82,7 @@ export class UIDatePicker extends HTMLElement {
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute('locale')) : (this.getAttribute('placeholder') || 'Choose date');
     this.trigger.classList.toggle('is-placeholder', !this.value);
-    this.trigger.setAttribute('aria-expanded', String(this.popover.open));
+    this.trigger.setAttribute('aria-expanded', String(this.popoverElement.open));
     this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderCalendar();
@@ -149,7 +149,7 @@ export class UIDatePicker extends HTMLElement {
     this.sync();
     emit(this, 'ui-input', { value: this.value, date: this.date });
     emit(this, 'ui-change', { value: this.value, date: this.date });
-    if (date || !value) { this.popover.hide(); this.trigger.focus(); }
+    if (date || !value) { this.popoverElement.hide(); this.trigger.focus(); }
   }
 }
 define('ui-date-picker', UIDatePicker);
@@ -162,12 +162,12 @@ const parseTime = (value) => {
 export class UITimePicker extends HTMLElement {
   static observedAttributes = ['value', 'disabled', 'placeholder', 'format', 'step', 'placement', 'label', 'name'];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     this._time = parseTime(this.getAttribute('value'));
     this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', slot: 'trigger', 'aria-haspopup': 'dialog', 'aria-label': this.getAttribute('label') || 'Choose time' });
     this.valueLabel = h('span', { class: 'ui-time-value' });
     this.trigger.append(h('ui-icon', { name: 'clock' }), this.valueLabel, h('ui-icon', { name: 'chevron-down' }));
-    this.popover = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
+    this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, this.trigger);
     this.panel = h('div', { class: 'ui-time-panel', role: 'dialog', 'aria-label': 'Choose time' });
     this.columns = h('div', { class: 'ui-time-columns' });
     this.hourList = h('div', { class: 'ui-time-list', role: 'listbox', 'aria-label': 'Hours' });
@@ -175,34 +175,34 @@ export class UITimePicker extends HTMLElement {
     this.period = h('button', { class: 'ui-time-period', type: 'button', hidden: true });
     this.columns.append(this.hourList, h('span', { class: 'ui-time-separator', text: ':' }), this.minuteList, this.period);
     this.panel.append(h('div', { class: 'ui-time-title', text: 'Select a time' }), this.columns);
-    this.popover.append(this.panel);
+    this.popoverElement.append(this.panel);
     this.hourList.addEventListener('click', (event) => { const item = event.target.closest('[data-hour]'); if (item) this.setPart('hour', Number(item.dataset.hour)); });
     this.minuteList.addEventListener('click', (event) => { const item = event.target.closest('[data-minute]'); if (item) this.setPart('minute', Number(item.dataset.minute)); });
     this.hourList.addEventListener('keydown', (event) => this.onListKey(event));
     this.minuteList.addEventListener('keydown', (event) => this.onListKey(event));
     this.period.addEventListener('click', () => { this._time.hour = (this._time.hour + 12) % 24; this.commit('period'); });
-    this.popover.addEventListener('ui-open', () => this.focusTime());
+    this.popoverElement.addEventListener('ui-open', () => this.focusTime());
     this.hiddenValue = h('input', { type: 'hidden', id: uid('ui-time-value'), name: this.getAttribute('name') || '', value: this.value });
     this.hiddenValue.hidden = true;
-    this.replaceChildren(this.popover, this.hiddenValue);
+    this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
-  attributeChangedCallback() { if (this.popover) this.sync(); }
+  attributeChangedCallback() { if (this.popoverElement) this.sync(); }
   get value() { const time = this._time || parseTime(this.getAttribute('value')); return pad(time.hour) + ':' + pad(time.minute); }
-  set value(value) { this._time = parseTime(value); this.setAttribute('value', this.value); if (this.popover) this.sync(); }
+  set value(value) { this._time = parseTime(value); this.setAttribute('value', this.value); if (this.popoverElement) this.sync(); }
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   focus(options) { this.trigger?.focus(options); }
-  get open() { return !!this.popover?.open; }
-  show() { this.popover?.show(); }
-  hide() { this.popover?.hide(); }
-  toggle() { this.popover?.toggle(); }
+  get open() { return !!this.popoverElement?.open; }
+  show() { this.popoverElement?.show(); }
+  hide() { this.popoverElement?.hide(); }
+  toggle() { this.popoverElement?.toggle(); }
   get is12Hour() { return this.getAttribute('format') === '12h'; }
   sync() {
     if (this.hasAttribute('value')) this._time = parseTime(this.getAttribute('value'));
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
-    this.trigger.setAttribute('aria-expanded', String(this.popover.open));
+    this.trigger.setAttribute('aria-expanded', String(this.popoverElement.open));
     const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
     this.valueLabel.textContent = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ':' + pad(this._time.minute) + (this.is12Hour ? (hour < 12 ? ' AM' : ' PM') : '');
     this.period.hidden = !this.is12Hour;

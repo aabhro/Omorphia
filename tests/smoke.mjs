@@ -211,9 +211,9 @@ await t('custom select supports single, searchable, and multiple selection', () 
   multi.choose(multi.options[2]);
   assert.deepEqual(Array.from(multi.value), ['a', 'b', 'c']);
   assert.equal(multi.formFields.querySelectorAll('input').length, 3);
-  single.popover.show();
-  assert.equal(single.popover.open, true);
-  single.popover.hide();
+  single.popoverElement.show();
+  assert.equal(single.popoverElement.open, true);
+  single.popoverElement.hide();
 });
 await t('custom date picker handles calendar selection, limits, and hidden form value', () => {
   const c = mount('<ui-date-picker id="date" name="release" value="2026-11-20" min="2026-11-10" max="2026-11-30"></ui-date-picker>');
@@ -230,7 +230,7 @@ await t('custom date picker handles calendar selection, limits, and hidden form 
   assert.equal(picker.hiddenValue.value, '2026-11-21');
   picker.show();
   assert.equal(picker.open, true, 'date picker opens through its shared popover');
-  assert.equal(picker.popover.panel.hasAttribute('data-open'), true);
+  assert.equal(picker.popoverElement.panel.hasAttribute('data-open'), true);
   picker.hide();
   assert.equal(picker.open, false);
 });
@@ -273,7 +273,7 @@ await t('custom time picker supports 12-hour mode and hidden form value', () => 
   assert.equal(picker.valueLabel.textContent, '9:10 AM');
   picker.show();
   assert.equal(picker.open, true, 'time picker opens through its shared popover');
-  assert.equal(picker.popover.panel.hasAttribute('data-open'), true);
+  assert.equal(picker.popoverElement.panel.hasAttribute('data-open'), true);
   picker.hide();
   assert.equal(picker.open, false);
 });
@@ -477,6 +477,22 @@ await t('native popovers are portalled before entering the top layer', () => {
       if (selector === ':popover-open') return this.hasAttribute('data-native-popover-open');
       return originalMatches.call(this, selector);
     };
+    const controls = mount('<ui-select id="native-region" name="region" value="fra"><ui-option value="fra">Frankfurt</ui-option></ui-select><ui-date-picker id="native-date" name="date" value="2026-11-20"></ui-date-picker><ui-time-picker id="native-time" name="time" value="14:30"></ui-time-picker>');
+    const region = controls.querySelector('#native-region'), date = controls.querySelector('#native-date'), time = controls.querySelector('#native-time');
+    for (const [host, selector] of [[region, '.ui-select-trigger'], [date, '.ui-date-trigger'], [time, '.ui-time-trigger']]) {
+      assert.ok(host.querySelector(selector), selector + ' renders when HTMLElement.popover is native');
+      assert.equal(host.getAttribute('popover'), null, 'the host native popover attribute is not overwritten');
+      assert.equal(host.popoverElement.localName, 'ui-popover', 'the nested surface is stored in a separate field');
+    }
+    region.popoverElement.show();
+    assert.equal(region.popoverElement.open, true);
+    region.choose(region.options[0]);
+    date.show();
+    assert.equal(date.open, true);
+    date.hide();
+    time.show();
+    assert.equal(time.open, true);
+    time.hide();
     const c = mount('<ui-popover><button slot="trigger">Native top layer</button><p>Panel</p></ui-popover>');
     const popover = c.firstChild;
     popover.show();

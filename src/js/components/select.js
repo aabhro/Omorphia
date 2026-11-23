@@ -11,7 +11,7 @@ define('ui-option', UIOption);
 export class UISelect extends HTMLElement {
   static observedAttributes = ['value', 'placeholder', 'disabled', 'multiple', 'searchable', 'name', 'label', 'placement', 'required'];
   connectedCallback() {
-    if (this.popover) return;
+    if (this.popoverElement) return;
     const children = [...this.children];
     this.options = children.filter((child) => child.localName === 'ui-option');
     const selected = this.options.filter((option) => option.hasAttribute('selected')).map((option) => option.value);
@@ -20,7 +20,7 @@ export class UISelect extends HTMLElement {
     this.trigger = trigger;
     this.valueLabel = h('span', { class: 'ui-select-value' });
     trigger.append(this.valueLabel, h('ui-icon', { class: 'ui-select-chevron', name: 'chevron-down' }));
-    this.popover = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, trigger);
+    this.popoverElement = h('ui-popover', { placement: this.getAttribute('placement') || 'bottom-start' }, trigger);
     this.panelContent = h('div', { class: 'ui-select-panel', role: 'presentation' });
     if (bool(this, 'searchable')) {
       this.search = h('ui-input', { class: 'ui-select-search', placeholder: 'Search options…', label: 'Filter options', 'aria-label': 'Filter options' });
@@ -35,21 +35,21 @@ export class UISelect extends HTMLElement {
     });
     this.list.addEventListener('keydown', (event) => this.onListKey(event));
     this.panelContent.append(this.list, ...this.options);
-    this.popover.append(this.panelContent);
-    this.popover.addEventListener('ui-open', () => { this.renderOptions(); if (this.search) { this.search.value = ''; this.filter(''); this.search.focus(); } else this.focusSelected(); });
-    this.popover.addEventListener('ui-close', () => { if (this.search) this.search.value = ''; });
+    this.popoverElement.append(this.panelContent);
+    this.popoverElement.addEventListener('ui-open', () => { this.renderOptions(); if (this.search) { this.search.value = ''; this.filter(''); this.search.focus(); } else this.focusSelected(); });
+    this.popoverElement.addEventListener('ui-close', () => { if (this.search) this.search.value = ''; });
     trigger.addEventListener('keydown', (event) => {
       if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
         event.preventDefault();
-        this.popover.show();
+        this.popoverElement.show();
         if (!this.search) this.focusSelected(event.key === 'ArrowUp' ? -1 : 1);
       }
     });
-    this.replaceChildren(this.popover, this.formFields);
+    this.replaceChildren(this.popoverElement, this.formFields);
     this.sync();
   }
   attributeChangedCallback(name) {
-    if (!this.popover) return;
+    if (!this.popoverElement) return;
     if (name === 'value' || name === 'multiple') this._value = this.multiple ? (this.getAttribute('value') || '').split(',').filter(Boolean) : (this.getAttribute('value') || '');
     this.sync();
   }
@@ -60,7 +60,7 @@ export class UISelect extends HTMLElement {
   set value(value) {
     this._value = this.multiple ? (Array.isArray(value) ? value.map(String) : (value ? [String(value)] : [])) : String(value ?? '');
     this.setAttribute('value', this.multiple ? this._value.join(',') : this._value);
-    if (this.popover) this.sync();
+    if (this.popoverElement) this.sync();
   }
   get selectedOptions() { return this.options.filter((option) => this.multiple ? this.value.includes(option.value) : this.value === option.value); }
   sync() {
@@ -70,7 +70,7 @@ export class UISelect extends HTMLElement {
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
     this.trigger.setAttribute('aria-required', String(bool(this, 'required')));
     this.trigger.setAttribute('aria-haspopup', 'listbox');
-    this.trigger.setAttribute('aria-expanded', String(this.popover.open));
+    this.trigger.setAttribute('aria-expanded', String(this.popoverElement.open));
     this.list.setAttribute('aria-multiselectable', String(this.multiple));
     this.renderLabel();
     this.updateFormFields();
@@ -130,8 +130,8 @@ export class UISelect extends HTMLElement {
       event.preventDefault(); rows[(at + (event.key === 'ArrowDown' ? 1 : -1) + rows.length) % rows.length]?.focus();
     } else if (event.key === 'Home' || event.key === 'End') {
       event.preventDefault(); (event.key === 'Home' ? rows[0] : rows.at(-1))?.focus();
-    } else if (event.key === 'Escape') { event.preventDefault(); this.popover.hide(); this.trigger.focus(); }
-    else if (event.key === 'Tab') this.popover.hide();
+    } else if (event.key === 'Escape') { event.preventDefault(); this.popoverElement.hide(); this.trigger.focus(); }
+    else if (event.key === 'Tab') this.popoverElement.hide();
   }
   choose(option) {
     if (!option || option.disabled || this.disabled) return;
@@ -144,7 +144,7 @@ export class UISelect extends HTMLElement {
     this.value = value;
     emit(this, 'ui-input', { value: this.value, option });
     emit(this, 'ui-change', { value: this.value, option, selectedOptions: this.selectedOptions });
-    if (!this.multiple) { this.popover.hide(); this.trigger.focus(); }
+    if (!this.multiple) { this.popoverElement.hide(); this.trigger.focus(); }
   }
   focus(options) { this.trigger?.focus(options); }
   formResetCallback() { this.value = this.getAttribute('value') || ''; }
