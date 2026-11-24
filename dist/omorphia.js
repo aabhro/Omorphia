@@ -1,4 +1,4 @@
-/*! Omorphia v1.2.3 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.3.0 | MIT | https://github.com/aabhro/Omorphia */
 var Omorphia = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -125,6 +125,36 @@ var Omorphia = (() => {
   var hasPopover = () => typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
   var floatLayer = null;
   var floatSequence = 0;
+  var activeFloats = /* @__PURE__ */ new Set();
+  var floatThemeListenerInstalled = false;
+  function inheritedThemeValue(context, name) {
+    const computed = getComputedStyle(context).getPropertyValue(name);
+    if (computed) return computed;
+    for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+      const inline = node.style?.getPropertyValue(name);
+      if (inline) return inline;
+    }
+    return "";
+  }
+  function syncFloatThemes(event) {
+    const changed = event.target;
+    for (const el of activeFloats) {
+      const context = el._uiFloatThemeSource;
+      if (!context?.isConnected || changed !== context && !changed?.contains?.(context)) continue;
+      const mode = context.closest("[data-ui-theme]")?.getAttribute("data-ui-theme");
+      if (mode) el.setAttribute("data-ui-theme", mode);
+      else el.removeAttribute("data-ui-theme");
+      for (const [name] of el._uiFloatSavedVars || []) {
+        const value = inheritedThemeValue(context, name);
+        if (value) el.style.setProperty(name, value);
+      }
+    }
+  }
+  function watchFloatThemes() {
+    if (floatThemeListenerInstalled || typeof document === "undefined") return;
+    document.addEventListener("ui-theme", syncFloatThemes);
+    floatThemeListenerInstalled = true;
+  }
   function getFloatLayer() {
     if (floatLayer?.isConnected) return floatLayer;
     floatLayer = document.querySelector("[data-ui-floating-layer]");
@@ -149,12 +179,21 @@ var Omorphia = (() => {
       return;
     }
     const inherited = [];
+    el._uiFloatThemeSource = el._uiThemeSource || el.parentElement;
     if (typeof getComputedStyle === "function") {
       const computed = getComputedStyle(el);
-      for (let i = 0; i < computed.length; i++) {
-        const name = computed[i];
-        if (!name.startsWith("--")) continue;
-        const value = computed.getPropertyValue(name);
+      const context = el._uiFloatThemeSource;
+      const inheritedTheme = context ? getComputedStyle(context) : null;
+      const names = /* @__PURE__ */ new Set();
+      for (const style of [computed, inheritedTheme]) {
+        if (!style) continue;
+        for (let i = 0; i < style.length; i++) {
+          const name = style[i];
+          if (name.startsWith("--")) names.add(name);
+        }
+      }
+      for (const name of names) {
+        const value = context && inheritedThemeValue(context, name) || computed.getPropertyValue(name);
         if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
       }
     }
@@ -169,6 +208,8 @@ var Omorphia = (() => {
       el.style.setProperty(name, value);
       return [name, oldValue, priority];
     });
+    activeFloats.add(el);
+    watchFloatThemes();
     if (el._uiFloatSavedZ == null) el._uiFloatSavedZ = el.style.zIndex;
     el.style.zIndex = String(++floatSequence);
     el._uiFloatMode = "portal";
@@ -179,6 +220,8 @@ var Omorphia = (() => {
     else el.remove();
     marker?.remove();
     el._uiFloatPlaceholder = null;
+    activeFloats.delete(el);
+    el._uiFloatThemeSource = null;
     for (const [name, value, priority] of el._uiFloatSavedVars || []) {
       if (value) el.style.setProperty(name, value, priority);
       else el.style.removeProperty(name);
@@ -237,6 +280,7 @@ var Omorphia = (() => {
     });
   }
   function inheritTheme(from, to) {
+    to._uiThemeSource = from;
     const t = from.closest("[data-ui-theme]")?.getAttribute("data-ui-theme");
     if (t) to.setAttribute("data-ui-theme", t);
     else to.removeAttribute("data-ui-theme");
@@ -3005,7 +3049,7 @@ var Omorphia = (() => {
   define("ui-menu-item", UIMenuItem);
 
   // src/js/index.js
-  var version = true ? "1.2.3" : "dev";
+  var version = true ? "1.3.0" : "dev";
   var theme = {
     get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
     set(mode, el = document.documentElement) {
