@@ -500,6 +500,43 @@ await t('checkbox and radio choices respond to pointer activation and maintain g
   starter.text.click(); assert.equal(starter.checked, true); assert.equal(team.checked, false);
 });
 await t('theme helper', () => { E.theme.set('light'); assert.equal(d.documentElement.getAttribute('data-ui-theme'), 'light'); E.theme.toggle(); assert.equal(E.theme.get(), 'dark'); });
+await t('open floating surfaces refresh inherited theme tokens', () => {
+  const scope = d.createElement('section');
+  scope.setAttribute('data-ui-theme', 'dark');
+  scope.style.setProperty('--ui-theme-probe', 'dark');
+  const popover = d.createElement('ui-popover');
+  const trigger = d.createElement('ui-button');
+  trigger.slot = 'trigger';
+  trigger.textContent = 'Open';
+  popover.append(trigger, 'Panel content');
+  scope.append(popover);
+  d.body.append(scope);
+  popover.show();
+  assert.equal(popover.panel.style.getPropertyValue('--ui-theme-probe'), 'dark');
+  E.theme.set('light', scope);
+  assert.equal(popover.panel.getAttribute('data-ui-theme'), 'light');
+  assert.equal(popover.panel.style.getPropertyValue('--ui-theme-probe'), 'light');
+  popover.hide();
+  scope.remove();
+});
+await t('overlay effects expose responsive themed utility classes', () => {
+  const overlays = readFileSync('src/css/overlays.css', 'utf8');
+  for (const selector of ['.ui-overlay--fixed', '.ui-overlay--fade-bottom', '.ui-overlay--fade-top', '.ui-overlay--fade-left', '.ui-overlay--fade-right', '.ui-overlay--vignette', '.ui-overlay--dim', '.ui-overlay--blur']) {
+    assert.ok(overlays.includes(selector), selector);
+  }
+  assert.match(overlays, /linear-gradient\(to bottom,transparent,var\(--ui-bg\)\)/);
+  assert.match(overlays, /prefers-reduced-motion:reduce/);
+  const build = readFileSync('scripts/build.mjs', 'utf8');
+  assert.match(build, /'advanced', 'overlays'/);
+});
+await t('floating component surfaces use semantic theme tokens', () => {
+  const advanced = readFileSync('src/css/advanced.css', 'utf8');
+  const containers = readFileSync('src/css/containers.css', 'utf8');
+  const feedback = readFileSync('src/css/feedback.css', 'utf8');
+  const nav = readFileSync('src/css/nav.css', 'utf8');
+  for (const source of [advanced, containers, feedback, nav]) assert.match(source, /var\(--ui-overlay\)/);
+  assert.doesNotMatch(advanced, /--ui-bg:#0a0a0a;--ui-bg-inset:#171717/);
+});
 await t('native popovers are portalled before entering the top layer', () => {
   const proto = w.HTMLElement.prototype;
   const originalPopover = Object.getOwnPropertyDescriptor(proto, 'popover');
