@@ -54,6 +54,16 @@ let floatSequence = 0;
 const activeFloats = new Set();
 let floatThemeListenerInstalled = false;
 
+function inheritedThemeValue(context, name) {
+  const computed = getComputedStyle(context).getPropertyValue(name);
+  if (computed) return computed;
+  for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+    const inline = node.style?.getPropertyValue(name);
+    if (inline) return inline;
+  }
+  return '';
+}
+
 function syncFloatThemes(event) {
   const changed = event.target;
   for (const el of activeFloats) {
@@ -62,9 +72,8 @@ function syncFloatThemes(event) {
     const mode = context.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
     if (mode) el.setAttribute('data-ui-theme', mode);
     else el.removeAttribute('data-ui-theme');
-    const computed = getComputedStyle(context);
     for (const [name] of el._uiFloatSavedVars || []) {
-      const value = computed.getPropertyValue(name);
+      const value = inheritedThemeValue(context, name);
       if (value) el.style.setProperty(name, value);
     }
   }
@@ -111,7 +120,7 @@ function portalFloat(el) {
       }
     }
     for (const name of names) {
-      const value = inheritedTheme?.getPropertyValue(name) || computed.getPropertyValue(name);
+      const value = (context && inheritedThemeValue(context, name)) || computed.getPropertyValue(name);
       if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
     }
   }
