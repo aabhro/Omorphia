@@ -171,7 +171,7 @@ Load <code>core.min.css</code> first. It contains the design tokens, base styles
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.2.3/dist/css/feedback.min.css">
 ~~~
 
-Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, and <code>advanced</code>.
+Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, <code>advanced</code>, and <code>overlays</code>.
 
 The complete stylesheet is <a href="dist/omorphia.min.css"><code>dist/omorphia.min.css</code></a>. Integrity hashes for the published bundles are in <a href="dist/sri.json"><code>dist/sri.json</code></a>.
 
@@ -458,6 +458,30 @@ Omorphia.theme.toggle();
 Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. Floating panels retain an opaque near-black surface.
 
 </details>
+
+<h2 align="center" id="overlay-effects">Overlay effects</h2>
+
+Add a non-interactive overlay layer to a page or a positioned container. Effects use the active <code>--ui-bg</code> token, so their fades follow light, dark, and auto themes.
+
+~~~html
+<!-- Add as a direct child of body for a viewport-wide bottom fade. -->
+<div class="ui-overlay ui-overlay--fade-bottom ui-overlay--fixed" aria-hidden="true"></div>
+~~~
+
+Available modifiers:
+
+| Class | Effect |
+|:--|:--|
+| <code>ui-overlay--fade-bottom</code> / <code>--fade-top</code> | Fade content into the page surface |
+| <code>ui-overlay--fade-left</code> / <code>--fade-right</code> | Fade horizontal content edges |
+| <code>ui-overlay--vignette</code> | Fade all four edges |
+| <code>ui-overlay--dim</code> | Dim the layer beneath a focused surface |
+| <code>ui-overlay--blur</code> | Add a restrained backdrop blur |
+| <code>ui-overlay--fixed</code> | Pin the effect to the viewport instead of its positioned parent |
+
+For local effects, put the overlay inside a <code>position: relative</code> container and omit <code>ui-overlay--fixed</code>. Use <code>aria-hidden="true"</code> because overlays are decorative and pointer-transparent.
+
+Customize the effect with <code>--ui-overlay-size</code> (default <code>160px</code>), <code>--ui-overlay-opacity</code> (a percentage, default <code>56%</code> for dim), and <code>--ui-overlay-blur</code> (default <code>6px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
 
 <h2 align="center" id="repository-map"><img src="assets/icons/terminal.svg" width="18" height="18" alt=""> Repository map</h2>
 
