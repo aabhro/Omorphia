@@ -20,7 +20,7 @@ await t('Modernimal neutral theme and opaque overlay defaults', () => {
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
   assert.match(css, /--ui-text:\s*#f5f5f5/);
   assert.match(css, /--ui-overlay:\s*#0a0a0a/);
-  assert.match(css, /background:\s*#0a0a0a/);
+  assert.match(css, /background:\s*var\(--ui-overlay\)/);\n  assert.match(css, /--ui-overlay:#fafafa/);\n  assert.match(css, /--ui-overlay-text:#0a0a0a/);
   assert.doesNotMatch(css, /#6ee7c8|#0f8f74/);
 });
 await t('picker showcase is transparent and control edges are restrained', () => {
