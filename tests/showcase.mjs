@@ -97,6 +97,10 @@ assert.deepEqual(missing, [], 'all icons render from the bundle: ' + missing);
 assert.ok(d.querySelector('#search-local').data.length > 10); assert.ok(d.getElementById('actions-menu').panel);
 assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration presets render');
 assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
+assert.equal(d.querySelectorAll('#overlay-effects .overlay-effect-preview').length, 4, 'overlay effect previews render');
+for (const selector of ['.ui-overlay--fade-bottom', '.ui-overlay--fade-left', '.ui-overlay--fade-right', '.ui-overlay--vignette', '.ui-overlay--blur']) {
+  assert.ok(d.querySelector('#overlay-effects ' + selector), selector + ' is demonstrated');
+}
 assert.ok((d.querySelector('link[rel="icon"]')?.getAttribute('href') || '').endsWith('favicon.svg'));
 assert.match(d.title, /Omorphia/);
 const packageVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
