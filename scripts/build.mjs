@@ -9,7 +9,7 @@ mkdirSync('dist/css', { recursive: true });
 const read = (file) => readFileSync(`src/css/${file}.css`, 'utf8');
 
 // CSS: complete bundle and focused modules.
-const order = ['tokens', 'base', 'edge', 'button', 'forms', 'nav', 'feedback', 'containers', 'advanced'];
+const order = ['tokens', 'base', 'edge', 'button', 'forms', 'nav', 'feedback', 'containers', 'advanced', 'overlays'];
 const all = order.map(read).join('\n');
 writeFileSync('dist/omorphia.css', `${banner}\n${all}`);
 writeFileSync('dist/omorphia.min.css', `${banner}\n${(await transform(all, { loader: 'css', minify: true })).code}`);
