@@ -330,7 +330,7 @@
     </section>
 
     <section class="block" id="effects">
-      <header><h2 class="ui-h1">Effects and illumination</h2><p>A primary light at the top-left and a dimmer one at the bottom-right, painted only in the border ring and following the corner radius.</p></header>
+      <header><h2 class="ui-h1">Effects and overlays</h2><p>Directional edge illumination, page fades, vignettes and backdrop layers. Overlay effects follow the active theme and never block pointer input.</p></header>
       <div class="demo" data-layout="stack"><div class="demo-title">Live configuration</div><template>
           <div class="fx-config">
             <div class="fx-config-preview">
@@ -396,6 +396,27 @@
           <ui-button onclick="Omorphia.theme.set('auto')">Match system</ui-button>
           <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Neutral accents</ui-button>
         </div></template></div>
+      <div class="demo" id="overlay-effects"><div class="demo-title">Page fades and viewport overlays</div><template>
+        <div class="overlay-effect-grid">
+          <div class="overlay-effect-preview">
+            <div class="overlay-effect-copy"><strong>Fade at the bottom</strong><p>Let long pages blend naturally into the page background.</p></div>
+            <div class="ui-overlay ui-overlay--fade-bottom" aria-hidden="true"></div>
+          </div>
+          <div class="overlay-effect-preview">
+            <div class="overlay-effect-copy"><strong>Fade from the sides</strong><p>Useful for horizontal carousels and edge-scrolling content.</p></div>
+            <div class="ui-overlay ui-overlay--fade-left" aria-hidden="true"></div>
+            <div class="ui-overlay ui-overlay--fade-right" aria-hidden="true"></div>
+          </div>
+          <div class="overlay-effect-preview">
+            <div class="overlay-effect-copy"><strong>Vignette</strong><p>Fade all four edges toward the active page surface.</p></div>
+            <div class="ui-overlay ui-overlay--vignette" aria-hidden="true"></div>
+          </div>
+          <div class="overlay-effect-preview overlay-effect-preview--backdrop">
+            <div class="overlay-effect-copy"><strong>Dim and blur</strong><p>Use behind a focused surface, not on the surface itself.</p></div>
+            <div class="ui-overlay ui-overlay--blur" aria-hidden="true"></div>
+          </div>
+        </div>
+      </template></div>
     </section>
   </div>
 </div>
