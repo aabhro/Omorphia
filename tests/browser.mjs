@@ -141,52 +141,11 @@ try {
   const regionOptionColor = 'getComputedStyle(document.querySelector(".ui-select-option")).color';
   await evaluate("Omorphia.theme.set('light')");
 
-  const themeDebug = await evaluate(`(() => {
-    const host = document.querySelector('#region-test');
-    const panel = host.popoverElement?.panel;
-    const source = panel?._uiFloatThemeSource;
-    return {
-      rootTheme: document.documentElement.getAttribute('data-ui-theme'),
-      panelTheme: panel?.getAttribute('data-ui-theme'),
-      sourceTag: source?.localName,
-      sourceTheme: source?.closest('[data-ui-theme]')?.getAttribute('data-ui-theme'),
-      sourceToken: source ? getComputedStyle(source).getPropertyValue('--ui-overlay-text') : '',
-      panelToken: panel?.style.getPropertyValue('--ui-overlay-text'),
-      optionToken: getComputedStyle(document.querySelector('.ui-select-option')).getPropertyValue('--ui-overlay-text'),
-      optionColor: getComputedStyle(document.querySelector('.ui-select-option')).color,
-      optionStyle: document.querySelector('.ui-select-option').getAttribute('style'),
-      optionRules: [...document.styleSheets].flatMap(sheet => {
-        const matches = [];
-        const visit = rules => [...rules].forEach(rule => {
-          if (rule.cssRules) visit(rule.cssRules);
-          else if (rule.selectorText) {
-            try {
-              if (document.querySelector('.ui-select-option').matches(rule.selectorText)) {
-                const color = rule.style?.getPropertyValue('color');
-                if (color) matches.push({ selector: rule.selectorText, color, important: rule.style.getPropertyPriority('color') });
-              }
-            } catch {}
-          }
-        });
-        try { visit(sheet.cssRules); } catch {}
-        return matches;
-      }),
-      optionParents: (() => {
-        const rows = [];
-        for (let node = document.querySelector('.ui-select-option'); node; node = node.parentElement) rows.push({
-          tag: node.localName,
-          className: String(node.className || ''),
-          theme: node.getAttribute('data-ui-theme'),
-          token: getComputedStyle(node).getPropertyValue('--ui-overlay-text'),
-          color: getComputedStyle(node).color
-        });
-        return rows;
-      })()
-    };
-  })()`);
-  assert.equal(await evaluate(regionOptionColor), 'rgb(10, 10, 10)', 'an open select option follows the light theme: ' + JSON.stringify(themeDebug));
+  await delay(220);
+  assert.equal(await evaluate(regionOptionColor), 'rgb(10, 10, 10)', 'an open select option follows the light theme after its color transition');
   await evaluate("Omorphia.theme.set('dark')");
-  assert.equal(await evaluate(regionOptionColor), 'rgb(245, 245, 245)', 'an open select option switches back to dark');
+  await delay(220);
+  assert.equal(await evaluate(regionOptionColor), 'rgb(245, 245, 245)', 'an open select option switches back to dark after its color transition');
   console.log('  ✓ open floating surfaces switch light and dark themes');
 
   const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
