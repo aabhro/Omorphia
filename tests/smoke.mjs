@@ -515,6 +515,7 @@ await t('open floating surfaces refresh inherited theme tokens', () => {
   d.body.append(scope);
   popover.show();
   assert.equal(popover.panel.style.getPropertyValue('--ui-theme-probe'), 'dark');
+  scope.style.setProperty('--ui-theme-probe', 'light');
   E.theme.set('light', scope);
   assert.equal(popover.panel.getAttribute('data-ui-theme'), 'light');
   assert.equal(popover.panel.style.getPropertyValue('--ui-theme-probe'), 'light');
