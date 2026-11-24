@@ -152,7 +152,19 @@ try {
       sourceTheme: source?.closest('[data-ui-theme]')?.getAttribute('data-ui-theme'),
       sourceToken: source ? getComputedStyle(source).getPropertyValue('--ui-overlay-text') : '',
       panelToken: panel?.style.getPropertyValue('--ui-overlay-text'),
-      optionColor: getComputedStyle(document.querySelector('.ui-select-option')).color
+      optionToken: getComputedStyle(document.querySelector('.ui-select-option')).getPropertyValue('--ui-overlay-text'),
+      optionColor: getComputedStyle(document.querySelector('.ui-select-option')).color,
+      optionParents: (() => {
+        const rows = [];
+        for (let node = document.querySelector('.ui-select-option'); node; node = node.parentElement) rows.push({
+          tag: node.localName,
+          className: String(node.className || ''),
+          theme: node.getAttribute('data-ui-theme'),
+          token: getComputedStyle(node).getPropertyValue('--ui-overlay-text'),
+          color: getComputedStyle(node).color
+        });
+        return rows;
+      })()
     };
   })()`);
   assert.equal(await evaluate(regionOptionColor), 'rgb(10, 10, 10)', 'an open select option follows the light theme: ' + JSON.stringify(themeDebug));
