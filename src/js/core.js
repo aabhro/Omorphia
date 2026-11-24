@@ -51,6 +51,30 @@ export function highlight(text, ranges = []) {
 const hasPopover = () => typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
 let floatLayer = null;
 let floatSequence = 0;
+const activeFloats = new Set();
+let floatThemeListenerInstalled = false;
+
+function syncFloatThemes(event) {
+  const changed = event.target;
+  for (const el of activeFloats) {
+    const context = el._uiFloatThemeSource;
+    if (!context?.isConnected || (changed !== context && !changed?.contains?.(context))) continue;
+    const mode = context.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
+    if (mode) el.setAttribute('data-ui-theme', mode);
+    else el.removeAttribute('data-ui-theme');
+    const computed = getComputedStyle(context);
+    for (const [name] of el._uiFloatSavedVars || []) {
+      const value = computed.getPropertyValue(name);
+      if (value) el.style.setProperty(name, value);
+    }
+  }
+}
+
+function watchFloatThemes() {
+  if (floatThemeListenerInstalled || typeof document === 'undefined') return;
+  document.addEventListener('ui-theme', syncFloatThemes);
+  floatThemeListenerInstalled = true;
+}
 
 function getFloatLayer() {
   if (floatLayer?.isConnected) return floatLayer;
@@ -73,6 +97,7 @@ function portalFloat(el) {
     return;
   }
   const inherited = [];
+  el._uiFloatThemeSource = el.parentElement;
   if (typeof getComputedStyle === 'function') {
     const computed = getComputedStyle(el);
     for (let i = 0; i < computed.length; i++) {
@@ -94,6 +119,8 @@ function portalFloat(el) {
     el.style.setProperty(name, value);
     return [name, oldValue, priority];
   });
+  activeFloats.add(el);
+  watchFloatThemes();
   if (el._uiFloatSavedZ == null) el._uiFloatSavedZ = el.style.zIndex;
   el.style.zIndex = String(++floatSequence);
   el._uiFloatMode = 'portal';
@@ -105,6 +132,8 @@ function restoreFloat(el) {
   else el.remove();
   marker?.remove();
   el._uiFloatPlaceholder = null;
+  activeFloats.delete(el);
+  el._uiFloatThemeSource = null;
   for (const [name, value, priority] of el._uiFloatSavedVars || []) {
     if (value) el.style.setProperty(name, value, priority);
     else el.style.removeProperty(name);
