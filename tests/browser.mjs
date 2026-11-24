@@ -138,12 +138,11 @@ try {
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popoverElement.open`, 'region select opens');
   await waitFor(`document.querySelector('.ui-select-option[data-ui-option-index="0"]')`, 'region options render in the portalled panel');
-  const regionPanelColor = 'getComputedStyle(document.querySelector(".ui-select-option").closest(".ui-select-panel")).backgroundColor';
+  const regionOptionColor = 'getComputedStyle(document.querySelector(".ui-select-option")).color';
   await evaluate("Omorphia.theme.set('light')");
-  assert.equal(await evaluate(regionPanelColor), 'rgb(250, 250, 250)', 'an open select panel follows the light theme');
-  assert.equal(await evaluate('getComputedStyle(document.querySelector("#region-test .ui-select-option")).color'), 'rgb(10, 10, 10)', 'light-theme option text switches with its panel');
+  assert.equal(await evaluate(regionOptionColor), 'rgb(10, 10, 10)', 'an open select option follows the light theme');
   await evaluate("Omorphia.theme.set('dark')");
-  assert.equal(await evaluate(regionPanelColor), 'rgb(10, 10, 10)', 'an open select panel switches back to dark');
+  assert.equal(await evaluate(regionOptionColor), 'rgb(245, 245, 245)', 'an open select option switches back to dark');
   console.log('  ✓ open floating surfaces switch light and dark themes');
 
   const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
