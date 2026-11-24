@@ -13,7 +13,7 @@ ui-sidebar{display:block;flex:none;width:var(--ui-sidebar-width);transition:widt
 .ui-side-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.ui-side-chev{margin-left:auto;transition:transform var(--ui-duration) var(--ui-ease);color:var(--ui-text-faint)}.ui-side-link[aria-expanded="true"] .ui-side-chev{transform:rotate(180deg)}.ui-side-group{margin:2px 0 2px 17px;padding-left:10px;border-left:1px solid var(--ui-border);display:flex;flex-direction:column;gap:2px}.ui-side-group[hidden]{display:none}.ui-side-group .ui-side-link{min-height:32px;font-size:var(--ui-text-sm)}
 ui-sidebar[collapsed]:not([data-mobile]) :is(.ui-side-label,.ui-side-chev,.ui-side-group,.ui-side-head-text,.ui-side-collapse-label){display:none}ui-sidebar[collapsed]:not([data-mobile]) .ui-side-link,ui-sidebar[collapsed]:not([data-mobile]) .ui-side-head{justify-content:center;padding-inline:0}ui-sidebar-item{display:block}
 ui-sidebar[data-mobile]{position:fixed;top:0;bottom:0;left:0;z-index:1300;width:min(var(--ui-sidebar-width),86vw);transform:translateX(-104%);visibility:hidden;transition:transform var(--ui-duration-enter) var(--ui-ease-enter),visibility 0s var(--ui-duration-enter)}ui-sidebar[data-mobile][position="right"]{left:auto;right:0;transform:translateX(104%)}ui-sidebar[data-mobile][open]{transform:none;visibility:visible;transition:transform var(--ui-duration-enter) var(--ui-ease-enter);box-shadow:var(--ui-shadow-lg)}
-.ui-sidebar-scrim{position:fixed;inset:0;z-index:1250;background:rgba(10,10,10,.72);backdrop-filter:blur(2px);animation:ui-fade var(--ui-duration-enter) var(--ui-ease)}
+.ui-sidebar-scrim{position:fixed;inset:0;z-index:1250;background:var(--ui-overlay-backdrop);backdrop-filter:blur(2px);animation:ui-fade var(--ui-duration-enter) var(--ui-ease)}
 @media(prefers-reduced-motion:reduce){ui-sidebar,ui-sidebar[data-mobile]{transition-duration:.01ms}.ui-command[open],.ui-sidebar-scrim{animation:none}}
 /* Floating surfaces inherit their active theme; their colors come from the overlay tokens. */
 
@@ -52,10 +52,10 @@ ui-option{display:none}
 .ui-calendar-weekdays,.ui-calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
 .ui-calendar-weekdays{padding-bottom:5px;color:var(--ui-overlay-text-faint);text-align:center;font:500 var(--ui-text-xs)/28px var(--ui-font)}
 .ui-calendar-day{display:grid;place-items:center;aspect-ratio:1;min-width:0;padding:0;border:0;border-radius:7px;background:transparent;color:var(--ui-overlay-text-muted);font:var(--ui-text-sm)/1 var(--ui-font);cursor:pointer;transition:background-color var(--ui-duration-fast) var(--ui-ease),color var(--ui-duration-fast) var(--ui-ease),transform var(--ui-duration-fast) var(--ui-ease)}
-.ui-calendar-day:hover:not(:disabled),.ui-calendar-day:focus-visible{outline:0;background:rgb(245 245 245 / .10);color:var(--ui-overlay-text)}
+.ui-calendar-day:hover:not(:disabled),.ui-calendar-day:focus-visible{outline:0;background:var(--ui-overlay-hover);color:var(--ui-overlay-text)}
 .ui-calendar-day.is-outside{color:var(--ui-overlay-text-faint)}
 .ui-calendar-day.is-selected{background:var(--ui-overlay-text);color:var(--ui-overlay);font-weight:600}
-.ui-calendar-day[aria-current="date"]:not(.is-selected){box-shadow:inset 0 0 0 1px rgb(245 245 245 / .48)}
+.ui-calendar-day[aria-current="date"]:not(.is-selected){box-shadow:inset 0 0 0 1px var(--ui-overlay-selected-border)}
 .ui-calendar-day:disabled{opacity:.22;cursor:not-allowed}
 .ui-calendar-footer{display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px}
 .ui-calendar-text-action{padding:5px 2px;border:0;background:transparent;color:var(--ui-overlay-text-muted);font:500 var(--ui-text-sm)/1.2 var(--ui-font);cursor:pointer}
