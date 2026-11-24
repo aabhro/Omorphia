@@ -109,3 +109,13 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
   .picker-demo-frame { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .picker-demo-unit + .picker-demo-unit { padding-top: 14px; border-top: 1px solid var(--ui-border); }
 }
+
+
+/* Overlay-effect previews. Each stage forms its own stacking context. */
+.overlay-effect-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.overlay-effect-preview { position: relative; isolation: isolate; display: flex; align-items: flex-start; min-height: 138px; padding: 17px; overflow: hidden; background: var(--ui-bg); }
+.overlay-effect-copy { position: relative; z-index: 0; max-width: 34ch; }
+.overlay-effect-copy strong { color: var(--ui-text); font-size: var(--ui-text-sm); font-weight: 550; }
+.overlay-effect-copy p { margin: 6px 0 0; color: var(--ui-text-muted); font-size: var(--ui-text-xs); line-height: 1.6; }
+.overlay-effect-preview--backdrop { background: repeating-linear-gradient(135deg, var(--ui-bg-inset) 0 12px, var(--ui-bg) 12px 24px); }
+@media (max-width: 560px) { .overlay-effect-grid { grid-template-columns: minmax(0, 1fr); } }
