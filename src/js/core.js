@@ -97,13 +97,21 @@ function portalFloat(el) {
     return;
   }
   const inherited = [];
-  el._uiFloatThemeSource = el.parentElement;
+  el._uiFloatThemeSource = el._uiThemeSource || el.parentElement;
   if (typeof getComputedStyle === 'function') {
     const computed = getComputedStyle(el);
-    for (let i = 0; i < computed.length; i++) {
-      const name = computed[i];
-      if (!name.startsWith('--')) continue;
-      const value = computed.getPropertyValue(name);
+    const context = el._uiFloatThemeSource;
+    const inheritedTheme = context ? getComputedStyle(context) : null;
+    const names = new Set();
+    for (const style of [computed, inheritedTheme]) {
+      if (!style) continue;
+      for (let i = 0; i < style.length; i++) {
+        const name = style[i];
+        if (name.startsWith('--')) names.add(name);
+      }
+    }
+    for (const name of names) {
+      const value = inheritedTheme?.getPropertyValue(name) || computed.getPropertyValue(name);
       if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
     }
   }
@@ -193,6 +201,7 @@ export function morphSurface(anchor, surface, opening = true) {
 }
 
 export function inheritTheme(from, to) {
+  to._uiThemeSource = from;
   const t = from.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
   if (t) to.setAttribute('data-ui-theme', t); else to.removeAttribute('data-ui-theme');
 }
