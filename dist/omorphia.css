@@ -3,7 +3,7 @@
 :root,[data-ui-theme="dark"]{
 color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 --ui-bg:#0a0a0a;--ui-bg-inset:#171717;--ui-surface:#0a0a0a;--ui-surface-2:#171717;--ui-surface-3:#262626;--ui-overlay:#0a0a0a;
---ui-text:#f5f5f5;--ui-text-muted:#d4d4d4;--ui-text-faint:#a3a3a3;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+--ui-text:#f5f5f5;--ui-text-muted:#d4d4d4;--ui-text-faint:#a3a3a3;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-text-faint:#a3a3a3;--ui-overlay-hover:rgb(245 245 245 / .09);--ui-overlay-selected:rgb(245 245 245 / .08);--ui-overlay-selected-border:rgb(245 245 245 / .58);--ui-overlay-border:rgb(245 245 245 / .14);--ui-overlay-divider:rgb(245 245 245 / .10);--ui-overlay-backdrop:rgba(10,10,10,.76);
 --ui-accent:#f5f5f5;--ui-accent-hover:#d4d4d4;--ui-accent-contrast:#0a0a0a;--ui-accent-soft:rgb(245 245 245 / .08);--ui-focus:rgb(245 245 245 / .62);
 --ui-danger:#ef8888;--ui-danger-contrast:#0a0a0a;--ui-danger-soft:rgb(239 136 136 / .08);--ui-success:#9bc9a6;--ui-success-soft:rgb(155 201 166 / .08);--ui-warning:#d7b477;--ui-warning-soft:rgb(215 180 119 / .08);--ui-info:#d4d4d4;--ui-info-soft:rgb(212 212 212 / .07);
 --ui-hover:rgb(245 245 245 / .06);--ui-active:rgb(245 245 245 / .09);--ui-border:rgb(245 245 245 / .10);--ui-control-border:rgb(245 245 245 / .12);--ui-overlay-border:rgb(245 245 245 / .14);
@@ -14,19 +14,20 @@ color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Se
 --ui-space-1:4px;--ui-space-2:8px;--ui-space-3:12px;--ui-space-4:16px;--ui-space-5:24px;--ui-space-6:32px;--ui-space-7:48px;--ui-space-8:64px;
 --ui-h-sm:32px;--ui-h-md:40px;--ui-h-lg:44px;--ui-icon-sm:14px;--ui-icon:16px;--ui-icon-lg:20px;--ui-icon-stroke:1.75;--ui-sidebar-width:240px;--ui-sidebar-collapsed-width:60px}
 [data-ui-theme="light"]{
-color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#0a0a0a;
---ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#fafafa;
+--ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#0a0a0a;--ui-overlay-text-muted:#404040;--ui-overlay-text-faint:#737373;--ui-overlay-hover:rgb(10 10 10 / .055);--ui-overlay-selected:rgb(10 10 10 / .06);--ui-overlay-selected-border:rgb(10 10 10 / .42);--ui-overlay-border:rgb(10 10 10 / .12);--ui-overlay-divider:rgb(10 10 10 / .10);--ui-overlay-backdrop:rgba(10,10,10,.42);
 --ui-accent:#0a0a0a;--ui-accent-hover:#262626;--ui-accent-contrast:#fafafa;--ui-accent-soft:rgb(10 10 10 / .06);--ui-focus:rgb(10 10 10 / .52);
 --ui-danger:#b84747;--ui-danger-contrast:#fafafa;--ui-danger-soft:rgb(184 71 71 / .08);--ui-success:#39784b;--ui-success-soft:rgb(57 120 75 / .08);--ui-warning:#8a642b;--ui-warning-soft:rgb(138 100 43 / .08);--ui-info:#404040;--ui-info-soft:rgb(64 64 64 / .06);
---ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .12);--ui-overlay-border:rgb(245 245 245 / .14);
+--ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .12);--ui-overlay-border:rgb(10 10 10 / .12);
 --ui-edge-color:#0a0a0a;--ui-edge-tl-alpha:.40;--ui-edge-br-alpha:.12;--ui-edge-base-alpha:0;--ui-shadow-sm:0 1px 2px rgb(10 10 10 / .07);--ui-shadow-md:0 16px 44px rgb(10 10 10 / .12);--ui-shadow-lg:0 24px 64px rgb(10 10 10 / .16)}
 @media(prefers-color-scheme:light){[data-ui-theme="auto"]{
-color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#0a0a0a;
---ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#f5f5f5;--ui-overlay-text-muted:#d4d4d4;--ui-overlay-hover:rgb(245 245 245 / .09);
+color-scheme:light;--ui-bg:#fafafa;--ui-bg-inset:#f5f5f5;--ui-surface:#fafafa;--ui-surface-2:#f5f5f5;--ui-surface-3:#e5e5e5;--ui-overlay:#fafafa;
+--ui-text:#0a0a0a;--ui-text-muted:#404040;--ui-text-faint:#737373;--ui-overlay-text:#0a0a0a;--ui-overlay-text-muted:#404040;--ui-overlay-text-faint:#737373;--ui-overlay-hover:rgb(10 10 10 / .055);--ui-overlay-selected:rgb(10 10 10 / .06);--ui-overlay-selected-border:rgb(10 10 10 / .42);--ui-overlay-border:rgb(10 10 10 / .12);--ui-overlay-divider:rgb(10 10 10 / .10);--ui-overlay-backdrop:rgba(10,10,10,.42);
 --ui-accent:#0a0a0a;--ui-accent-hover:#262626;--ui-accent-contrast:#fafafa;--ui-accent-soft:rgb(10 10 10 / .06);--ui-focus:rgb(10 10 10 / .52);
 --ui-danger:#b84747;--ui-danger-contrast:#fafafa;--ui-danger-soft:rgb(184 71 71 / .08);--ui-success:#39784b;--ui-success-soft:rgb(57 120 75 / .08);--ui-warning:#8a642b;--ui-warning-soft:rgb(138 100 43 / .08);--ui-info:#404040;--ui-info-soft:rgb(64 64 64 / .06);
---ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .12);--ui-overlay-border:rgb(245 245 245 / .14);
+--ui-hover:rgb(10 10 10 / .045);--ui-active:rgb(10 10 10 / .075);--ui-border:rgb(10 10 10 / .10);--ui-control-border:rgb(10 10 10 / .12);--ui-overlay-border:rgb(10 10 10 / .12);
 --ui-edge-color:#0a0a0a;--ui-edge-tl-alpha:.38;--ui-edge-br-alpha:.12;--ui-edge-base-alpha:.06;--ui-shadow-sm:0 1px 2px rgb(10 10 10 / .07);--ui-shadow-md:0 16px 44px rgb(10 10 10 / .12);--ui-shadow-lg:0 24px 64px rgb(10 10 10 / .16)}}
+
 /* Edgelit — base: scoped box-sizing, typography helpers, layout utilities. Nothing here touches bare element selectors. */
 :is([class*="ui-"], ui-button, ui-icon, ui-tooltip, ui-modal, ui-popover, ui-dropdown, ui-tabs, ui-tab, ui-pagination,
     ui-command-palette, ui-command, ui-search, ui-sidebar, ui-sidebar-item, ui-menu-item, ui-input, ui-textarea, ui-checkbox, ui-radio, ui-switch, ui-range, ui-option, ui-select, ui-date-picker, ui-time-picker, ui-drawer, ui-accordion, ui-accordion-item),
