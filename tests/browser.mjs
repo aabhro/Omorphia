@@ -156,8 +156,20 @@ try {
       optionColor: getComputedStyle(document.querySelector('.ui-select-option')).color,
       optionStyle: document.querySelector('.ui-select-option').getAttribute('style'),
       optionRules: [...document.styleSheets].flatMap(sheet => {
-        try { return [...sheet.cssRules].filter(rule => rule.selectorText && rule.selectorText.includes('ui-select-option')).map(rule => rule.cssText); }
-        catch { return []; }
+        const matches = [];
+        const visit = rules => [...rules].forEach(rule => {
+          if (rule.cssRules) visit(rule.cssRules);
+          else if (rule.selectorText) {
+            try {
+              if (document.querySelector('.ui-select-option').matches(rule.selectorText)) {
+                const color = rule.style?.getPropertyValue('color');
+                if (color) matches.push({ selector: rule.selectorText, color, important: rule.style.getPropertyPriority('color') });
+              }
+            } catch {}
+          }
+        });
+        try { visit(sheet.cssRules); } catch {}
+        return matches;
       }),
       optionParents: (() => {
         const rows = [];
