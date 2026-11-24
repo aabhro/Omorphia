@@ -64,7 +64,7 @@ DESIGN CHOICE:
 For a new app, meaningful UI feature, or substantial redesign, first ask which direction to use unless I have already specified it: Modernimal (recommended), another named style from my Stylesheets repository, the existing project style, or a custom direction based on my references. Summarize the proposed design and ask what I want changed. Wait for approval before substantial implementation. For a focused bug fix or documentation-only task, preserve the existing style and do not ask unnecessary questions.
 
 WHEN MODERNIMAL IS SELECTED:
-Use its near-black editorial direction, approved neutral palette, restrained surfaces, readable typography, custom controls, accessible interactions, and purposeful motion. Keep every floating menu and overlay panel at #0a0a0a. Preserve the mandatory component and motion references. Ask me to approve an app accent color before building a Modernimal-based app, and make that accent editable later. Do not apply app-level accent settings to Omorphia library defaults unless I explicitly ask.
+Use its near-black editorial direction, approved neutral palette, restrained surfaces, readable typography, custom controls, accessible interactions, and purposeful motion. Keep floating menu and overlay surfaces opaque and theme-aware through `--ui-overlay` and `--ui-overlay-text`. Preserve the mandatory component and motion references. Ask me to approve an app accent color before building a Modernimal-based app, and make that accent editable later. Do not apply app-level accent settings to Omorphia library defaults unless I explicitly ask.
 
 OMORPHIA RULES:
 Preserve the framework-free, CDN-first architecture and native custom-element API. Keep the top-left / bottom-right directional edge illumination. In the Omorphia repository, edit src/ as the source of truth, never hand-edit generated dist/ bundles, and use the existing build script. Preserve the public API, themes, accessibility, keyboard behavior, reduced motion, and responsive layouts. Reuse existing components before inventing new ones.
@@ -455,7 +455,7 @@ Omorphia.theme.set('dark');  // dark, light, or auto
 Omorphia.theme.toggle();
 ~~~
 
-Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. Floating panels retain an opaque near-black surface.
+Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. Floating panels use opaque theme-aware surfaces. Open portalled panels also update when their theme changes.
 
 </details>
 
