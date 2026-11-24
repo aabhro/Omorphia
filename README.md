@@ -463,10 +463,15 @@ Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. 
 
 Add a non-interactive overlay layer to a page or a positioned container. Effects use the active <code>--ui-bg</code> token, so their fades follow light, dark, and auto themes.
 
+<details>
+  <summary><strong>Viewport bottom fade</strong></summary>
+
 ~~~html
 <!-- Add as a direct child of body for a viewport-wide bottom fade. -->
 <div class="ui-overlay ui-overlay--fade-bottom ui-overlay--fixed" aria-hidden="true"></div>
 ~~~
+
+</details>
 
 Available modifiers:
 
