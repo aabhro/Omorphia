@@ -138,7 +138,7 @@ try {
   await click('#region-test .ui-select-trigger');
   await waitFor(`document.querySelector('#region-test').popoverElement.open`, 'region select opens');
   await waitFor(`document.querySelector('.ui-select-option[data-ui-option-index="0"]')`, 'region options render in the portalled panel');
-  const regionPanelColor = 'getComputedStyle(document.querySelector("[data-ui-floating-layer] .ui-popover-panel")).backgroundColor';
+  const regionPanelColor = 'getComputedStyle(document.querySelector(".ui-select-option").closest(".ui-popover-panel")).backgroundColor';
   await evaluate("Omorphia.theme.set('light')");
   assert.equal(await evaluate(regionPanelColor), 'rgb(250, 250, 250)', 'an open select panel follows the light theme');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#region-test .ui-select-option")).color'), 'rgb(10, 10, 10)', 'light-theme option text switches with its panel');
