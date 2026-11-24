@@ -75,8 +75,8 @@ When Modernimal is selected, read the full source guide rather than treating thi
 Use its approved neutral palette as the foundation:
 
 - `#0a0a0a`, `#171717`, `#262626`, `#404040`, `#525252`, `#737373`, `#a3a3a3`, `#d4d4d4`, `#e5e5e5`, `#f5f5f5`, and `#fafafa`.
-- Keep `#0a0a0a` as the dominant dark canvas and the actual background of every floating menu and overlay panel, including dropdowns, context menus, popovers, command palettes, autocomplete panels, and dialogs.
-- Do not tint overlay backgrounds with the selected accent. Do not substitute a lighter gray for the required near-black overlay surface.
+- Keep `#0a0a0a` as the dominant dark canvas. Omorphia floating surfaces use `var(--ui-overlay)` and `var(--ui-overlay-text)`: dark mode defaults to `#0a0a0a`, while light mode uses the light surface and dark text. Never hardcode a theme-specific panel color.
+- Keep overlay panels opaque and borderless. Do not tint overlay surfaces with the selected accent.
 - Use the approved accent sparingly for meaningful actions, selected states, links, and focus. Do not turn the whole interface into an accent-colored theme.
 
 Design with typography, spacing, alignment, clear hierarchy, and purposeful interaction. Use borders, outlines, cards, labels, dividers, and metadata only when they clarify structure or action. Avoid unnecessary outlines, nested cards, generic gray tab strips, bulky panels, decorative badges, overbuilt heroes, and standalone icon boxes. Related actions should feel like one grouped control.
@@ -160,7 +160,7 @@ Include a short **Component reuse audit** in the delivery report. Name the Omorp
 
 Never author raw `<button>`, `<input>`, `<textarea>`, `<select>`, `<option>`, or `<details>` controls in new application markup. This includes native date/time inputs, browser select menus, raw checkboxes/radios/switches, native range sliders, and native disclosure accordions. Read the catalog and use its exact custom element instead. Native primitives may exist internally inside Omorphia's own implementation, but do not copy them into consuming app markup.
 
-For floating surfaces, **do not add visible borders or outlines** to menus, dropdowns, popovers, command panels, search suggestions, tooltips, date/time panels, or drawers. Keep surfaces opaque `#0a0a0a`. Buttons and input controls may use their established border styles.
+For floating surfaces, **do not add visible borders or outlines** to menus, dropdowns, popovers, command panels, search suggestions, tooltips, date/time panels, or drawers. Keep surfaces opaque and theme-aware through `--ui-overlay` and `--ui-overlay-text`. Buttons and input controls may use their established border styles.
 
 Dropdowns, selects, date pickers, and time pickers share the trigger-to-panel morph. Reuse the shared implementation. Accordions use the existing grid height transition. Do not layer another animation on top. Test rapid open/close, focus, keyboard use, and reduced motion.
 
