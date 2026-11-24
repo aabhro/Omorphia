@@ -13,7 +13,7 @@ For every UI task, read `AI/COMPONENT-CATALOG.md` in full before writing markup.
 
 **Never invent `<ui-*>` tags or guess APIs. Never author raw `<button>`, `<input>`, `<textarea>`, `<select>`, `<option>`, or `<details>` as new UI controls.** Use Omorphia's custom input, textarea, select/options, checkbox, radio, switch, range, date/time picker, menu item, drawer, accordion, and existing navigation/overlay components. Native controls are internal implementation details only. Static classes are for non-interactive content. If a component is missing, mark `NO BUILT-IN COMPONENT` and explain the exact gap before proposing an extension. Audit all changed controls before delivery.
 
-Floating surfaces must be borderless with opaque `#0a0a0a` surfaces. Reuse the shared trigger-to-panel morph and accordion motion. Respect reduced motion.
+Floating surfaces must be borderless and opaque. Use `var(--ui-overlay)` and `var(--ui-overlay-text)` so panels follow dark and light themes. Reuse the shared trigger-to-panel morph and accordion motion. Respect reduced motion.
 
 For UI, component, styling, or showcase work, read the complete Modernimal stylesheet in the public `aabhro/Stylesheets` repository, inspect `Components/Modernimal.html`, and inspect the mandatory `motion/` references. Read files directly from GitHub or clone with `git clone --depth 1 https://github.com/aabhro/Stylesheets.git /tmp/aabhro-Stylesheets`. No special access is required. Retry temporary fetch failures through public raw URLs or a fresh clone before reporting a limitation. Never silently skip required files.
 
