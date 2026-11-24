@@ -154,6 +154,11 @@ try {
       panelToken: panel?.style.getPropertyValue('--ui-overlay-text'),
       optionToken: getComputedStyle(document.querySelector('.ui-select-option')).getPropertyValue('--ui-overlay-text'),
       optionColor: getComputedStyle(document.querySelector('.ui-select-option')).color,
+      optionStyle: document.querySelector('.ui-select-option').getAttribute('style'),
+      optionRules: [...document.styleSheets].flatMap(sheet => {
+        try { return [...sheet.cssRules].filter(rule => rule.selectorText && rule.selectorText.includes('ui-select-option')).map(rule => rule.cssText); }
+        catch { return []; }
+      }),
       optionParents: (() => {
         const rows = [];
         for (let node = document.querySelector('.ui-select-option'); node; node = node.parentElement) rows.push({
