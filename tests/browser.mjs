@@ -169,6 +169,7 @@ try {
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-outer').panel).backgroundColor`), 'rgb(10, 10, 10)', 'outer panel switches back to dark');
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-inner').panel).backgroundColor`), 'rgb(10, 10, 10)', 'nested panel switches back to dark');
   await evaluate("document.querySelector('#layer-inner').hide(); document.querySelector('#layer-outer').hide()");
+  await delay(240);
   console.log('  ✓ nested floating panels follow light and dark themes');
 
   await click('#date-test .ui-date-trigger');
