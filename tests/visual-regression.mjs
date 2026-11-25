@@ -10,6 +10,7 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));const address=server.addres
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1,reducedMotion:'reduce'});page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:'+address.port+'/index.html',{waitUntil:'domcontentloaded'});await page.waitForSelector('#date-demo');
+ assert.equal(await page.locator('link[href="../dist/omorphia.min.css"]').evaluate(el=>!!el.sheet),true,'playground stylesheet loads successfully');
  await page.screenshot({path:resolve(output,'showcase-dark.png'),fullPage:true,animations:'disabled'});
  const date=page.locator('#date-demo');await date.evaluate(el=>el.show());
  const v=await date.evaluate(el=>{const p=el.popoverElement.panel,r=p.getBoundingClientRect(),s=getComputedStyle(p);return{position:s.position,pointerEvents:s.pointerEvents,width:Math.round(r.width),height:Math.round(r.height),left:Math.round(r.left),top:Math.round(r.top)};});
