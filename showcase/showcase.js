@@ -39,7 +39,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const timePicker = document.getElementById('time-demo');
   const timeOutput = document.getElementById('time-demo-output');
   timePicker?.addEventListener('ui-change', () => { if (timeOutput) timeOutput.textContent = timePicker.input.value; });
-  // Effects playground
+  // Advanced component fixtures
+  const colorPicker = document.getElementById('color-picker-demo');
+  const colorOutput = document.getElementById('color-picker-output');
+  colorPicker?.addEventListener('ui-input', (event) => {
+    if (colorOutput) colorOutput.textContent = 'Selected ' + event.detail.value + ' · ' + event.detail.color;
+  });
+  const combo = document.getElementById('combobox-demo');
+  if (combo) combo.data = [
+    { value: 'production', label: 'Production', description: 'Live customer environment' },
+    { value: 'staging', label: 'Staging', description: 'Pre-release testing' },
+    { value: 'development', label: 'Development', description: 'Local development environment' },
+    { value: 'preview', label: 'Preview', description: 'Temporary review deployment' }
+  ];
+  const table = document.getElementById('data-table-demo');
+  if (table) {
+    table.columns = [
+      { key: 'project', label: 'Project' },
+      { key: 'type', label: 'Type' },
+      { key: 'status', label: 'Status' },
+      { key: 'updated', label: 'Updated' }
+    ];
+    table.data = [
+      { project: 'Atlas', type: 'Web', status: 'Active', updated: '2026-11-24' },
+      { project: 'Meridian', type: 'Library', status: 'Review', updated: '2026-11-22' },
+      { project: 'Northstar', type: 'Mobile', status: 'Active', updated: '2026-11-20' },
+      { project: 'Orbit', type: 'API', status: 'Paused', updated: '2026-11-18' },
+      { project: 'Fieldnotes', type: 'Web', status: 'Draft', updated: '2026-11-16' },
+      { project: 'Still', type: 'Desktop', status: 'Active', updated: '2026-11-12' }
+    ];
+  }
+  const tree = document.getElementById('tree-view-demo');
+  if (tree) {
+    tree.data = [
+      { id: 'workspace', label: 'Workspace', icon: 'folder', children: [
+        { id: 'components', label: 'Components', icon: 'folder', children: [
+          { id: 'buttons', label: 'Buttons', icon: 'file-text' },
+          { id: 'inputs', label: 'Inputs', icon: 'file-text' },
+          { id: 'navigation', label: 'Navigation', icon: 'file-text' }
+        ] },
+        { id: 'documentation', label: 'Documentation', icon: 'folder', children: [
+          { id: 'readme', label: 'README.md', icon: 'file-text' },
+          { id: 'changelog', label: 'CHANGELOG.md', icon: 'file-text' }
+        ] }
+      ] }
+    ];
+    tree.expanded = ['workspace', 'components'];
+  }
+  const tour = document.getElementById('tour-demo');
+  if (tour) tour.steps = [
+    { selector: '#color-picker-demo', title: 'Choose a color', description: 'Adjust the color, opacity, and exact hex value.' },
+    { selector: '#data-table-demo', title: 'Explore your data', description: 'Filter records, sort columns, and control which columns remain visible.' },
+    { selector: '#tree-view-demo', title: 'Navigate a hierarchy', description: 'Expand folders, select items, and move nodes by dragging them.' }
+  ];
+  document.getElementById('file-upload-demo')?.addEventListener('ui-error', (event) => {
+    Omorphia.toast({ title: 'Some files were not added', description: event.detail.errors.join(' '), variant: 'warning' });
+  });
+  document.getElementById('stepper-demo')?.addEventListener('ui-invalid', () => {
+    Omorphia.toast({ title: 'Review this step', description: 'Complete the required fields before continuing.', variant: 'warning' });
+  });
+  document.getElementById('rating-demo')?.addEventListener('ui-change', (event) => {
+    Omorphia.toast({ title: 'Rating updated', description: event.detail.value + ' out of 5', duration: 1600 });
+  });
+
+  // Directional illumination controls
   const stage = document.getElementById('fx-stage');
   const fxInputs = [...document.querySelectorAll('[data-fx]')];
   const fxOutput = document.getElementById('fx-css-output');

@@ -34,6 +34,30 @@ export class UIDrawer extends HTMLElement { open:boolean; show():void; close(rea
 export class UIAccordion extends HTMLElement {}
 export class UIAccordionItem extends HTMLElement { open:boolean; show():void; hide():void; toggle():void; }
 export class UIMenuItem extends HTMLElement {}
+
+export interface ComboboxOption { value: string; label?: string; text?: string; description?: string; disabled?: boolean; [key: string]: unknown; }
+export interface DataTableColumn<T = Record<string, unknown>> { key: keyof T | string; label?: string; sortable?: boolean; format?: (value: unknown, row: T) => string | number | Node; }
+export interface TreeNode { id: string; label: string; icon?: string; count?: number; disabled?: boolean; children?: TreeNode[]; }
+export interface TourStep { selector?: string; title?: string; description?: string; }
+export class UIColorPicker extends HTMLElement { value: string; color: string; disabled: boolean; setColor(value: string, notify?: boolean): boolean; show(): void; hide(): void; focus(options?: FocusOptions): void; }
+export class UIFileUpload extends HTMLElement { readonly files: File[]; disabled: boolean; openPicker(): void; addFiles(files: File[]): File[]; removeFile(index: number): boolean; }
+export class UICombobox extends HTMLElement { data: ComboboxOption[]; source: ((query: string, signal: AbortSignal) => Promise<ComboboxOption[]>) | null; value: string; disabled: boolean; search(query: string): Promise<void>; choose(item: ComboboxOption): void; create(label: string): void; close(): void; focus(options?: FocusOptions): void; }
+export class UIMultiSelect extends UISelect { removeValue(value: string): void; }
+export class UINumberInput extends HTMLElement { value: number; readonly min: number; readonly max: number; readonly step: number; disabled: boolean; stepBy(direction: -1 | 1): void; focus(options?: FocusOptions): void; }
+export class UIOtpInput extends HTMLElement { value: string; readonly length: number; disabled: boolean; setValue(value: string, notify?: boolean): void; focus(options?: FocusOptions): void; }
+export class UIRichTextEditor extends HTMLElement { value: string; readonly textContentValue: string; get readonly(): boolean; getHTML(): string; setLink(url: string): boolean; exec(command: string, value?: string): boolean; focus(options?: FocusOptions): void; }
+export class UIDataTable<T = Record<string, unknown>> extends HTMLElement { data: T[]; columns: DataTableColumn<T>[]; readonly page: number; readonly pageSize: number; readonly selectedRows: T[]; go(page: number): void; setFilter(query: string): void; setColumnVisible(key: string, visible: boolean): void; }
+export class UITreeView extends HTMLElement { data: TreeNode[]; expanded: string[]; value: string[]; find(id: string): { node: TreeNode; parent: TreeNode | null; siblings: TreeNode[] } | null; toggle(id: string): void; select(id: string): void; move(sourceId: string, targetId: string): boolean; focus(options?: FocusOptions): void; }
+export class UISplitPanel extends HTMLElement { ratio: number; }
+export class UIStep extends HTMLElement {}
+export class UIStepper extends HTMLElement { readonly index: number; value: string; go(index: number): boolean; nextStep(): boolean; previous(): boolean; }
+export class UITimelineItem extends HTMLElement {}
+export class UITimeline extends HTMLElement {}
+export class UIRating extends HTMLElement { value: number; readonly max: number; readonly disabled: boolean; setValue(value: number, notify?: boolean): boolean; }
+export class UISkeleton extends HTMLElement {}
+export class UIEmptyState extends HTMLElement {}
+export class UITour extends HTMLElement { steps: TourStep[]; readonly open: boolean; start(index?: number): boolean; nextStep(): void; previous(): void; end(reason?: string): void; }
+
 export const version:string;
 export const theme:ThemeAPI;
 export const config:{toastPosition:string};
@@ -54,5 +78,10 @@ declare global {
   'ui-checkbox':UICheckbox; 'ui-radio':UIRadio; 'ui-switch':UISwitch; 'ui-range':UIRange;
   'ui-option':UIOption; 'ui-select':UISelect; 'ui-date-picker':UIDatePicker; 'ui-time-picker':UITimePicker;
   'ui-drawer':UIDrawer; 'ui-accordion':UIAccordion; 'ui-accordion-item':UIAccordionItem;
+  'ui-color-picker':UIColorPicker; 'ui-file-upload':UIFileUpload; 'ui-combobox':UICombobox; 'ui-multi-select':UIMultiSelect;
+  'ui-number-input':UINumberInput; 'ui-otp-input':UIOtpInput; 'ui-rich-text-editor':UIRichTextEditor;
+  'ui-data-table':UIDataTable; 'ui-tree-view':UITreeView; 'ui-split-panel':UISplitPanel; 'ui-stepper':UIStepper; 'ui-step':UIStep;
+  'ui-timeline':UITimeline; 'ui-timeline-item':UITimelineItem; 'ui-rating':UIRating; 'ui-skeleton':UISkeleton;
+  'ui-empty-state':UIEmptyState; 'ui-tour':UITour;
  }
 }

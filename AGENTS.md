@@ -25,7 +25,7 @@ These instructions apply to coding agents, autonomous agents, pair-programming a
 > [!CAUTION]
 > **DO NOT WRITE OR GENERATE A REPLACEMENT COMPONENT BEFORE CHECKING THE OMORPHIA INVENTORY.**
 >
-> Omorphia now provides 28 registered custom elements, including custom text fields, textareas, selects, checkboxes, radios, switches, ranges, date/time pickers, menu items, drawers, and animated accordions. The complete verified list is in the catalog. Do not guess from CSS names or screenshots.
+> Omorphia now provides 46 registered custom elements, including custom text fields, textareas, selects, checkboxes, radios, switches, ranges, date/time pickers, menu items, drawers, and animated accordions. The complete verified list is in the catalog. Do not guess from CSS names or screenshots.
 
 Before implementing any interface:
 1. Read [AI/COMPONENT-CATALOG.md](AI/COMPONENT-CATALOG.md) in full.

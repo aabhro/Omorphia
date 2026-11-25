@@ -12,7 +12,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist to load from the CDN. -->
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist to load from the CDN. -->
   <link rel="stylesheet" href="./dist/omorphia.min.css">
   <link rel="stylesheet" href="./showcase/showcase.css">
 </head>
@@ -29,6 +29,7 @@
       <ui-sidebar-item href="#palette">Command palette</ui-sidebar-item>
       <ui-sidebar-item href="#search">Search</ui-sidebar-item>
       <ui-sidebar-item href="#sidemenu">Side menu</ui-sidebar-item>
+      <ui-sidebar-item href="#advanced-library">New components</ui-sidebar-item>
     </ui-sidebar-item>
     <ui-sidebar-item icon="sparkles" href="#effects">Effects</ui-sidebar-item>
   </ui-sidebar>
@@ -45,8 +46,8 @@
     <header class="hero">
       <h1 class="ui-display">Interfaces shaped by light.</h1>
       <p>Omorphia is a dependency-free UI library for websites. Use one stylesheet, one script, and native custom elements. Directional illumination adds a restrained highlight without turning every surface into an outline.</p>
-      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
     </header>
 
     <section class="block" id="type">
@@ -318,7 +319,7 @@
         <div style="display:flex;width:100%;height:360px;background:var(--ui-bg-inset);border-radius:var(--ui-radius-lg);padding:8px;gap:8px;overflow:hidden">
           <ui-sidebar collapsible breakpoint="1" heading="Workspace" width="230px" style="position:static;height:100%;--ui-sidebar-radius:12px">
             <ui-sidebar-item icon="house" href="#sidemenu" active>Dashboard</ui-sidebar-item>
-            <ui-sidebar-item icon="folder-open" expanded>Projects
+            <ui-sidebar-item icon="folder" expanded>Projects
               <ui-sidebar-item href="#sidemenu">Atlas</ui-sidebar-item>
               <ui-sidebar-item href="#sidemenu">Meridian</ui-sidebar-item>
             </ui-sidebar-item>
@@ -327,6 +328,96 @@
           </ui-sidebar>
           <div class="ui-grow ui-small ui-muted" style="padding:16px">Use ↑ ↓ to move, → ← to expand or collapse groups, and the Collapse button to shrink to icons. The page sidebar switches to an off-canvas drawer below 768px.</div>
         </div></template></div>
+    </section>
+
+
+    <section class="block" id="advanced-library">
+      <header><h2 class="ui-h1">Advanced component set</h2><p>Configurable, theme-aware controls for files, data, workflows, and rich interaction. Every example below is a registered Omorphia element.</p></header>
+      <div class="cols">
+        <div class="demo" data-layout="stack"><div class="demo-title">File upload</div><template>
+          <ui-file-upload id="file-upload-demo" name="attachments" accept=".pdf,image/*" multiple max-files="4" max-size="5242880" label="Drop files here" hint="PDF or image files · up to 5 MB each"></ui-file-upload>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Advanced color picker</div><template>
+          <ui-color-picker id="color-picker-demo" name="brand-color" label="Brand color" value="#b58bbf" alpha></ui-color-picker>
+          <p class="ui-hint" id="color-picker-output">Select a hue, adjust saturation and opacity, or enter a hex value.</p>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Searchable combobox</div><template>
+          <ui-combobox id="combobox-demo" name="environment" label="Environment" placeholder="Search environments…" min-chars="1" allow-create></ui-combobox>
+          <p class="ui-hint">Local suggestions, optional async source, and user-created values.</p>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Grouped multi-select</div><template>
+          <ui-multi-select id="multi-select-demo" name="members" label="Team members" placeholder="Choose teammates">
+            <ui-option value="ada" group="Engineering">Ada Lovelace</ui-option>
+            <ui-option value="alan" group="Engineering">Alan Turing</ui-option>
+            <ui-option value="grace" group="Research">Grace Hopper</ui-option>
+            <ui-option value="margaret" group="Research">Margaret Hamilton</ui-option>
+          </ui-multi-select>
+          <p class="ui-hint">Selected items appear as removable chips.</p>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Number input</div><template>
+          <ui-number-input id="number-demo" name="quantity" label="Quantity" value="2" min="0" max="25" step="0.25" precision="2"></ui-number-input>
+          <p class="ui-hint">Steppers, bounds, keyboard editing, and decimal precision.</p>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">OTP verification</div><template>
+          <ui-otp-input id="otp-demo" name="verification-code" label="Verification code" length="6" autocomplete="one-time-code"></ui-otp-input>
+          <p class="ui-hint">Paste a complete code or enter each digit. Arrow keys and Backspace move between segments.</p>
+        </template></div>
+      </div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Rich text editor</div><template>
+        <ui-rich-text-editor id="rich-editor-demo" name="description" label="Description" placeholder="Write a formatted description…" value="&lt;p&gt;Use the toolbar or keyboard shortcuts to &lt;strong&gt;format text&lt;/strong&gt;.&lt;/p&gt;"></ui-rich-text-editor>
+      </template></div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Sortable data table</div><template>
+        <ui-data-table id="data-table-demo" page-size="3" selectable sortable filterable label="Project data"></ui-data-table>
+      </template></div>
+      <div class="cols">
+        <div class="demo" data-layout="stack"><div class="demo-title">Tree view</div><template>
+          <ui-tree-view id="tree-view-demo" label="Project files" selectable multiple drag-drop></ui-tree-view>
+          <p class="ui-hint">Use arrow keys to navigate. Drag a row onto a folder to move it.</p>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Resizable split panel</div><template>
+          <ui-split-panel id="split-panel-demo" direction="horizontal" sizes="42,58" min-size="24" max-size="76" storage-key="showcase-split" style="height:190px">
+            <div slot="start" class="ui-split-sample"><strong>Navigation</strong><p class="ui-small ui-muted">Projects<br>Documents<br>Settings</p></div>
+            <div slot="end" class="ui-split-sample"><strong>Details</strong><p class="ui-small ui-muted">Drag the divider or use the arrow keys to resize both panes.</p></div>
+          </ui-split-panel>
+        </template></div>
+      </div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Multi-stage stepper</div><template>
+        <ui-stepper id="stepper-demo" linear>
+          <ui-step label="Details" value="details"><p class="ui-body">Enter the basic project details.</p><ui-input label="Project name" value="Atlas"></ui-input></ui-step>
+          <ui-step label="Review" value="review"><p class="ui-body">Review the project settings before continuing.</p><ui-checkbox label="I have reviewed these details" checked></ui-checkbox></ui-step>
+          <ui-step label="Complete" value="complete"><p class="ui-body">The setup is ready to finish.</p></ui-step>
+        </ui-stepper>
+      </template></div>
+      <div class="cols">
+        <div class="demo" data-layout="stack"><div class="demo-title">Timeline</div><template>
+          <ui-timeline>
+            <ui-timeline-item title="Workspace created" time="09:30" status="complete" icon="check">The project workspace was created.</ui-timeline-item>
+            <ui-timeline-item title="Build running" time="10:15" status="current" icon="loader">Dependencies are being installed.</ui-timeline-item>
+            <ui-timeline-item title="Deployment" time="Pending">Waiting for the build to finish.</ui-timeline-item>
+          </ui-timeline>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Rating</div><template>
+          <ui-rating id="rating-demo" name="product-rating" label="Rate this experience" value="3.5" max="5" allow-half show-value></ui-rating>
+          <p class="ui-hint">Supports whole and half-star values, read-only state, and keyboard adjustment.</p>
+        </template></div>
+      </div>
+      <div class="cols">
+        <div class="demo" data-layout="stack"><div class="demo-title">Skeleton loading</div><template>
+          <ui-skeleton variant="text" lines="3" width="100%" height="10px"></ui-skeleton>
+          <ui-skeleton variant="avatar" width="44px" height="44px"></ui-skeleton>
+          <ui-skeleton variant="image" width="100%" height="90px"></ui-skeleton>
+        </template></div>
+        <div class="demo" data-layout="stack"><div class="demo-title">Empty state</div><template>
+          <ui-empty-state icon="folder-open" title="No projects yet" description="Create a project to start organizing your work.">
+            <ui-button variant="secondary" size="sm" icon="plus">Create project</ui-button>
+          </ui-empty-state>
+        </template></div>
+      </div>
+      <div class="demo" data-layout="stack"><div class="demo-title">Guided tour</div><template>
+        <ui-tour id="tour-demo"></ui-tour>
+        <ui-button variant="secondary" onclick="document.getElementById('tour-demo').start()">Start guided tour</ui-button>
+        <p class="ui-hint">Tour steps target existing elements and can be advanced by keyboard or buttons.</p>
+      </template></div>
     </section>
 
     <section class="block" id="effects">

@@ -1,12 +1,12 @@
 {
   "name": "omorphia",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Dependency-free, CDN-first UI components and stylesheet with directional border illumination.",
   "main": "dist/omorphia.min.js",
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
-    "test": "npm run build && node tests/utilities.mjs && node tests/smoke.mjs && node tests/showcase.mjs && node tests/types.mjs",
+    "test": "npm run build && node tests/utilities.mjs && node tests/smoke.mjs && node tests/advanced-components.mjs && node tests/showcase.mjs && node tests/types.mjs",
     "test:visual": "node tests/visual-regression.mjs",
     "test:types": "tsc --noEmit --strict --lib DOM,ES2022 --moduleResolution bundler --module esnext tests/types.fixture.ts"
   },
@@ -29,8 +29,7 @@
   "files": [
     "dist",
     "src",
-    "types",
-    "playground"
+    "types"
   ],
   "type": "module",
   "repository": {
