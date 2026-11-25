@@ -58,7 +58,7 @@ COMPONENT-FIRST RULE (NON-NEGOTIABLE):
 Before writing UI markup, read AI/COMPONENT-CATALOG.md in full and map every interactive requirement to an exact custom Omorphia element. Inspect its source in src/js/ and styles in src/css/, then follow the matching index.html example. **Do not author raw <button>, <input>, <textarea>, <select>, <option>, or <details> controls in new application UI.** Use ui-button, ui-input, ui-textarea, ui-select/ui-option, ui-checkbox, ui-radio, ui-switch, ui-range, ui-date-picker, ui-time-picker, ui-menu-item, ui-drawer, ui-accordion/ui-accordion-item, and the existing overlay/navigation components. Do not guess tag names, attributes, methods, events, or slots. Do not make home-made Button, Modal, Dropdown, Tabs, Search, Toast, Sidebar, Drawer, Select, or DatePicker replacements. CSS classes such as .ui-card and .ui-alert are static content patterns, not interactive control substitutes. If no built-in match exists, mark it NO BUILT-IN COMPONENT and explain the exact gap before proposing custom UI. Before delivery, audit every custom tag and authored control against the catalog and source.
 
 OVERLAYS AND MOTION:
-Do not add borders or outlines to menus, dropdowns, popovers, command/search panels, tooltips, drawers, or date/time panels. Keep them opaque #0a0a0a. Reuse Omorphia's trigger-to-panel morph and accordion height transition. Respect prefers-reduced-motion.
+Do not add borders or outlines to menus, dropdowns, popovers, command/search panels, tooltips, drawers, or date/time panels. Keep them opaque and theme-aware through `--ui-overlay` and `--ui-overlay-text`. Reuse Omorphia's trigger-to-panel morph and accordion height transition. Respect prefers-reduced-motion.
 
 DESIGN CHOICE:
 For a new app, meaningful UI feature, or substantial redesign, first ask which direction to use unless I have already specified it: Modernimal (recommended), another named style from my Stylesheets repository, the existing project style, or a custom direction based on my references. Summarize the proposed design and ask what I want changed. Wait for approval before substantial implementation. For a focused bug fix or documentation-only task, preserve the existing style and do not ask unnecessary questions.
@@ -459,34 +459,15 @@ Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. 
 
 </details>
 
-<h2 align="center" id="overlay-effects">Overlay effects</h2>
+<h2 align="center" id="overlay-effects">Page bottom fade</h2>
 
-Add a non-interactive overlay layer to a page or a positioned container. Effects use the active <code>--ui-bg</code> token, so their fades follow light, dark, and auto themes.
-
-<details>
-  <summary><strong>Viewport bottom fade</strong></summary>
+Use one fixed gradient overlay to fade the entire page at the bottom of the viewport. It is not a text mask. It stays above page content, uses the active theme background, and never blocks clicks.
 
 ~~~html
-<!-- Add as a direct child of body for a viewport-wide bottom fade. -->
-<div class="ui-overlay ui-overlay--fade-bottom ui-overlay--fixed" aria-hidden="true"></div>
+<div class="ui-page-fade" aria-hidden="true"></div>
 ~~~
 
-</details>
-
-Available modifiers:
-
-| Class | Effect |
-|:--|:--|
-| <code>ui-overlay--fade-bottom</code> / <code>--fade-top</code> | Fade content into the page surface |
-| <code>ui-overlay--fade-left</code> / <code>--fade-right</code> | Fade horizontal content edges |
-| <code>ui-overlay--vignette</code> | Fade all four edges |
-| <code>ui-overlay--dim</code> | Dim the layer beneath a focused surface |
-| <code>ui-overlay--blur</code> | Add a restrained backdrop blur |
-| <code>ui-overlay--fixed</code> | Pin the effect to the viewport instead of its positioned parent |
-
-For local effects, put the overlay inside a <code>position: relative</code> container and omit <code>ui-overlay--fixed</code>. Use <code>aria-hidden="true"</code> because overlays are decorative and pointer-transparent.
-
-Customize the effect with <code>--ui-overlay-size</code> (default <code>160px</code>), <code>--ui-overlay-opacity</code> (a percentage, default <code>56%</code> for dim), and <code>--ui-overlay-blur</code> (default <code>6px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
+Place it once as a direct child of <code>body</code>, at the end of the document. Adjust its height with <code>--ui-page-fade-height</code> (default <code>144px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
 
 <h2 align="center" id="repository-map"><img src="assets/icons/terminal.svg" width="18" height="18" alt=""> Repository map</h2>
 
