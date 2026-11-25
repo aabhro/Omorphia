@@ -568,11 +568,11 @@ await t('nested floating surfaces inherit and refresh scoped themes', () => {
 });
 await t('overlay effects expose responsive themed utility classes', () => {
   const overlays = readFileSync('src/css/overlays.css', 'utf8');
-  for (const selector of ['.ui-overlay--fixed', '.ui-overlay--fade-bottom', '.ui-overlay--fade-top', '.ui-overlay--fade-left', '.ui-overlay--fade-right', '.ui-overlay--vignette', '.ui-overlay--dim', '.ui-overlay--blur']) {
-    assert.ok(overlays.includes(selector), selector);
-  }
-  assert.match(overlays, /linear-gradient\(to bottom,transparent,var\(--ui-bg\)\)/);
-  assert.match(overlays, /prefers-reduced-motion:reduce/);
+  assert.match(overlays, /\.ui-page-fade/);
+  assert.match(overlays, /position:fixed/);
+  assert.match(overlays, /linear-gradient\(to bottom,transparent 0%,var\(--ui-bg\) 100%\)/);
+  assert.match(overlays, /pointer-events:none/);
+  assert.match(overlays, /--ui-page-fade-height,144px/);
   const build = readFileSync('scripts/build.mjs', 'utf8');
   assert.match(build, /'advanced', 'overlays'/);
 });
