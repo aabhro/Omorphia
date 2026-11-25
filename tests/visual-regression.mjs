@@ -15,7 +15,9 @@ try{
  const date=page.locator('#date-demo');await date.evaluate(el=>el.show());
  const v=await date.evaluate(el=>{const p=el.popoverElement.panel,r=p.getBoundingClientRect(),s=getComputedStyle(p);return{position:s.position,pointerEvents:s.pointerEvents,width:Math.round(r.width),height:Math.round(r.height),left:Math.round(r.left),top:Math.round(r.top)};});
  assert.equal(v.position,'fixed');assert.equal(v.pointerEvents,'auto');assert.ok(v.width>0&&v.height>0);assert.ok(v.left>=0&&v.top>=0&&v.left+v.width<=1440&&v.top+v.height<=1000);
- await page.screenshot({path:resolve(output,'date-picker-open.png'),fullPage:true,animations:'disabled'});await date.evaluate(el=>el.hide());
+ await page.screenshot({path:resolve(output,'date-picker-open.png'),fullPage:true,animations:'disabled'});
+ await page.locator('[data-ui-floating-layer] .ui-calendar-day[data-date="2026-11-21"]').click();
+ assert.equal(await date.evaluate(el=>el.open),false,'selecting a date closes the calendar');
  await page.waitForFunction(()=>!!document.querySelector('#nested-popover-outer')?.panel&&!!document.querySelector('#nested-popover-inner')?.panel);
  await page.locator('#nested-popover-outer').evaluate(el=>{el.show();el.querySelector('#nested-popover-inner').show();});
  const n=await page.locator('#nested-popover-inner').evaluate(el=>{const r=el.panel.getBoundingClientRect();return{parented:!!el.panel._uiFloatParent,z:Number(el.panel.style.zIndex),w:Math.round(r.width),h:Math.round(r.height)};});
