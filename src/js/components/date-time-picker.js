@@ -12,6 +12,16 @@ const parseDate = (value) => {
   return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
 };
 const dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
+const yearMonth = (date) => date.getFullYear() * 12 + date.getMonth();
+const weekStartOf = (value) => {
+  const parsed = Number.parseInt(value ?? '0', 10);
+  return Number.isFinite(parsed) ? Math.min(6, Math.max(0, parsed)) : 0;
+};
+const shiftMonth = (date, amount) => {
+  const target = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  target.setDate(Math.min(date.getDate(), new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()));
+  return target;
+};
 
 export class UIDatePicker extends HTMLElement {
   static observedAttributes = ['value', 'min', 'max', 'disabled', 'placeholder', 'locale', 'week-start', 'placement', 'name', 'label'];
@@ -53,7 +63,15 @@ export class UIDatePicker extends HTMLElement {
     this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
-  attributeChangedCallback() { if (this.popoverElement) this.sync(); }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (!this.popoverElement) return;
+    if (name === 'value') {
+      const date = parseDate(newValue);
+      this._value = date ? isoDate(date) : '';
+      if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+    this.sync();
+  }
   get value() { return this._value || ''; }
   set value(value) {
     const valid = parseDate(String(value || ''));
@@ -63,7 +81,7 @@ export class UIDatePicker extends HTMLElement {
     if (this.calendar) this.sync();
   }
   get date() { return parseDate(this.value); }
-  focus(options) { this.input?.focus(options); }
+  focus(options) { this.trigger?.focus(options); }
   get open() { return !!this.popoverElement?.open; }
   show() { this.popoverElement?.show(); }
   hide() { this.popoverElement?.hide(); }
@@ -72,8 +90,8 @@ export class UIDatePicker extends HTMLElement {
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   isDisabled(date) {
     const iso = isoDate(date);
-    const min = this.getAttribute('min'), max = this.getAttribute('max');
-    return (min && iso < min) || (max && iso > max) || this.disabled;
+    const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+    return (min && iso < isoDate(min)) || (max && iso > isoDate(max)) || this.disabled;
   }
   sync() {
     const parsed = parseDate(this.getAttribute('value'));
@@ -83,6 +101,12 @@ export class UIDatePicker extends HTMLElement {
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute('locale')) : (this.getAttribute('placeholder') || 'Choose date');
     this.trigger.classList.toggle('is-placeholder', !this.value);
     this.trigger.setAttribute('aria-expanded', String(this.popoverElement.open));
+    const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+    const monthValue = yearMonth(this.view);
+    this.prev.disabled = this.disabled || !!(min && monthValue <= yearMonth(min));
+    this.next.disabled = this.disabled || !!(max && monthValue >= yearMonth(max));
+    this.clearButton.disabled = this.disabled || !this.value;
+    this.todayButton.disabled = this.disabled || this.isDisabled(new Date());
     this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderCalendar();
@@ -90,7 +114,7 @@ export class UIDatePicker extends HTMLElement {
   renderCalendar() {
     const year = this.view.getFullYear(), month = this.view.getMonth();
     this.monthLabel.textContent = new Intl.DateTimeFormat(this.getAttribute('locale') || undefined, { month: 'long', year: 'numeric' }).format(this.view);
-    const weekStart = Math.min(6, Math.max(0, Number(this.getAttribute('week-start') || 0)));
+    const weekStart = weekStartOf(this.getAttribute('week-start'));
     const base = new Date(year, month, 1);
     const offset = (base.getDay() - weekStart + 7) % 7;
     const start = new Date(year, month, 1 - offset);
@@ -116,31 +140,49 @@ export class UIDatePicker extends HTMLElement {
     }
     this.days.replaceChildren(...items);
   }
-  changeMonth(amount) { this.view = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1); this.renderCalendar(); }
+  changeMonth(amount) {
+    const target = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
+    const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+    if (min && yearMonth(target) < yearMonth(min)) return;
+    if (max && yearMonth(target) > yearMonth(max)) return;
+    this.view = target;
+    this.renderCalendar();
+    this.syncNavigation();
+  }
+  syncNavigation() {
+    if (!this.prev || !this.next) return;
+    const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+    const month = yearMonth(this.view);
+    this.prev.disabled = this.disabled || !!(min && month <= yearMonth(min));
+    this.next.disabled = this.disabled || !!(max && month >= yearMonth(max));
+  }
   focusCurrentDay() {
     const target = this.days.querySelector('[data-date="' + (this.value || isoDate(new Date())) + '"]:not(:disabled)') || this.days.querySelector('button:not(:disabled)');
-    target?.focus();
+    target?.focus({ preventScroll: true });
   }
   onDayKey(event) {
     const current = parseDate(event.target.dataset.date);
-    if (!current) return;
+    if (!current || this.disabled) return;
     let next = null;
     if (event.key === 'ArrowLeft') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 1);
     else if (event.key === 'ArrowRight') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
     else if (event.key === 'ArrowUp') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 7);
     else if (event.key === 'ArrowDown') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 7);
-    else if (event.key === 'Home') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - ((current.getDay() - Number(this.getAttribute('week-start') || 0) + 7) % 7));
-    else if (event.key === 'End') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + (6 - ((current.getDay() - Number(this.getAttribute('week-start') || 0) + 7) % 7)));
-    else if (event.key === 'PageUp') next = new Date(current.getFullYear(), current.getMonth() - (event.shiftKey ? 12 : 1), current.getDate());
-    else if (event.key === 'PageDown') next = new Date(current.getFullYear(), current.getMonth() + (event.shiftKey ? 12 : 1), current.getDate());
+    else if (event.key === 'Home') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - ((current.getDay() - weekStartOf(this.getAttribute('week-start')) + 7) % 7));
+    else if (event.key === 'End') next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + (6 - ((current.getDay() - weekStartOf(this.getAttribute('week-start')) + 7) % 7)));
+    else if (event.key === 'PageUp') next = shiftMonth(current, event.shiftKey ? -12 : -1);
+    else if (event.key === 'PageDown') next = shiftMonth(current, event.shiftKey ? 12 : 1);
     else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.select(event.target.dataset.date); return; }
     else return;
     event.preventDefault();
+    if (this.isDisabled(next)) return;
     if (next.getMonth() !== this.view.getMonth() || next.getFullYear() !== this.view.getFullYear()) this.view = new Date(next.getFullYear(), next.getMonth(), 1);
     this.renderCalendar();
-    this.days.querySelector('[data-date="' + isoDate(next) + '"]:not(:disabled)')?.focus();
+    this.syncNavigation();
+    this.days.querySelector('[data-date="' + isoDate(next) + '"]:not(:disabled)')?.focus({ preventScroll: true });
   }
   select(value) {
+    if (this.disabled) return;
     const date = parseDate(value);
     if (date && this.isDisabled(date)) return;
     this._value = date ? isoDate(date) : '';
