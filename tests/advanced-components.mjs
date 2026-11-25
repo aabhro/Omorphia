@@ -27,8 +27,12 @@ await test('file upload validates and preserves a valid file on invalid replacem
 await test('combobox handles local and abortable async results and creation',async()=>{
  const el=mount('<ui-combobox allow-create min-chars="1"></ui-combobox>').querySelector('ui-combobox');
  el.data=[{value:'prod',label:'Production'},{value:'stage',label:'Staging'}];await el.search('prod');assert.equal(el._results[0].value,'prod');
- let aborted=false;el.source=async(q,signal)=>{signal.addEventListener('abort',()=>aborted=true);return [{value:q,label:'Remote '+q}];};
- await el.search('edge');assert.equal(el._results[0].value,'edge');assert.equal(aborted,true);
+ let firstSignal=null;el.source=async(q,signal)=>{
+  if(q==='slow'){firstSignal=signal;await new Promise(resolve=>setTimeout(resolve,25));}
+  return [{value:q,label:'Remote '+q}];
+ };
+ const pending=el.search('slow');await el.search('edge');await pending;
+ assert.equal(el._results[0].value,'edge');assert.equal(firstSignal.aborted,true);
  let created='';el.addEventListener('ui-create',e=>created=e.detail.value);el.create('custom');assert.equal(created,'custom');assert.equal(el.hiddenValue.value,'custom');
 });
 await test('multi-select groups options and removes external chips',()=>{
@@ -48,7 +52,7 @@ await test('OTP input combines segmented values and disabled state',()=>{
 await test('rich text editor sanitizes markup and unsafe links',()=>{
  const el=mount('<ui-rich-text-editor name="body"></ui-rich-text-editor>').querySelector('ui-rich-text-editor');
  el.value='<p>Hello <strong>world</strong><script>alert(1)</script><a href="javascript:alert(1)" onclick="alert(2)">link</a></p>';
- assert.match(el.value,/<strong>world<\\/strong>/);assert.doesNotMatch(el.value,/script|javascript:|onclick/i);assert.equal(el.setLink('javascript:alert(1)'),false);
+ assert.match(el.value,/<strong>world<\/strong>/);assert.doesNotMatch(el.value,/script|javascript:|onclick/i);assert.equal(el.setLink('javascript:alert(1)'),false);
  assert.equal(el.hiddenValue.value,el.value);
 });
 await test('data table filters, sorts, paginates, hides columns and selects rows',()=>{
