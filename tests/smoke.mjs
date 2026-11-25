@@ -239,6 +239,8 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   picker.next.click();
   assert.match(picker.monthLabel.textContent, /December 2026/);
   assert.equal(picker.next.disabled, true, 'month navigation cannot move after max');
+  picker.prev.click();
+  assert.match(picker.monthLabel.textContent, /November 2026/);
   let changed;
   picker.addEventListener('ui-change', (event) => { changed = event.detail.value; });
   picker.days.querySelector('[data-date="2026-11-21"]').click();
