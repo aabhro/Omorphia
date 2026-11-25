@@ -308,6 +308,14 @@ await t('custom time picker supports 12-hour mode and hidden form value', () => 
   assert.equal(picker.value, '14:30');
   assert.equal(picker.input.value, '2:30 PM');
   assert.equal(picker.hiddenValue.name, 'time');
+  picker.setAttribute('value', '25:90');
+  assert.equal(picker.value, '', 'malformed initial values are not silently converted to 09:00');
+  assert.equal(picker.input.getAttribute('aria-invalid'), 'true');
+  assert.equal(picker.hiddenValue.name, '', 'invalid time values are excluded from form submission');
+  picker.setAttribute('value', '14:30');
+  picker.setAttribute('step', '7.5');
+  assert.ok(picker.minuteList.querySelector('[data-minute="5"]'), 'non-integer minute steps fall back to five minutes');
+  picker.setAttribute('step', '5');
   picker.minuteList.querySelector('[data-minute="35"]').click();
   assert.equal(picker.value, '14:35');
   picker.period.click();
@@ -511,6 +519,14 @@ await t('ui-search: local data, keyboard select, clear, async source states', as
   s.source = (q) => new Promise((r) => setTimeout(() => r([{ label: 'Remote ' + q }]), 20)); s.renderItem = (it) => { const n = d.createElement('b'); n.textContent = '★ ' + it.label; return n; };
   s.input.value = 'r'; s.input.dispatchEvent(new w.Event('input')); await tick(5); assert.ok(s.listEl.querySelector('.ui-spinner')); await tick(40); assert.equal(s.listEl.querySelector('.ui-option b').textContent, '★ Remote r');
   s.input.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); assert.equal(s.input.getAttribute('aria-expanded'), 'false');
+  s.source = (q) => new Promise((resolve) => setTimeout(() => resolve([{ label: q }]), q === 'slow' ? 35 : 5));
+  s.input.value = 'slow'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
+  s.input.value = 'fast'; s.input.dispatchEvent(new w.Event('input')); await tick(50);
+  assert.equal(s.listEl.querySelector('.ui-option-label')?.textContent, 'fast', 'late responses cannot overwrite newer search results');
+  s.input.value = 'pending'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
+  s.clear(); await tick(50);
+  assert.equal(s.panel.hasAttribute('data-open'), false, 'clearing a pending search keeps the panel closed');
+  assert.equal(s.listEl.textContent, '', 'cleared pending results do not reappear');
 });
 await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   const c = mount('<ui-sidebar id="sb" heading="App" collapsible><ui-sidebar-item icon="home" href="#h" active>Home</ui-sidebar-item><ui-sidebar-item icon="folder">Projects<ui-sidebar-item href="#a">Alpha</ui-sidebar-item><ui-sidebar-item href="#b">Beta</ui-sidebar-item></ui-sidebar-item></ui-sidebar>');
@@ -519,6 +535,16 @@ await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   sb.toggle(); assert.ok(sb.collapsed); assert.equal(sb.querySelector('a.ui-side-link').getAttribute('title'), 'Home'); sb.toggle(); assert.ok(!sb.collapsed);
   const link = sb.querySelector('a[href="#h"]'); link.focus(); sb.nav.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); assert.equal(d.activeElement, grp);
   d.body.insertAdjacentHTML('beforeend', '<button data-ui-toggle="#sb" id="tg">t</button>'); d.getElementById('tg').click(); assert.ok(sb.collapsed);
+  const originalMatchMedia = w.matchMedia;
+  w.matchMedia = () => ({ matches: true, addEventListener() {}, removeEventListener() {} });
+  sb.setAttribute('breakpoint', '900');
+  sb.openMobile();
+  assert.equal(d.querySelectorAll('.ui-sidebar-scrim').length, 1);
+  sb.setAttribute('breakpoint', '1000');
+  assert.equal(d.querySelectorAll('.ui-sidebar-scrim').length, 1, 'reinitializing an open mobile sidebar recreates its scrim');
+  sb.remove();
+  assert.equal(d.querySelectorAll('.ui-sidebar-scrim').length, 0, 'disconnecting a sidebar removes its scrim');
+  w.matchMedia = originalMatchMedia;
 });
 await t('checked choice indicators use a visible accent fill', () => {
   const forms = readFileSync('src/css/forms.css', 'utf8');
