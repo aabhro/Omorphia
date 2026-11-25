@@ -111,7 +111,7 @@ export class UIDatePicker extends HTMLElement {
     this.next.disabled = this.disabled || !!(max && monthValue >= yearMonth(max));
     this.clearButton.disabled = this.disabled || !this.value;
     this.todayButton.disabled = this.disabled || this.isDisabled(new Date());
-    this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
+    this.hiddenValue.name = this.disabled || this._invalidValue ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderCalendar();
   }
@@ -202,15 +202,18 @@ export class UIDatePicker extends HTMLElement {
 define('ui-date-picker', UIDatePicker);
 
 const parseTime = (value) => {
-  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value || '');
-  return match ? { hour: Number(match[1]), minute: Number(match[2]) } : { hour: 9, minute: 0 };
+  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(value || ''));
+  return match ? { hour: Number(match[1]), minute: Number(match[2]) } : null;
 };
+
+const defaultTime = () => ({ hour: 9, minute: 0 });
 
 export class UITimePicker extends HTMLElement {
   static observedAttributes = ['value', 'disabled', 'placeholder', 'format', 'step', 'placement', 'label', 'name'];
   connectedCallback() {
     if (this.popoverElement) return;
-    this._time = parseTime(this.getAttribute('value'));
+    this._time = parseTime(this.getAttribute('value')) || defaultTime();
+    this._invalidValue = !!this.getAttribute('value') && !parseTime(this.getAttribute('value'));
     this.input = h('input', { class: 'ui-time-input', id: uid('ui-time-input'), type: 'text', inputmode: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': this.getAttribute('label') || 'Time', placeholder: this.getAttribute('placeholder') || (this.is12Hour ? 'h:mm AM' : 'HH:mm') });
     this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', 'aria-haspopup': 'dialog', 'aria-label': 'Open time options' }, h('ui-icon', { name: 'clock' }));
     this.field = h('div', { class: 'ui-time-field', slot: 'trigger' }, this.input, this.trigger);
@@ -238,9 +241,27 @@ export class UITimePicker extends HTMLElement {
     this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
-  attributeChangedCallback() { if (this.popoverElement) this.sync(); }
-  get value() { const time = this._time || parseTime(this.getAttribute('value')); return pad(time.hour) + ':' + pad(time.minute); }
-  set value(value) { this._time = parseTime(value); this.setAttribute('value', this.value); if (this.popoverElement) this.sync(); }
+  attributeChangedCallback() {
+    if (!this.popoverElement) return;
+    const parsed = parseTime(this.getAttribute('value'));
+    this._invalidValue = !!this.getAttribute('value') && !parsed;
+    if (parsed) this._time = parsed;
+    else if (!this._invalidValue) this._time = defaultTime();
+    this.sync();
+  }
+  get value() {
+    if (this._invalidValue) return '';
+    const time = this._time || defaultTime();
+    return pad(time.hour) + ':' + pad(time.minute);
+  }
+  set value(value) {
+    const raw = String(value ?? '');
+    const parsed = parseTime(raw);
+    this._invalidValue = raw.trim() !== '' && !parsed;
+    this._time = parsed || defaultTime();
+    this.setAttribute('value', this._invalidValue ? raw : this.value);
+    if (this.popoverElement) this.sync();
+  }
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(value) { this.toggleAttribute('disabled', !!value); }
   focus(options) { this.input?.focus(options); }
@@ -250,14 +271,20 @@ export class UITimePicker extends HTMLElement {
   toggle() { this.popoverElement?.toggle(); }
   get is12Hour() { return this.getAttribute('format') === '12h'; }
   sync() {
-    if (this.hasAttribute('value')) this._time = parseTime(this.getAttribute('value'));
+    if (this.hasAttribute('value')) {
+      const parsed = parseTime(this.getAttribute('value'));
+      this._invalidValue = !!this.getAttribute('value') && !parsed;
+      if (parsed) this._time = parsed;
+    }
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
     this.trigger.setAttribute('aria-expanded', String(this.popoverElement.open));
     this.input.disabled = this.disabled;
-    this.input.setAttribute('aria-invalid', 'false');
+    this.input.setAttribute('aria-invalid', String(!!this._invalidValue));
     const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
-    this.input.value = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ':' + pad(this._time.minute) + (this.is12Hour ? (hour < 12 ? ' AM' : ' PM') : '');
+    this.input.value = this._invalidValue
+      ? (this.getAttribute('value') || '')
+      : (this.is12Hour ? String(displayHour) : pad(displayHour)) + ':' + pad(this._time.minute) + (this.is12Hour ? (hour < 12 ? ' AM' : ' PM') : '');
     this.period.hidden = !this.is12Hour;
     this.period.textContent = hour < 12 ? 'AM' : 'PM';
     this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
@@ -266,7 +293,10 @@ export class UITimePicker extends HTMLElement {
   }
   renderOptions() {
     const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
-    const step = Math.min(30, Math.max(1, Number(this.getAttribute('step') || 5)));
+    const requestedStep = Number(this.getAttribute('step') || 5);
+    const step = Number.isInteger(requestedStep) && requestedStep >= 1 && requestedStep <= 30
+      ? requestedStep
+      : 5;
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
     this.hourList.replaceChildren(...hours.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-hour': String(this.is12Hour ? n % 12 : n), 'aria-selected': String(displayHour === n), tabindex: displayHour === n ? '0' : '-1' }, this.is12Hour ? String(n) : pad(n))));
     const minutes = [];
@@ -286,15 +316,23 @@ export class UITimePicker extends HTMLElement {
   handleTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
     this.input.setAttribute('aria-invalid', String(!parsed));
-    if (!parsed) return;
+    if (!parsed) {
+      this._invalidValue = true;
+      this.hiddenValue.value = '';
+      this.hiddenValue.name = '';
+      return;
+    }
+    this._invalidValue = false;
     this._time = parsed;
+    this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderOptions();
     emit(this, 'ui-input', { value: this.value });
   }
   commitTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
-    if (!parsed) { this.sync(); return; }
+    if (!parsed) { this._invalidValue = false; this.sync(); return; }
+    this._invalidValue = false;
     this._time = parsed;
     this.setAttribute('value', this.value);
     this.sync();
@@ -331,6 +369,7 @@ export class UITimePicker extends HTMLElement {
     this.commit(part);
   }
   commit(focusPart = 'hour') {
+    this._invalidValue = false;
     this.setAttribute('value', this.value);
     this.sync();
     this.focusTime(focusPart);
