@@ -30,7 +30,12 @@ export class UISearch extends HTMLElement {
     }
     this.sync();
   }
-  disconnectedCallback() { this.closePanel(); }
+  disconnectedCallback() {
+    this._q?.cancel?.();
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
+    this.closePanel();
+  }
   attributeChangedCallback() { if (this.input) this.sync(); }
   sync() {
     this.input.placeholder = this.getAttribute('placeholder') || 'Search…'; this.input.setAttribute('aria-label', this.getAttribute('label') || this.getAttribute('placeholder') || 'Search');
@@ -39,16 +44,32 @@ export class UISearch extends HTMLElement {
     this.clearBtn.hidden = !this.input.value; this.spin.hidden = !bool(this, 'loading');
   }
   get value() { return this.input?.value ?? ''; } set value(v) { this.input.value = v ?? ''; this.clearBtn.hidden = !v; }
-  clear() { this.value = ''; this.items = []; this.closePanel(); emit(this, 'ui-clear'); emit(this, 'ui-input', { value: '' }); if (bool(this, 'autocomplete')) this.query(''); }
-  onInput() { this.clearBtn.hidden = !this.input.value; emit(this, 'ui-input', { value: this.input.value }); if (bool(this, 'autocomplete')) this._q(this.input.value); }
+  clear() {
+    this._q?.cancel?.();
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
+    this.value = '';
+    this.items = [];
+    this.closePanel();
+    emit(this, 'ui-clear');
+    emit(this, 'ui-input', { value: '' });
+    if (bool(this, 'autocomplete')) this.query('');
+  }
+  onInput() {
+    this.clearBtn.hidden = !this.input.value;
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
+    emit(this, 'ui-input', { value: this.input.value });
+    if (bool(this, 'autocomplete')) this._q(this.input.value);
+  }
   async query(q) {
-    const min = +(this.getAttribute('min-chars') ?? 1), max = +(this.getAttribute('max') ?? 8); this._abort?.abort();
+    const requestId = (this._queryId = (this._queryId || 0) + 1);\n    const min = +(this.getAttribute('min-chars') ?? 1), max = +(this.getAttribute('max') ?? 8); this._abort?.abort();
     if (q.trim().length < min) { this.items = this.suggestions.map(norm).slice(0, max); this.title = 'Suggestions'; this.state = this.items.length ? 'ready' : 'idle'; return this.renderPanel(); }
     this.title = '';
     if (this.source) {
       const ac = (this._abort = new AbortController()); this.state = 'loading'; this.renderPanel();
-      try { const r = await this.source(q, ac.signal); if (ac.signal.aborted) return; this.items = (r || []).map(norm).slice(0, max); this.state = this.items.length ? 'ready' : 'empty'; }
-      catch (err) { if (ac.signal.aborted) return; this.items = []; this.state = 'error'; }
+      try { const r = await this.source(q, ac.signal); if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return; this.items = (r || []).map(norm).slice(0, max); this.state = this.items.length ? 'ready' : 'empty'; }
+      catch (err) { if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return; this.items = []; this.state = 'error'; }
     } else {
       this.items = this.data.map(norm).map((it) => ({ it, m: fuzzy(it.label, q) || fuzzy([it.description, ...(it.keywords || [])].filter(Boolean).join(' '), q) && { score: 0, ranges: [] } })).filter((x) => x.m).sort((a, b) => b.m.score - a.m.score).slice(0, max).map((x) => x.it);
       this.state = this.items.length ? 'ready' : 'empty';
