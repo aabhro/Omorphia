@@ -5,7 +5,7 @@ var LUCIDE_VERSION = "1.77.0";
 var ICONS = { "chevron-down": '<path d="m6 9 6 6 6-6" />', "chevron-up": '<path d="m18 15-6-6-6 6" />', "chevron-left": '<path d="m15 18-6-6 6-6" />', "chevron-right": '<path d="m9 18 6-6-6-6" />', "chevrons-left": '<path d="m11 17-5-5 5-5" /><path d="m18 17-5-5 5-5" />', "chevrons-right": '<path d="m6 17 5-5-5-5" /><path d="m13 17 5-5-5-5" />', "x": '<path d="M18 6 6 18" /><path d="m6 6 12 12" />', "check": '<path d="M20 6 9 17l-5-5" />', "search": '<path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" />', "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />', "house": '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />', "settings": '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" />', "user": '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />', "users": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" />', "folder": '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />', "folder-open": '<path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" />', "file-text": '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" />', "plus": '<path d="M5 12h14" /><path d="M12 5v14" />', "minus": '<path d="M5 12h14" />', "trash-2": '<path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />', "pencil": '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" />', "bell": '<path d="M10.268 21a2 2 0 0 0 3.464 0" /><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />', "mail": '<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /><rect x="2" y="4" width="20" height="16" rx="2" />', "info": '<circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />', "circle-alert": '<circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />', "triangle-alert": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" />', "circle-check": '<circle cx="12" cy="12" r="10" /><path d="m16 9-5.5 5.5L8 12" />', "circle-x": '<circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" />', "loader-circle": '<path d="M21 12a9 9 0 1 1-6.219-8.56" />', "ellipsis": '<circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" />', "ellipsis-vertical": '<circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" />', "panel-left": '<rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" />', "panel-left-close": '<rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m16 15-3-3 3-3" />', "panel-left-open": '<rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m14 9 3 3-3 3" />', "menu": '<path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />', "sun": '<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />', "moon": '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />', "command": '<path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />', "arrow-right": '<path d="M5 12h14" /><path d="m12 5 7 7-7 7" />', "arrow-up-right": '<path d="M7 7h10v10" /><path d="M7 17 17 7" />', "external-link": '<path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />', "download": '<path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" />', "upload": '<path d="M12 3v12" /><path d="m17 8-5-5-5 5" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />', "log-out": '<path d="m16 17 5-5-5-5" /><path d="M21 12H9" /><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />', "star": '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />', "heart": '<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />', "calendar": '<path d="M8 2v3" /><path d="M16 2v3" /><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" />', "clock": '<circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />', "layout-dashboard": '<rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />', "chart-column": '<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" />', "shield": '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />', "lock": '<rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />', "eye": '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" />', "eye-off": '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" />', "link": '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />', "terminal": '<path d="M12 19h8" /><path d="m4 17 6-6-6-6" />', "palette": '<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z" /><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />', "sparkles": '<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /><path d="M20 2v4" /><path d="M22 4h-4" /><circle cx="4" cy="20" r="2" />', "circle-help": '<circle cx="12" cy="12" r="10" /><path d="M9 9.5a3 2.5 0 016 0c0 2-2 2-3 3.5" /><path d="M12 17h.01" />', "corner-down-left": '<path d="M20 4v7a4 4 0 0 1-4 4H4" /><path d="m9 10-5 5 5 5" />', "arrow-up": '<path d="m5 12 7-7 7 7" /><path d="M12 19V5" />', "arrow-down": '<path d="M12 5v14" /><path d="m19 12-7 7-7-7" />', "bookmark": '<path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z" />', "inbox": '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />', "send": '<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /><path d="m21.854 2.147-10.94 10.939" />', "funnel": '<path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z" />', "refresh-cw": '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" />', "save": '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" /><path d="M7 3v4a1 1 0 0 0 1 1h7" />', "git-branch": '<path d="M15 6a9 9 0 0 0-9 9V3" /><circle cx="18" cy="6" r="3" /><circle cx="6" cy="18" r="3" />', "globe": '<circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" />', "layers": '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />', "package": '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><polyline points="3.29 7 12 12 20.71 7" /><path d="m7.5 4.27 9 5.15" />', "book-open": '<path d="M12 5v16" /><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" />', "rocket": '<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09" /><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05" />', "zap": '<path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" />', "type": '<path d="M12 4v16" /><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2" /><path d="M9 20h6" />' };
 var ALIASES = { "home": "house", "alert-circle": "circle-alert", "alert-triangle": "triangle-alert", "check-circle": "circle-check", "x-circle": "circle-x", "loader": "loader-circle", "more-horizontal": "ellipsis", "more-vertical": "ellipsis-vertical", "trash": "trash-2", "edit": "pencil", "filter": "funnel", "help": "circle-help", "help-circle": "circle-help", "sidebar": "panel-left" };
 
-// src/js/core.js
+// src/js/core/dom.js
 var _n = 0;
 var uid = (p = "ui") => `${p}-${++_n}`;
 var define = (name, ctor) => {
@@ -30,6 +30,8 @@ function h(tag, attrs = {}, ...kids) {
   for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
   return el;
 }
+
+// src/js/core/search.js
 function fuzzy(text, query) {
   const t = text.toLowerCase(), q = query.toLowerCase().trim();
   if (!q) return { score: 0, ranges: [] };
@@ -63,6 +65,8 @@ function highlight(text, ranges = []) {
   if (pos < text.length) frag.append(text.slice(pos));
   return frag;
 }
+
+// src/js/core/floating.js
 var hasPopover = () => typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
 var floatLayer = null;
 var floatSequence = 0;
@@ -101,6 +105,11 @@ function watchFloatThemes() {
   if (floatThemeListenerInstalled || typeof document === "undefined") return;
   document.addEventListener("ui-theme", syncFloatThemes);
   floatThemeListenerInstalled = true;
+}
+function unwatchFloatThemes() {
+  if (!floatThemeListenerInstalled || activeFloats.size) return;
+  document.removeEventListener("ui-theme", syncFloatThemes);
+  floatThemeListenerInstalled = false;
 }
 function getFloatLayer() {
   if (floatLayer?.isConnected) return floatLayer;
@@ -181,6 +190,7 @@ function restoreFloat(el) {
   el._uiFloatSavedZ = null;
   el._uiFloatParent = null;
   el._uiFloatMode = null;
+  unwatchFloatThemes();
 }
 function floatEl(el) {
   el.classList.add("ui-float");
@@ -199,7 +209,24 @@ function showFloat(el) {
     }
   }
 }
+function closeFloatChildren(parent) {
+  const depth = (el) => {
+    let n = 0;
+    for (let p = el._uiFloatParent; p; p = p._uiFloatParent) n++;
+    return n;
+  };
+  const children = [...activeFloats].filter((el) => {
+    for (let p = el._uiFloatParent; p; p = p._uiFloatParent) if (p === parent) return true;
+    return false;
+  }).sort((x, y) => depth(y) - depth(x));
+  for (const child of children) {
+    if (typeof child._uiFloatCloseFromParent === "function") child._uiFloatCloseFromParent();
+    else hideFloat(child);
+  }
+}
 function hideFloat(el) {
+  if (!el) return;
+  closeFloatChildren(el);
   el.removeAttribute("data-open");
   if (el._uiFloatMode === "native-portal") {
     try {
@@ -297,10 +324,9 @@ function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
     if (!floating.contains(e.target) && !anchor.contains(e.target) && !insideChildFloat(e.target)) onClose("outside");
   };
   const key = (e) => {
-    if (e.key === "Escape") {
-      e.stopPropagation();
-      onClose("escape");
-    }
+    if (e.key !== "Escape" || insideChildFloat(e.target)) return;
+    e.stopPropagation();
+    onClose("escape");
   };
   let frame = 0;
   const move = () => {
@@ -322,12 +348,22 @@ function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
     window.removeEventListener("scroll", move, true);
   };
 }
+
+// src/js/core/timing.js
 var debounce = (fn, ms) => {
-  let t;
-  return (...a) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn(...a), ms);
+  let timer = null;
+  const run = (...args) => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      fn(...args);
+    }, ms);
   };
+  run.cancel = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+  };
+  return run;
 };
 
 // src/js/icons.js
@@ -690,6 +726,7 @@ var UIPopover = class extends HTMLElement {
       this.panel = floatEl(h("div", { class: this.constructor.panelClass, id: uid("ui-pop"), role: this.constructor.panelRole }));
       this.panel.append(...kids.filter((n) => n !== this.trigger));
       this.append(this.panel);
+      this.panel._uiFloatCloseFromParent = () => this.closeFromParent();
       this.trigger?.addEventListener("click", (e) => {
         e.preventDefault();
         this.toggle();
@@ -704,7 +741,7 @@ var UIPopover = class extends HTMLElement {
     }
   }
   disconnectedCallback() {
-    this.hide();
+    this.closeFromParent();
   }
   get open() {
     return !!(this.panel?.hasAttribute("data-open") && !this.panel?.hasAttribute("data-closing"));
@@ -733,6 +770,7 @@ var UIPopover = class extends HTMLElement {
   }
   hide() {
     if (!this.open) return;
+    closeFloatChildren(this.panel);
     this._off?.();
     this._off = null;
     this.focusTarget?.setAttribute("aria-expanded", "false");
@@ -756,10 +794,36 @@ var UIPopover = class extends HTMLElement {
     }
     emit(this, "ui-close");
   }
+  closeFromParent() {
+    if (!this.panel) return;
+    const wasOpen = this.panel.hasAttribute("data-open") || !!this.panel._uiFloatMode;
+    if (!wasOpen) {
+      this._off?.();
+      this._off = null;
+      return;
+    }
+    this._off?.();
+    this._off = null;
+    this._morphToken = (this._morphToken || 0) + 1;
+    this._morphAnimation?.cancel?.();
+    this._morphAnimation = null;
+    this.focusTarget?.setAttribute("aria-expanded", "false");
+    this.panel.removeAttribute("data-closing");
+    hideFloat(this.panel);
+    emit(this, "ui-close", { reason: "parent" });
+  }
   toggle() {
     this.open ? this.hide() : this.show();
   }
-  triggerKey() {
+  triggerKey(e) {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    const before = this.ownerDocument.activeElement;
+    this.show();
+    if (this.ownerDocument.activeElement === before) {
+      const items = this.panel.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])');
+      (e.key === "ArrowUp" ? items[items.length - 1] : items[0])?.focus({ preventScroll: true });
+    }
   }
   panelKey(e) {
     if (e.key === "Tab") this.hide();
@@ -1326,7 +1390,15 @@ define("ui-command", class extends HTMLElement {
 var shortcutLabel = () => isMac() ? "\u2318 + Shift + K" : "Ctrl + Shift + K";
 
 // src/js/components/search.js
-var norm = (x) => typeof x === "string" ? { label: x, value: x } : { value: x.label, ...x };
+var norm = (item) => {
+  if (typeof item === "string") return { label: item, value: item };
+  if (!item || typeof item !== "object") {
+    const label2 = String(item ?? "");
+    return { label: label2, value: item };
+  }
+  const label = String(item.label ?? item.value ?? "");
+  return { ...item, label, value: item.value ?? label };
+};
 var UISearch = class extends HTMLElement {
   static observedAttributes = ["placeholder", "value", "loading", "name"];
   data = [];
@@ -1367,6 +1439,9 @@ var UISearch = class extends HTMLElement {
     this.sync();
   }
   disconnectedCallback() {
+    this._q?.cancel?.();
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
     this.closePanel();
   }
   attributeChangedCallback() {
@@ -1388,6 +1463,9 @@ var UISearch = class extends HTMLElement {
     this.clearBtn.hidden = !v;
   }
   clear() {
+    this._q?.cancel?.();
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
     this.value = "";
     this.items = [];
     this.closePanel();
@@ -1397,11 +1475,17 @@ var UISearch = class extends HTMLElement {
   }
   onInput() {
     this.clearBtn.hidden = !this.input.value;
+    this._abort?.abort();
+    this._queryId = (this._queryId || 0) + 1;
     emit(this, "ui-input", { value: this.input.value });
     if (bool(this, "autocomplete")) this._q(this.input.value);
   }
   async query(q) {
-    const min = +(this.getAttribute("min-chars") ?? 1), max = +(this.getAttribute("max") ?? 8);
+    const requestId = this._queryId = (this._queryId || 0) + 1;
+    const rawMin = Number(this.getAttribute("min-chars") ?? 1);
+    const rawMax = Number(this.getAttribute("max") ?? 8);
+    const min = Number.isInteger(rawMin) && rawMin >= 0 ? rawMin : 1;
+    const max = Number.isInteger(rawMax) && rawMax > 0 ? rawMax : 8;
     this._abort?.abort();
     if (q.trim().length < min) {
       this.items = this.suggestions.map(norm).slice(0, max);
@@ -1415,12 +1499,13 @@ var UISearch = class extends HTMLElement {
       this.state = "loading";
       this.renderPanel();
       try {
-        const r = await this.source(q, ac.signal);
-        if (ac.signal.aborted) return;
-        this.items = (r || []).map(norm).slice(0, max);
+        const results = await this.source(q, ac.signal);
+        if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return;
+        if (!Array.isArray(results)) throw new TypeError("Search source must return an array");
+        this.items = results.map(norm).slice(0, max);
         this.state = this.items.length ? "ready" : "empty";
-      } catch (err) {
-        if (ac.signal.aborted) return;
+      } catch (error) {
+        if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return;
         this.items = [];
         this.state = "error";
       }
@@ -1608,6 +1693,10 @@ var UISidebar = class extends HTMLElement {
     this._mq?.removeEventListener("change", this._mqh);
     document.removeEventListener("keydown", this._esc);
     this.scrim?.remove();
+    this.scrim = null;
+    this._mq = null;
+    this._mqh = null;
+    this._esc = null;
   }
   attributeChangedCallback(n) {
     if (!this.nav) return;
@@ -2308,35 +2397,72 @@ var UISelect = class extends HTMLElement {
 };
 define("ui-select", UISelect);
 
-// src/js/components/date-time-picker.js
+// src/js/core/date.js
 var pad = (value) => String(value).padStart(2, "0");
 var isoDate = (date) => date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
-var parseDate = (value) => {
-  if (!value) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const date = /* @__PURE__ */ new Date(0);
-  date.setHours(0, 0, 0, 0);
-  date.setFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
-};
+function parseDate(value) {
+  if (value == null || value === "") return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+  if (!m) return null;
+  const d = /* @__PURE__ */ new Date(0);
+  d.setHours(0, 0, 0, 0);
+  d.setFullYear(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return d.getFullYear() === Number(m[1]) && d.getMonth() === Number(m[2]) - 1 && d.getDate() === Number(m[3]) ? d : null;
+}
 var dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || void 0, { year: "numeric", month: "short", day: "numeric" }).format(date);
 var yearMonth = (date) => date.getFullYear() * 12 + date.getMonth();
-var weekStartOf = (value) => {
-  const parsed = Number.parseInt(value ?? "0", 10);
-  return Number.isFinite(parsed) ? Math.min(6, Math.max(0, parsed)) : 0;
-};
-var shiftMonth = (date, amount) => {
-  const target = new Date(date.getFullYear(), date.getMonth() + amount, 1);
-  target.setDate(Math.min(date.getDate(), new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()));
-  return target;
-};
+function weekStartOf(value) {
+  const n = Number.parseInt(value ?? "0", 10);
+  return Number.isFinite(n) ? Math.min(6, Math.max(0, n)) : 0;
+}
+function shiftMonth(date, amount) {
+  const d = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  d.setDate(Math.min(date.getDate(), new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()));
+  return d;
+}
+function isDateWithinBounds(date, minValue = "", maxValue = "") {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return false;
+  const min = parseDate(minValue), max = parseDate(maxValue);
+  if (min && max && min > max) return false;
+  const value = isoDate(date);
+  return (!min || value >= isoDate(min)) && (!max || value <= isoDate(max));
+}
+function clampDateToBounds(date, minValue = "", maxValue = "") {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return null;
+  const min = parseDate(minValue), max = parseDate(maxValue);
+  if (min && max && min > max) return null;
+  if (min && isoDate(date) < isoDate(min)) return min;
+  if (max && isoDate(date) > isoDate(max)) return max;
+  return date;
+}
+
+// src/js/core/time.js
+function parseTime(value) {
+  const m = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(value || ""));
+  return m ? { hour: Number(m[1]), minute: Number(m[2]) } : null;
+}
+var defaultTime = () => ({ hour: 9, minute: 0 });
+function parseTypedTime(raw) {
+  const v = String(raw || "").trim();
+  let m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(v);
+  if (m) return { hour: Number(m[1]), minute: Number(m[2]) };
+  m = /^(0?[1-9]|1[0-2]):([0-5]\d)\s*(AM|PM)$/i.exec(v);
+  return m ? { hour: Number(m[1]) % 12 + (m[3].toUpperCase() === "PM" ? 12 : 0), minute: Number(m[2]) } : null;
+}
+function normalizeTimeStep(value) {
+  const n = Number(value || 5);
+  return Number.isInteger(n) && n >= 1 && n <= 30 ? n : 5;
+}
+
+// src/js/components/date-time-picker.js
 var UIDatePicker = class extends HTMLElement {
   static observedAttributes = ["value", "min", "max", "disabled", "placeholder", "locale", "week-start", "placement", "name", "label"];
   connectedCallback() {
     if (this.popoverElement) return;
-    this._value = parseDate(this.getAttribute("value")) ? this.getAttribute("value") : "";
+    const initialValue = parseDate(this.getAttribute("value"));
+    this._value = isDateWithinBounds(initialValue, this.getAttribute("min"), this.getAttribute("max")) ? isoDate(initialValue) : "";
     const initial = parseDate(this._value) || /* @__PURE__ */ new Date();
+    this._activeDate = this._value || (isDateWithinBounds(initial, this.getAttribute("min"), this.getAttribute("max")) ? isoDate(initial) : "");
     this.view = new Date(initial.getFullYear(), initial.getMonth(), 1);
     this.trigger = h("button", { class: "ui-date-trigger", type: "button", slot: "trigger", "aria-haspopup": "dialog", "aria-label": this.getAttribute("label") || "Choose date" });
     this.valueLabel = h("span", { class: "ui-date-value" });
@@ -2349,7 +2475,7 @@ var UIDatePicker = class extends HTMLElement {
     this.next = h("button", { class: "ui-calendar-nav", type: "button", "aria-label": "Next month" }, h("ui-icon", { name: "chevron-right" }));
     this.header.append(this.prev, this.monthLabel, this.next);
     this.weekdays = h("div", { class: "ui-calendar-weekdays", role: "row" });
-    this.days = h("div", { class: "ui-calendar-days", role: "grid", "aria-label": "Calendar days" });
+    this.days = h("div", { class: "ui-calendar-days", role: "grid", "aria-label": "Calendar days", "aria-roledescription": "calendar" });
     this.footer = h("div", { class: "ui-calendar-footer" });
     this.clearButton = h("button", { class: "ui-calendar-text-action", type: "button", text: "Clear" });
     this.todayButton = h("button", { class: "ui-calendar-text-action", type: "button", text: "Today" });
@@ -2375,12 +2501,22 @@ var UIDatePicker = class extends HTMLElement {
     if (!this.popoverElement) return;
     if (name === "value") {
       const date = parseDate(newValue);
-      this._value = date ? isoDate(date) : "";
-      if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+      this._value = isDateWithinBounds(date, this.getAttribute("min"), this.getAttribute("max")) ? isoDate(date) : "";
+      this._activeDate = this._value;
+      if (date && this._value) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
     } else if (name === "min" || name === "max") {
       const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
-      if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
-      if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
+      if (min && max && min > max) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+      else {
+        if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+        if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
+      }
+      const current = parseDate(this._value);
+      if (current && !isDateWithinBounds(current, this.getAttribute("min"), this.getAttribute("max"))) {
+        this._value = "";
+        this._activeDate = "";
+        this.setAttribute("value", "");
+      }
     }
     this.sync();
   }
@@ -2388,8 +2524,10 @@ var UIDatePicker = class extends HTMLElement {
     return this._value || "";
   }
   set value(value) {
-    const valid = parseDate(String(value || ""));
+    const parsed = parseDate(String(value || ""));
+    const valid = isDateWithinBounds(parsed, this.getAttribute("min"), this.getAttribute("max")) ? parsed : null;
     this._value = valid ? isoDate(valid) : "";
+    this._activeDate = this._value;
     if (valid) this.view = new Date(valid.getFullYear(), valid.getMonth(), 1);
     this.setAttribute("value", this._value);
     if (this.calendar) this.sync();
@@ -2421,11 +2559,9 @@ var UIDatePicker = class extends HTMLElement {
   isDisabled(date) {
     const iso = isoDate(date);
     const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
-    return min && iso < isoDate(min) || max && iso > isoDate(max) || this.disabled;
+    return this.disabled || !isDateWithinBounds(date, min ? isoDate(min) : "", max ? isoDate(max) : "");
   }
   sync() {
-    const parsed = parseDate(this.getAttribute("value"));
-    if (this.hasAttribute("value")) this._value = parsed ? isoDate(parsed) : "";
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute("locale")) : this.getAttribute("placeholder") || "Choose date";
@@ -2453,9 +2589,11 @@ var UIDatePicker = class extends HTMLElement {
       const day = new Date(2024, 0, 7 + (weekStart + i) % 7);
       return h("span", { role: "columnheader", text: formatter.format(day) });
     }));
-    const items = [];
-    for (let i = 0; i < 42; i++) {
-      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    const dates = Array.from({ length: 42 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+    const enabledDates = dates.filter((date) => !this.isDisabled(date));
+    const active = enabledDates.find((date) => isoDate(date) === this._activeDate) || enabledDates.find((date) => isoDate(date) === this.value) || enabledDates.find((date) => isoDate(date) === isoDate(/* @__PURE__ */ new Date())) || enabledDates[0];
+    this._activeDate = active ? isoDate(active) : "";
+    const items = dates.map((date) => {
       const iso = isoDate(date), outside = date.getMonth() !== month, selected = iso === this.value;
       const button = h("button", {
         class: "ui-calendar-day" + (outside ? " is-outside" : "") + (selected ? " is-selected" : ""),
@@ -2466,16 +2604,17 @@ var UIDatePicker = class extends HTMLElement {
         "aria-selected": String(selected),
         "aria-current": iso === isoDate(/* @__PURE__ */ new Date()) ? "date" : null,
         disabled: this.isDisabled(date),
-        tabindex: selected ? "0" : "-1"
+        tabindex: iso === this._activeDate ? "0" : "-1"
       }, String(date.getDate()));
-      items.push(button);
-    }
+      return button;
+    });
     this.days.replaceChildren(...items);
   }
   changeMonth(amount) {
     if (this.disabled) return;
     const target = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
     const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+    if (min && max && min > max) return;
     if (min && yearMonth(target) < yearMonth(min)) return;
     if (max && yearMonth(target) > yearMonth(max)) return;
     this.view = target;
@@ -2485,12 +2624,12 @@ var UIDatePicker = class extends HTMLElement {
   syncNavigation() {
     if (!this.prev || !this.next) return;
     const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
-    const month = yearMonth(this.view);
-    this.prev.disabled = this.disabled || !!(min && month <= yearMonth(min));
-    this.next.disabled = this.disabled || !!(max && month >= yearMonth(max));
+    const month = yearMonth(this.view), invalidRange = !!(min && max && min > max);
+    this.prev.disabled = this.disabled || invalidRange || !!(min && month <= yearMonth(min));
+    this.next.disabled = this.disabled || invalidRange || !!(max && month >= yearMonth(max));
   }
   focusCurrentDay() {
-    const target = this.days.querySelector('[data-date="' + (this.value || isoDate(/* @__PURE__ */ new Date())) + '"]:not(:disabled)') || this.days.querySelector("button:not(:disabled)");
+    const target = this.days.querySelector('[data-date="' + this._activeDate + '"]:not(:disabled)') || this.days.querySelector("button:not(:disabled)");
     target?.focus({ preventScroll: true });
   }
   onDayKey(event) {
@@ -2511,7 +2650,9 @@ var UIDatePicker = class extends HTMLElement {
       return;
     } else return;
     event.preventDefault();
-    if (this.isDisabled(next)) return;
+    next = clampDateToBounds(next, this.getAttribute("min"), this.getAttribute("max"));
+    if (!next || this.isDisabled(next)) return;
+    this._activeDate = isoDate(next);
     if (next.getMonth() !== this.view.getMonth() || next.getFullYear() !== this.view.getFullYear()) this.view = new Date(next.getFullYear(), next.getMonth(), 1);
     this.renderCalendar();
     this.syncNavigation();
@@ -2522,6 +2663,7 @@ var UIDatePicker = class extends HTMLElement {
     const date = parseDate(value);
     if (date && this.isDisabled(date)) return;
     this._value = date ? isoDate(date) : "";
+    this._activeDate = this._value;
     this.setAttribute("value", this._value);
     if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
     this.sync();
@@ -2534,15 +2676,12 @@ var UIDatePicker = class extends HTMLElement {
   }
 };
 define("ui-date-picker", UIDatePicker);
-var parseTime = (value) => {
-  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(value || "");
-  return match ? { hour: Number(match[1]), minute: Number(match[2]) } : { hour: 9, minute: 0 };
-};
 var UITimePicker = class extends HTMLElement {
   static observedAttributes = ["value", "disabled", "placeholder", "format", "step", "placement", "label", "name"];
   connectedCallback() {
     if (this.popoverElement) return;
-    this._time = parseTime(this.getAttribute("value"));
+    this._time = parseTime(this.getAttribute("value")) || defaultTime();
+    this._invalidValue = !!this.getAttribute("value") && !parseTime(this.getAttribute("value"));
     this.input = h("input", { class: "ui-time-input", id: uid("ui-time-input"), type: "text", inputmode: "text", autocomplete: "off", spellcheck: "false", "aria-label": this.getAttribute("label") || "Time", placeholder: this.getAttribute("placeholder") || (this.is12Hour ? "h:mm AM" : "HH:mm") });
     this.trigger = h("button", { class: "ui-time-trigger", type: "button", "aria-haspopup": "dialog", "aria-label": "Open time options" }, h("ui-icon", { name: "clock" }));
     this.field = h("div", { class: "ui-time-field", slot: "trigger" }, this.input, this.trigger);
@@ -2595,15 +2734,24 @@ var UITimePicker = class extends HTMLElement {
     this.sync();
   }
   attributeChangedCallback() {
-    if (this.popoverElement) this.sync();
+    if (!this.popoverElement) return;
+    const parsed = parseTime(this.getAttribute("value"));
+    this._invalidValue = !!this.getAttribute("value") && !parsed;
+    if (parsed) this._time = parsed;
+    else if (!this._invalidValue) this._time = defaultTime();
+    this.sync();
   }
   get value() {
-    const time = this._time || parseTime(this.getAttribute("value"));
+    if (this._invalidValue) return "";
+    const time = this._time || defaultTime();
     return pad(time.hour) + ":" + pad(time.minute);
   }
   set value(value) {
-    this._time = parseTime(value);
-    this.setAttribute("value", this.value);
+    const raw = String(value ?? "");
+    const parsed = parseTime(raw);
+    this._invalidValue = raw.trim() !== "" && !parsed;
+    this._time = parsed || defaultTime();
+    this.setAttribute("value", this._invalidValue ? raw : this.value);
     if (this.popoverElement) this.sync();
   }
   get disabled() {
@@ -2631,23 +2779,27 @@ var UITimePicker = class extends HTMLElement {
     return this.getAttribute("format") === "12h";
   }
   sync() {
-    if (this.hasAttribute("value")) this._time = parseTime(this.getAttribute("value"));
+    if (this.hasAttribute("value")) {
+      const parsed = parseTime(this.getAttribute("value"));
+      this._invalidValue = !!this.getAttribute("value") && !parsed;
+      if (parsed) this._time = parsed;
+    }
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute("aria-disabled", String(this.disabled));
     this.trigger.setAttribute("aria-expanded", String(this.popoverElement.open));
     this.input.disabled = this.disabled;
-    this.input.setAttribute("aria-invalid", "false");
+    this.input.setAttribute("aria-invalid", String(!!this._invalidValue));
     const hour = this._time.hour, displayHour = this.is12Hour ? (hour + 11) % 12 + 1 : hour;
-    this.input.value = (this.is12Hour ? String(displayHour) : pad(displayHour)) + ":" + pad(this._time.minute) + (this.is12Hour ? hour < 12 ? " AM" : " PM" : "");
+    this.input.value = this._invalidValue ? this.getAttribute("value") || "" : (this.is12Hour ? String(displayHour) : pad(displayHour)) + ":" + pad(this._time.minute) + (this.is12Hour ? hour < 12 ? " AM" : " PM" : "");
     this.period.hidden = !this.is12Hour;
     this.period.textContent = hour < 12 ? "AM" : "PM";
-    this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
+    this.hiddenValue.name = this.disabled || this._invalidValue ? "" : this.getAttribute("name") || "";
     this.hiddenValue.value = this.value;
     this.renderOptions();
   }
   renderOptions() {
     const hour = this._time.hour, displayHour = this.is12Hour ? (hour + 11) % 12 + 1 : hour;
-    const step = Math.min(30, Math.max(1, Number(this.getAttribute("step") || 5)));
+    const step = normalizeTimeStep(this.getAttribute("step"));
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
     this.hourList.replaceChildren(...hours.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-hour": String(this.is12Hour ? n % 12 : n), "aria-selected": String(displayHour === n), tabindex: displayHour === n ? "0" : "-1" }, this.is12Hour ? String(n) : pad(n))));
     const minutes = [];
@@ -2657,18 +2809,20 @@ var UITimePicker = class extends HTMLElement {
     this.minuteList.replaceChildren(...minutes.map((n) => h("button", { class: "ui-time-option", type: "button", role: "option", "data-minute": String(n), "aria-selected": String(this._time.minute === n), tabindex: this._time.minute === n ? "0" : "-1" }, pad(n))));
   }
   parseTypedTime(raw) {
-    const value = String(raw || "").trim();
-    let match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(value);
-    if (match) return { hour: Number(match[1]), minute: Number(match[2]) };
-    match = /^(0?[1-9]|1[0-2]):([0-5]\d)\s*(AM|PM)$/i.exec(value);
-    if (match) return { hour: Number(match[1]) % 12 + (match[3].toUpperCase() === "PM" ? 12 : 0), minute: Number(match[2]) };
-    return null;
+    return parseTypedTime(raw);
   }
   handleTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
     this.input.setAttribute("aria-invalid", String(!parsed));
-    if (!parsed) return;
+    if (!parsed) {
+      this._invalidValue = true;
+      this.hiddenValue.value = "";
+      this.hiddenValue.name = "";
+      return;
+    }
+    this._invalidValue = false;
     this._time = parsed;
+    this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
     this.hiddenValue.value = this.value;
     this.renderOptions();
     emit(this, "ui-input", { value: this.value });
@@ -2676,9 +2830,11 @@ var UITimePicker = class extends HTMLElement {
   commitTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
     if (!parsed) {
+      this._invalidValue = false;
       this.sync();
       return;
     }
+    this._invalidValue = false;
     this._time = parsed;
     this.setAttribute("value", this.value);
     this.sync();
@@ -2718,6 +2874,7 @@ var UITimePicker = class extends HTMLElement {
     this.commit(part);
   }
   commit(focusPart = "hour") {
+    this._invalidValue = false;
     this.setAttribute("value", this.value);
     this.sync();
     this.focusTime(focusPart);
