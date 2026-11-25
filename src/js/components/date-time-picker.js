@@ -287,7 +287,7 @@ export class UITimePicker extends HTMLElement {
       : (this.is12Hour ? String(displayHour) : pad(displayHour)) + ':' + pad(this._time.minute) + (this.is12Hour ? (hour < 12 ? ' AM' : ' PM') : '');
     this.period.hidden = !this.is12Hour;
     this.period.textContent = hour < 12 ? 'AM' : 'PM';
-    this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
+    this.hiddenValue.name = this.disabled || this._invalidValue ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderOptions();
   }
