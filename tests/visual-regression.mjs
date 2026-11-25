@@ -19,7 +19,7 @@ try{
  await page.locator('[data-ui-floating-layer] .ui-calendar-day[data-date="2026-11-21"]').click();
  assert.equal(await date.evaluate(el=>el.open),false,'selecting a date closes the calendar');
  await page.waitForFunction(()=>!!document.querySelector('#nested-popover-outer')?.panel&&!!document.querySelector('#nested-popover-inner')?.panel);
- await page.locator('#nested-popover-outer').evaluate(el=>{el.show();el.querySelector('#nested-popover-inner').show();});
+ await page.locator('#nested-popover-outer').evaluate(el=>{const child=document.querySelector('#nested-popover-inner');el.show();child.show();});
  const n=await page.locator('#nested-popover-inner').evaluate(el=>{const r=el.panel.getBoundingClientRect();return{parented:!!el.panel._uiFloatParent,z:Number(el.panel.style.zIndex),w:Math.round(r.width),h:Math.round(r.height)};});
  assert.ok(n.parented&&n.z>0&&n.w>0&&n.h>0);await page.screenshot({path:resolve(output,'nested-popovers-open.png'),fullPage:true,animations:'disabled'});
  await page.locator('#nested-popover-outer').evaluate(el=>el.hide());await page.waitForTimeout(240);assert.equal(await page.locator('[data-ui-floating-layer] .ui-float[data-open]').count(),0);
