@@ -329,7 +329,7 @@ The library retains CSS patterns for static content and layout. They are useful 
 - Progress/loading: `.ui-progress`, `.ui-progress-bar`, `.ui-spinner`, `.ui-skeleton`.
 - Avatar: `.ui-avatar` and `.ui-avatar-group`.
 - Static navigation: `.ui-crumbs`, `.ui-crumb`, `.ui-nav`, and `.ui-nav-link`.
-- Overlay effects: `.ui-overlay`, `.ui-overlay--fade-bottom`, `--fade-top`, `--fade-left`, `--fade-right`, `--vignette`, `--dim`, and `--blur`. Add `--fixed` for viewport positioning. These are pointer-transparent static layers, not custom elements. Load `overlays.css` after the core stylesheet or use the complete CSS bundle.
+- Page fade: `.ui-page-fade` adds one fixed, pointer-transparent gradient overlay across the bottom of the viewport. It fades the entire page into `--ui-bg`, not individual text. Load `overlays.css` after the core stylesheet or use the complete CSS bundle.
 - Typography: `.ui-display`, `.ui-h1`, `.ui-h2`, `.ui-h3`, `.ui-body`, `.ui-small`, `.ui-caption`, `.ui-muted`, `.ui-faint`, `.ui-link`, `.ui-code`, and `.ui-kbd`.
 
 Legacy class-based form patterns remain for backwards compatibility. **For new interface work, use the custom form elements in Section 2 instead.** Do not write raw input/select/textarea/button/details controls as replacements.
