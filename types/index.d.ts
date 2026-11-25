@@ -43,6 +43,7 @@ export const commands:CommandRegistry;
 export const icons:IconRegistry;
 export function icon(name:string,size?:number|string):HTMLElement;
 export const iconConfig:IconConfig;
+export function shortcutLabel(): string;
 declare global {
  interface HTMLElementTagNameMap {
   'ui-button':UIButton; 'ui-icon':HTMLElement; 'ui-tooltip':UITooltip; 'ui-modal':UIModal;

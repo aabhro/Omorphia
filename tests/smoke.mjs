@@ -283,7 +283,10 @@ await t('custom date picker handles calendar selection, limits, navigation and f
 await t('closing a parent popover closes nested surfaces and cleans up listeners', async () => {
  const c=mount('<ui-popover id="life-outer"><button slot="trigger">Outer</button><div><ui-popover id="life-inner"><button slot="trigger">Inner</button><p>Nested</p></ui-popover></div></ui-popover>');
  const outer=c.querySelector('#life-outer'),inner=c.querySelector('#life-inner'); outer.show(); inner.show();
- assert.equal(inner.panel._uiFloatParent,outer.panel); outer.hide(); assert.equal(inner.open,false); await tick(220);
+ assert.equal(inner.panel._uiFloatParent,outer.panel);
+ inner.panel.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+ assert.equal(inner.open,false,'Escape closes the topmost child surface first'); assert.equal(outer.open,true,'Escape leaves the parent surface open');
+ inner.show(); outer.hide(); assert.equal(inner.open,false); await tick(220);
  assert.equal(inner.panel.hasAttribute('data-open'),false); outer.show(); inner.show(); outer.remove(); assert.equal(inner.open,false); await tick(220);
  assert.equal(d.querySelectorAll('[data-ui-floating-layer] .ui-float[data-open]').length,0);
 });
