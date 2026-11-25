@@ -69,6 +69,10 @@ export class UIDatePicker extends HTMLElement {
       const date = parseDate(newValue);
       this._value = date ? isoDate(date) : '';
       if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+    } else if (name === 'min' || name === 'max') {
+      const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+      if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+      if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
     }
     this.sync();
   }
@@ -141,6 +145,7 @@ export class UIDatePicker extends HTMLElement {
     this.days.replaceChildren(...items);
   }
   changeMonth(amount) {
+    if (this.disabled) return;
     const target = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
     const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
     if (min && yearMonth(target) < yearMonth(min)) return;
