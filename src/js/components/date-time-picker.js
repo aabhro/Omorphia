@@ -213,7 +213,7 @@ export class UITimePicker extends HTMLElement {
   connectedCallback() {
     if (this.popoverElement) return;
     this._time = parseTime(this.getAttribute('value')) || defaultTime();
-    this._invalidValue = this.hasAttribute('value') && !parseTime(this.getAttribute('value'));
+    this._invalidValue = !!this.getAttribute('value') && !parseTime(this.getAttribute('value'));
     this.input = h('input', { class: 'ui-time-input', id: uid('ui-time-input'), type: 'text', inputmode: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': this.getAttribute('label') || 'Time', placeholder: this.getAttribute('placeholder') || (this.is12Hour ? 'h:mm AM' : 'HH:mm') });
     this.trigger = h('button', { class: 'ui-time-trigger', type: 'button', 'aria-haspopup': 'dialog', 'aria-label': 'Open time options' }, h('ui-icon', { name: 'clock' }));
     this.field = h('div', { class: 'ui-time-field', slot: 'trigger' }, this.input, this.trigger);
@@ -244,7 +244,7 @@ export class UITimePicker extends HTMLElement {
   attributeChangedCallback() {
     if (!this.popoverElement) return;
     const parsed = parseTime(this.getAttribute('value'));
-    this._invalidValue = this.hasAttribute('value') && !parsed;
+    this._invalidValue = !!this.getAttribute('value') && !parsed;
     if (parsed) this._time = parsed;
     else if (!this._invalidValue) this._time = defaultTime();
     this.sync();
@@ -273,7 +273,7 @@ export class UITimePicker extends HTMLElement {
   sync() {
     if (this.hasAttribute('value')) {
       const parsed = parseTime(this.getAttribute('value'));
-      this._invalidValue = !parsed;
+      this._invalidValue = !!this.getAttribute('value') && !parsed;
       if (parsed) this._time = parsed;
     }
     this.trigger.disabled = this.disabled;
@@ -324,6 +324,7 @@ export class UITimePicker extends HTMLElement {
     }
     this._invalidValue = false;
     this._time = parsed;
+    this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderOptions();
     emit(this, 'ui-input', { value: this.value });
