@@ -1,17 +1,10 @@
-/* Omorphia overlay effects.
-   Place these pointer-transparent layers inside a positioned container, or add .ui-overlay--fixed for viewport effects. */
-.ui-overlay{
-  position:absolute;inset:0;z-index:var(--ui-effects-layer,900);pointer-events:none;
-  opacity:1;transition:opacity var(--ui-duration) var(--ui-ease);
+/* Single page-edge fade. Place once at the end of body. It overlays the whole viewport, not a text block. */
+.ui-page-fade{
+  position:fixed;
+  inset:auto 0 0;
+  z-index:900;
+  height:var(--ui-page-fade-height,144px);
+  background:linear-gradient(to bottom,transparent 0%,var(--ui-bg) 100%);
+  pointer-events:none;
 }
-.ui-overlay[data-state="hidden"]{opacity:0}
-.ui-overlay[data-state="visible"]{opacity:1}
-.ui-overlay--fixed{position:fixed}
-.ui-overlay--fade-bottom{inset:auto 0 0;height:var(--ui-overlay-size,160px);background:linear-gradient(to bottom,transparent,var(--ui-bg))}
-.ui-overlay--fade-top{inset:0 0 auto;height:var(--ui-overlay-size,160px);background:linear-gradient(to top,transparent,var(--ui-bg))}
-.ui-overlay--fade-left{inset:0 auto 0 0;width:var(--ui-overlay-size,160px);background:linear-gradient(to right,transparent,var(--ui-bg))}
-.ui-overlay--fade-right{inset:0 0 0 auto;width:var(--ui-overlay-size,160px);background:linear-gradient(to left,transparent,var(--ui-bg))}
-.ui-overlay--vignette{background:var(--ui-bg);-webkit-mask-image:radial-gradient(ellipse at center,transparent 48%,#000 100%);mask-image:radial-gradient(ellipse at center,transparent 48%,#000 100%)}
-.ui-overlay--dim{background:color-mix(in srgb,var(--ui-bg) var(--ui-overlay-opacity,56%),transparent)}
-.ui-overlay--blur{background:color-mix(in srgb,var(--ui-bg) var(--ui-overlay-opacity,12%),transparent);backdrop-filter:blur(var(--ui-overlay-blur,6px));-webkit-backdrop-filter:blur(var(--ui-overlay-blur,6px))}
-@media(prefers-reduced-motion:reduce){.ui-overlay{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.ui-page-fade{transition:none}}
