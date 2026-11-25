@@ -527,6 +527,10 @@ await t('ui-search: local data, keyboard select, clear, async source states', as
   s.clear(); await tick(50);
   assert.equal(s.panel.hasAttribute('data-open'), false, 'clearing a pending search keeps the panel closed');
   assert.equal(s.listEl.textContent, '', 'cleared pending results do not reappear');
+  s.source = async () => ({ label: 'not-an-array' });
+  s.input.value = 'invalid'; s.input.dispatchEvent(new w.Event('input')); await tick(10);
+  assert.equal(s.state, 'error', 'malformed source responses enter the error state instead of throwing');
+  assert.ok(s.listEl.textContent.includes('Search failed'));
 });
 await t('ui-sidebar: nested items, collapse, active, keyboard', () => {
   const c = mount('<ui-sidebar id="sb" heading="App" collapsible><ui-sidebar-item icon="home" href="#h" active>Home</ui-sidebar-item><ui-sidebar-item icon="folder">Projects<ui-sidebar-item href="#a">Alpha</ui-sidebar-item><ui-sidebar-item href="#b">Beta</ui-sidebar-item></ui-sidebar-item></ui-sidebar>');
