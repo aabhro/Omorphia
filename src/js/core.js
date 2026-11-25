@@ -297,9 +297,17 @@ export function whileOpen({ anchor, floating, onClose, reposition, escape = true
     if (!floating.contains(e.target) && !anchor.contains(e.target) && !insideChildFloat(e.target)) onClose('outside');
   };
   const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose('escape'); } };
-  const move = () => reposition();
+  let frame = 0;
+  const move = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => { frame = 0; reposition(); });
+  };
   document.addEventListener('pointerdown', down, true); if (escape) document.addEventListener('keydown', key, true);
-  window.addEventListener('resize', move); window.addEventListener('scroll', move, true);
-  return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true); window.removeEventListener('resize', move); window.removeEventListener('scroll', move, true); };
+  window.addEventListener('resize', move, { passive: true }); window.addEventListener('scroll', move, { capture: true, passive: true });
+  return () => {
+    if (frame) cancelAnimationFrame(frame);
+    document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true);
+    window.removeEventListener('resize', move); window.removeEventListener('scroll', move, true);
+  };
 }
 export const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };

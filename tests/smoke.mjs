@@ -568,15 +568,33 @@ await t('nested floating surfaces inherit and refresh scoped themes', () => {
   outer.hide();
   scope.remove();
 });
-await t('page bottom fade uses the active theme surface and viewport overlay', () => {
+await t('page bottom fade supports content offsets and keeps pointer input clear', () => {
   const overlays = readFileSync('src/css/overlays.css', 'utf8');
   assert.match(overlays, /\.ui-page-fade/);
   assert.match(overlays, /position:fixed/);
+  assert.match(overlays, /inset:auto 0 0 var\(--ui-page-fade-left,0px\)/);
   assert.match(overlays, /linear-gradient\(to bottom,transparent 0%,var\(--ui-bg\) 100%\)/);
   assert.match(overlays, /pointer-events:none/);
   assert.match(overlays, /--ui-page-fade-height,144px/);
+  const showcase = readFileSync('showcase/showcase.css', 'utf8');
+  const html = readFileSync('index.html', 'utf8');
+  assert.match(showcase, /--ui-page-fade-left:\s*var\(--ui-sidebar-width\)/);
+  assert.match(showcase, /ui-sidebar\[collapsed\] \+ \.main\s*\{[^}]*--ui-page-fade-left:\s*var\(--ui-sidebar-collapsed-width\)/);
+  assert.match(showcase, /--ui-page-fade-left:\s*0px/);
+  assert.match(html, /<div class="main">[\s\S]*?<div class="ui-page-fade" aria-hidden="true"><\/div>/);
+  assert.doesNotMatch(html, /<\/div>\s*<div class="ui-page-fade" aria-hidden="true"><\/div>\s*<ui-command-palette/);
   const build = readFileSync('scripts/build.mjs', 'utf8');
   assert.match(build, /'advanced', 'overlays'/);
+});
+await t('showcase avoids scroll-time blur and continuously running demo effects', () => {
+  const showcase = readFileSync('showcase/showcase.css', 'utf8');
+  const core = readFileSync('src/js/core.js', 'utf8');
+  assert.match(showcase, /scroll-behavior:\s*auto/);
+  assert.doesNotMatch(showcase, /\.topbar[^}]*backdrop-filter/);
+  assert.match(showcase, /contain:\s*layout style/);
+  assert.match(showcase, /\.fx-grid \.ui-edge--animated::before\s*\{\s*animation-play-state:\s*paused/);
+  assert.match(core, /requestAnimationFrame\(\(\) => \{ frame = 0; reposition\(\); \}\)/);
+  assert.match(core, /passive:\s*true/);
 });
 await t('floating component surfaces use semantic theme tokens', () => {
   const advanced = readFileSync('src/css/advanced.css', 'utf8');

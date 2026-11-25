@@ -1,10 +1,11 @@
-/* Single page-edge fade. Place once at the end of body. It overlays the whole viewport, not a text block. */
+/* Page-edge fade. Scope it to the content region it should cover. */
 .ui-page-fade{
   position:fixed;
-  inset:auto 0 0;
+  inset:auto 0 0 var(--ui-page-fade-left,0px);
   z-index:900;
   height:var(--ui-page-fade-height,144px);
   background:linear-gradient(to bottom,transparent 0%,var(--ui-bg) 100%);
   pointer-events:none;
+  transition:left var(--ui-duration) var(--ui-ease);
 }
 @media(prefers-reduced-motion:reduce){.ui-page-fade{transition:none}}
