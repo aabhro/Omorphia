@@ -1,4 +1,4 @@
-/*! Omorphia v1.3.1 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.3.2 | MIT | https://github.com/aabhro/Omorphia */
 /* Omorphia · Modernimal tokens. Override --ui-* on :root or any component scope. */
 :root,[data-ui-theme="dark"]{
 color-scheme:dark;--ui-font:"Geist","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ui-font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -497,13 +497,14 @@ ui-option{display:none}
 .ui-time-separator{align-self:center;color:var(--ui-overlay-text-faint);font-size:var(--ui-text-lg)}
 .ui-time-period{align-self:center;min-height:34px;padding:0 9px;border:0;border-radius:6px;background:var(--ui-overlay-selected);color:var(--ui-overlay-text);font:500 var(--ui-text-sm)/1 var(--ui-font);cursor:pointer}
 
-/* Single page-edge fade. Place once at the end of body. It overlays the whole viewport, not a text block. */
+/* Page-edge fade. Scope it to the content region it should cover. */
 .ui-page-fade{
   position:fixed;
-  inset:auto 0 0;
+  inset:auto 0 0 var(--ui-page-fade-left,0px);
   z-index:900;
   height:var(--ui-page-fade-height,144px);
   background:linear-gradient(to bottom,transparent 0%,var(--ui-bg) 100%);
   pointer-events:none;
+  transition:left var(--ui-duration) var(--ui-ease);
 }
 @media(prefers-reduced-motion:reduce){.ui-page-fade{transition:none}}

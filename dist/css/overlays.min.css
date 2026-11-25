@@ -1,2 +1,2 @@
-/*! Omorphia v1.3.1 | MIT | https://github.com/aabhro/Omorphia */
-.ui-page-fade{position:fixed;inset:auto 0 0;z-index:900;height:var(--ui-page-fade-height,144px);background:linear-gradient(to bottom,transparent 0%,var(--ui-bg) 100%);pointer-events:none}@media(prefers-reduced-motion:reduce){.ui-page-fade{transition:none}}
+/*! Omorphia v1.3.2 | MIT | https://github.com/aabhro/Omorphia */
+.ui-page-fade{position:fixed;inset:auto 0 0 var(--ui-page-fade-left,0px);z-index:900;height:var(--ui-page-fade-height,144px);background:linear-gradient(to bottom,transparent 0%,var(--ui-bg) 100%);pointer-events:none;transition:left var(--ui-duration) var(--ui-ease)}@media(prefers-reduced-motion:reduce){.ui-page-fade{transition:none}}

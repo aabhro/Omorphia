@@ -1,4 +1,4 @@
-/*! Omorphia v1.3.1 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.3.2 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -302,12 +302,20 @@ function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
       onClose("escape");
     }
   };
-  const move = () => reposition();
+  let frame = 0;
+  const move = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      reposition();
+    });
+  };
   document.addEventListener("pointerdown", down, true);
   if (escape) document.addEventListener("keydown", key, true);
-  window.addEventListener("resize", move);
-  window.addEventListener("scroll", move, true);
+  window.addEventListener("resize", move, { passive: true });
+  window.addEventListener("scroll", move, { capture: true, passive: true });
   return () => {
+    if (frame) cancelAnimationFrame(frame);
     document.removeEventListener("pointerdown", down, true);
     document.removeEventListener("keydown", key, true);
     window.removeEventListener("resize", move);
@@ -3040,7 +3048,7 @@ var UIMenuItem = class extends HTMLElement {
 define("ui-menu-item", UIMenuItem);
 
 // src/js/index.js
-var version = true ? "1.3.1" : "dev";
+var version = true ? "1.3.2" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {
