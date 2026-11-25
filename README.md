@@ -5,7 +5,7 @@
   <p><strong>A framework-free UI component library for the browser.</strong></p>
   <p>Native custom elements. Plain CSS. CDN-first delivery.</p>
   <p>
-    <img src="https://img.shields.io/badge/version-1.3.2-111111?style=flat-square" alt="Version 1.2.1">
+    <img src="https://img.shields.io/badge/version-1.3.2-111111?style=flat-square" alt="Version 1.3.2">
     <img src="https://img.shields.io/badge/framework-free-111111?style=flat-square" alt="Framework free">
     <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
   </p>
