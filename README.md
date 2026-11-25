@@ -5,11 +5,11 @@
   <p><strong>A framework-free UI component library for the browser.</strong></p>
   <p>Native custom elements. Plain CSS. CDN-first delivery.</p>
   <p>
-    <img src="https://img.shields.io/badge/version-1.3.2-111111?style=flat-square" alt="Version 1.3.2">
+    <img src="https://img.shields.io/badge/version-1.4.0-111111?style=flat-square" alt="Version 1.4.0">
     <img src="https://img.shields.io/badge/framework-free-111111?style=flat-square" alt="Framework free">
     <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
   </p>
-  <p><a href="https://aabhro.github.io/Omorphia/"><strong>Open the live demo ↗</strong></a> · <a href="./playground/"><strong>Component playground ↗</strong></a></p>
+  <p><a href="https://aabhro.github.io/Omorphia/"><strong>Open the live demo ↗</strong></a></p>
 </div>
 
 <div align="center">
@@ -94,7 +94,7 @@ Load the stylesheet and script, then use the components directly in your markup.
 
 <div align="center">
 
-[**Open the live demo**](https://aabhro.github.io/Omorphia/) · [**Component playground**](playground/) · [Showcase source](index.html) · [Source styles](src/css/) · [Component logic](src/js/)
+[**Open the live demo**](https://aabhro.github.io/Omorphia/) · [Showcase source](index.html) · [Source styles](src/css/) · [Component logic](src/js/)
 
 </div>
 
@@ -112,10 +112,10 @@ Use the classic bundle when you want the global <code>Omorphia</code> API.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.min.css"
 >
 
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-command-palette></ui-command-palette>
@@ -141,11 +141,11 @@ Load the stylesheet separately, then import the module in the browser.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.min.css"
 >
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -165,10 +165,10 @@ Load the stylesheet separately, then import the module in the browser.
 Load <code>core.min.css</code> first. It contains the design tokens, base styles, and edge effect. Add the modules required by your interface.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/forms.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/css/forms.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.4.0/dist/css/feedback.min.css">
 ~~~
 
 Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, <code>advanced</code>, and <code>overlays</code>.
@@ -180,7 +180,7 @@ The complete stylesheet is <a href="dist/omorphia.min.css"><code>dist/omorphia.m
 ### Versioning and network requirements
 
 - **Development:** use the <code>@main</code> URLs to follow the current default branch.
-- **Production:** pin an exact release tag, such as <code>@v1.3.2</code>, so deployed projects use a known revision.
+- **Production:** pin an exact release tag, such as <code>@v1.4.0</code>, so deployed projects use a known revision.
 - **Online requirement:** the browser must be able to reach <code>cdn.jsdelivr.net</code>. CDN imports do not work offline unless the project deliberately hosts the files locally.
 - **Content Security Policy:** allow <code>https://cdn.jsdelivr.net</code> in the relevant <code>style-src</code> and <code>script-src</code> directives.
 - **ES modules:** load the module in the browser runtime. Keep browser-only imports out of server-side rendering entry points.
@@ -198,7 +198,68 @@ The stylesheet is split into focused modules. The JavaScript bundle registers th
 | <code>feedback</code> | Tooltips, alerts, badges, status, progress, and toasts |
 | <code>containers</code> | Cards, avatars, dialogs, popovers, dropdowns, drawers, and animated accordions |
 | <code>advanced</code> | Command palette, search, date/time pickers, and side navigation |
+| <code>advanced-components</code> | File upload, color picker, combobox, multi-select, number and OTP inputs, rich text, data table, tree, split panel, stepper, timeline, rating, skeleton, empty state, and tour |
 
+### Advanced components
+
+These elements are registered in the main JavaScript bundle and styled by the full CSS bundle. A focused <code>advanced-components</code> CSS module is available for modular installs.
+
+<details><summary><strong>Files, colors, and selection</strong></summary>
+
+```html
+<ui-file-upload name="attachments" accept=".pdf,image/*" multiple max-files="5" max-size="5242880"></ui-file-upload>
+<ui-color-picker name="brand-color" value="#b58bbf" alpha></ui-color-picker>
+<ui-combobox name="environment" placeholder="Search environments" allow-create></ui-combobox>
+<ui-multi-select name="members"><ui-option value="ada" group="Engineering">Ada Lovelace</ui-option></ui-multi-select>
+<ui-number-input name="quantity" value="2" min="0" max="25" step="0.25" precision="2"></ui-number-input>
+<ui-otp-input name="verification-code" length="6" autocomplete="one-time-code"></ui-otp-input>
+```
+
+<code>ui-file-upload</code> exposes selected File objects through <code>.files</code> and validates type, byte size, and count. It selects local files only. It does not send them to a server. Your application handles the actual upload.
+
+<code>ui-color-picker</code> supports hue, saturation/lightness, alpha, presets, and hex input. Read <code>.value</code> as hex and <code>.color</code> as CSS color text.
+
+<code>ui-combobox</code> accepts local <code>.data</code> or an async <code>.source(query, signal)</code> function. It supports value creation and abortable requests.
+
+<code>ui-multi-select</code> extends <code>ui-select</code> with array values, grouped options, and removable tags. The existing <code>ui-select multiple</code> API remains supported.
+
+<code>ui-number-input</code> supports bounds, step, and decimal precision. <code>ui-otp-input</code> supports segmented entry, paste, masking, and keyboard navigation.
+
+</details>
+
+<details><summary><strong>Data, layout, and workflows</strong></summary>
+
+```html
+<ui-data-table id="projects" page-size="10" sortable selectable></ui-data-table>
+<ui-tree-view id="files" selectable multiple drag-drop></ui-tree-view>
+<ui-split-panel direction="horizontal" sizes="40,60" storage-key="workspace"><aside slot="start">Navigation</aside><main slot="end">Content</main></ui-split-panel>
+<ui-stepper linear><ui-step label="Details" value="details">Details</ui-step><ui-step label="Review" value="review">Review</ui-step></ui-stepper>
+<ui-timeline><ui-timeline-item title="Created" time="09:30" status="complete">Workspace created.</ui-timeline-item></ui-timeline>
+```
+
+Set table rows and columns with <code>.data</code> and <code>.columns</code>. The table supports filtering, sorting, pagination, column visibility, and row selection. Tree nodes are nested objects with <code>id</code>, <code>label</code>, and optional <code>children</code>. The tree supports expansion, keyboard navigation, selection, and drag/drop reparenting.
+
+The split panel supports pointer and keyboard resizing. A <code>storage-key</code> persists its ratio locally. The stepper supports linear progression and cancellable <code>ui-before-next</code> validation. Timeline items accept title, time, status, icon, and descriptive child content.
+
+</details>
+
+<details><summary><strong>Feedback, editing, and onboarding</strong></summary>
+
+```html
+<ui-rating value="3.5" max="5" allow-half show-value></ui-rating>
+<ui-skeleton variant="text" lines="3"></ui-skeleton>
+<ui-empty-state icon="folder" title="No projects yet" description="Create a project to get started."><ui-button>Create project</ui-button></ui-empty-state>
+<ui-rich-text-editor name="description" placeholder="Write a description"></ui-rich-text-editor>
+<ui-tour id="onboarding"></ui-tour>
+```
+
+<code>ui-rating</code> supports numeric, star, and half-star values. <code>ui-skeleton</code> supports text, avatar, and image placeholders. <code>ui-empty-state</code> provides a reusable description and action region.
+
+<code>ui-rich-text-editor</code> provides formatting, headings, lists, links, and Ctrl/⌘ B/I/U shortcuts. Its HTML value is sanitized to an allowlist of semantic tags and safe link protocols. Sanitize again on the server before storing or publishing user content.
+
+Set <code>tour.steps</code> to selector/title/description objects, then call <code>.start()</code>. Use <code>.nextStep()</code>, <code>.previous()</code>, and <code>.end()</code> to control the guided walkthrough.
+
+</details>
 ### Buttons
 
 <details>
@@ -525,17 +586,13 @@ MIT. See <a href="LICENSE">LICENSE</a>.
 </div>
 
 
-## Component playground
-
-Use the [interactive component playground](playground/) to browse live elements, switch themes, inspect examples, and copy their markup.
-
 ## TypeScript
 
 The package includes declarations at `types/index.d.ts`, including tag mappings for the registered custom elements.
 
 ## Visual regression checks
 
-The Playwright suite captures the showcase and playground in multiple states. It checks floating-surface geometry, stacking, theme rendering, and picker behavior. CI uploads screenshots as an artifact.
+The Playwright suite captures the main showcase, advanced components, picker surfaces, nested popovers, and mobile layout. It checks floating-surface geometry, stacking, theme rendering, guided tours, and page overflow. CI uploads screenshots as an artifact.
 
 Run locally with:
 

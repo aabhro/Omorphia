@@ -137,7 +137,7 @@ When building an application that consumes Omorphia rather than editing the libr
 
 For every interface task, follow this workflow before code:
 
-1. Read [AI/COMPONENT-CATALOG.md](COMPONENT-CATALOG.md) from beginning to end. It lists all 28 actual custom elements, their verified APIs, working examples, static classes, and common false assumptions.
+1. Read [AI/COMPONENT-CATALOG.md](COMPONENT-CATALOG.md) from beginning to end. It lists all 46 actual custom elements, their verified APIs, working examples, static classes, and common false assumptions.
 2. Inspect `src/js/index.js` and the exact matching file in `src/js/components/` or `src/js/icons.js`. Confirm that the element is registered and verify every attribute, accepted value, property, method, event, and slot from source. Inspect the related `src/css/` module too.
 3. Inspect the corresponding demo in `index.html` and follow its actual markup pattern. Do not use a component name found only in an AI response, screenshot, framework, or unrelated library.
 4. Write a component map before implementation: **UI requirement → exact Omorphia element or CSS primitive → source file → reason it fits**. Mark missing functionality as `NO BUILT-IN COMPONENT`.

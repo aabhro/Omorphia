@@ -37,7 +37,7 @@ For every task that creates or changes interface markup:
 
 ## 2. Actual custom elements
 
-**These 28 names are registered by the current source.** Do not add names to this list from memory.
+**These 46 names are registered by the current source.** Do not add names to this list from memory.
 
 | Exact element | Use it for | Implementation |
 | --- | --- | --- |
@@ -48,6 +48,24 @@ For every task that creates or changes interface markup:
 | <code>&lt;ui-popover&gt;</code> | Anchored floating content | [popover.js](../src/js/components/popover.js) |
 | <code>&lt;ui-dropdown&gt;</code> | Keyboard-accessible action menu | [popover.js](../src/js/components/popover.js) |
 | <code>&lt;ui-menu-item&gt;</code> | Custom menu row used inside `ui-dropdown` | [menu-item.js](../src/js/components/menu-item.js) |
+| <code>&lt;ui-color-picker&gt;</code> | Hue, saturation/lightness, alpha, presets, and hex input | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-file-upload&gt;</code> | Local file picker and drag/drop with validation | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-combobox&gt;</code> | Searchable local/async selection and value creation | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-multi-select&gt;</code> | Grouped multi-choice with removable tags | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-number-input&gt;</code> | Bounded decimal input with increment/decrement | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-otp-input&gt;</code> | Segmented verification code input | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-rich-text-editor&gt;</code> | Sanitized lightweight rich text editor | [advanced-inputs.js](../src/js/components/advanced-inputs.js) |
+| <code>&lt;ui-data-table&gt;</code> | Sortable, filterable, paginated data table | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-tree-view&gt;</code> | Expandable, selectable hierarchy with drag/drop | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-split-panel&gt;</code> | Resizable panes with optional persistent sizing | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-stepper&gt;</code> | Multi-stage flow and progress navigation | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-step&gt;</code> | Individual step content used by ui-stepper | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-timeline&gt;</code> | Semantic timeline container | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-timeline-item&gt;</code> | Timeline event with date and status | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-rating&gt;</code> | Numeric and star rating with optional half steps | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-skeleton&gt;</code> | Configurable loading placeholders and shimmer | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-empty-state&gt;</code> | Reusable empty, no-result, or status state | [advanced-data.js](../src/js/components/advanced-data.js) |
+| <code>&lt;ui-tour&gt;</code> | Guided onboarding tour over existing page elements | [advanced-data.js](../src/js/components/advanced-data.js) |
 | <code>&lt;ui-tabs&gt;</code> + <code>&lt;ui-tab&gt;</code> | Tab navigation and panels | [tabs.js](../src/js/components/tabs.js) |
 | <code>&lt;ui-pagination&gt;</code> | Page navigation | [pagination.js](../src/js/components/pagination.js) |
 | <code>&lt;ui-command-palette&gt;</code> + <code>&lt;ui-command&gt;</code> | Global command search/actions | [command-palette.js](../src/js/components/command-palette.js) |
@@ -66,7 +84,7 @@ For every task that creates or changes interface markup:
 | <code>&lt;ui-drawer&gt;</code> | Off-canvas drawer/sheet | [drawer.js](../src/js/components/drawer.js) |
 | <code>&lt;ui-accordion&gt;</code> + <code>&lt;ui-accordion-item&gt;</code> | Animated disclosure sections | [accordion.js](../src/js/components/accordion.js) |
 
-There are 28 registered element names when paired elements are counted individually. `ui-command` is a declarative child of `ui-command-palette`; `ui-option` is an option definition consumed by `ui-select`. They are registered custom elements, not standalone controls.
+There are 46 registered element names when paired elements are counted individually. `ui-command` is a declarative child of `ui-command-palette`; `ui-option` is an option definition consumed by `ui-select`. They are registered custom elements, not standalone controls.
 
 ### Buttons and icons
 
@@ -303,6 +321,41 @@ The command palette accepts `hotkey`, `placeholder`, and `disabled`. Default sho
 
 Use <code>&lt;ui-sidebar&gt;</code> with nested <code>&lt;ui-sidebar-item&gt;</code> elements for responsive navigation. The container supports `heading`, `label`, `collapsible`, `collapsed`, `open`, `width`, `breakpoint`, `fixed`, and `position`. Slots: `header` and `footer`. Methods: `toggle()`, `collapse()`, `expand()`, `openMobile()`, and `closeMobile()`. Items support `icon`, `href`, `active`, `expanded`, `disabled`, and `label`.
 
+### Advanced inputs
+
+<code>ui-color-picker</code> supports hue, saturation/lightness, alpha, presets, and hex input. Attributes include <code>value</code>, <code>name</code>, <code>label</code>, <code>disabled</code>, <code>alpha</code>, <code>presets</code>, and <code>placement</code>. Read <code>.value</code> as hex and <code>.color</code> as CSS color text. Methods: <code>setColor(value, notify?)</code>, <code>show()</code>, <code>hide()</code>, and <code>focus()</code>. Emits <code>ui-input</code>, <code>ui-change</code>, and <code>ui-error</code>.
+
+<code>ui-file-upload</code> accepts <code>accept</code>, <code>multiple</code>, <code>disabled</code>, <code>name</code>, <code>max-size</code> (bytes), <code>max-files</code>, <code>capture</code>, <code>label</code>, and <code>hint</code>. Read selected <code>File[]</code> through <code>.files</code>, or call <code>.addFiles(files)</code> and <code>.removeFile(index)</code>. Events: <code>ui-input</code>, <code>ui-change</code>, <code>ui-files</code>, and <code>ui-error</code>. It selects local files only. It does not send them to a server.
+
+<code>ui-combobox</code> supports a local <code>.data</code> array or an async <code>.source(query, signal)</code> function. Attributes include <code>allow-create</code>, <code>min-chars</code>, <code>placeholder</code>, <code>label</code>, <code>disabled</code>, <code>required</code>, and <code>name</code>. Methods: <code>search(query)</code>, <code>choose(item)</code>, <code>create(label)</code>, <code>close()</code>, and <code>focus()</code>. Async sources receive an <code>AbortSignal</code>. Events: <code>ui-input</code>, <code>ui-change</code>, <code>ui-create</code>, and <code>ui-error</code>.
+
+<code>ui-multi-select</code> extends <code>ui-select</code>, enables multiple selection, and renders removable chips outside its trigger. Use the same direct <code>ui-option</code> children. Set <code>group</code> on options to add group labels. Its <code>.value</code> is an array. The existing <code>ui-select multiple</code> API remains supported.
+
+<code>ui-number-input</code> supports <code>min</code>, <code>max</code>, <code>step</code>, and <code>precision</code>, plus <code>value</code>, <code>disabled</code>, <code>readonly</code>, <code>required</code>, <code>name</code>, and <code>label</code>. <code>.value</code> is numeric. Methods: <code>stepBy(-1 | 1)</code> and <code>focus()</code>. Emits <code>ui-input</code> and <code>ui-change</code>.
+
+<code>ui-otp-input</code> supports configurable <code>length</code> (1–12), <code>value</code>, <code>name</code>, <code>disabled</code>, <code>mask</code>, <code>label</code>, <code>autofocus</code>, and <code>inputmode</code>. Its <code>.value</code> contains the combined code. It supports paste, arrow navigation, Home/End, Backspace, and <code>setValue(value, notify?)</code>.
+
+<code>ui-rich-text-editor</code> provides bold, italic, underline, headings, lists, links, and Ctrl/⌘ B/I/U shortcuts. Its <code>.value</code> and <code>.getHTML()</code> return sanitized HTML. It accepts a restricted set of semantic tags and safe link protocols. Sanitize again on the server before storing or publishing user content.
+
+### Advanced data and workflow components
+
+<code>ui-data-table</code> accepts row objects through <code>.data</code> and column descriptors through <code>.columns</code>. It supports search filtering, sorting, pagination, column visibility, and optional row selection. Attributes: <code>page-size</code>, <code>page</code>, <code>sortable</code>, <code>filterable</code>, <code>selectable</code>, and <code>empty-label</code>. Methods: <code>setFilter(query)</code>, <code>go(page)</code>, and <code>setColumnVisible(key, visible)</code>. Read <code>.page</code>, <code>.pageSize</code>, and <code>.selectedRows</code>. Events include <code>ui-sort</code>, <code>ui-page</code>, and <code>ui-selection-change</code>.
+
+<code>ui-tree-view</code> accepts nested node objects through <code>.data</code>, expanded IDs through <code>.expanded</code>, and selected IDs through <code>.value</code>. Node fields: <code>id</code>, <code>label</code>, optional <code>icon</code>, <code>disabled</code>, <code>count</code>, and <code>children</code>. Attributes: <code>selectable</code>, <code>multiple</code>, <code>drag-drop</code>, and <code>label</code>. Methods: <code>find(id)</code>, <code>toggle(id)</code>, <code>select(id)</code>, <code>move(sourceId, targetId)</code>, and <code>focus()</code>. Arrow keys navigate the visible hierarchy.
+
+<code>ui-split-panel</code> accepts <code>direction</code>, <code>sizes</code>, <code>min-size</code>, <code>max-size</code>, <code>storage-key</code>, and <code>disabled</code>. Provide two children using <code>slot="start"</code> and <code>slot="end"</code>. The <code>.ratio</code> property controls the start pane size. The divider supports pointer and keyboard resizing. A storage key persists the ratio in local storage.
+
+<code>ui-stepper</code> contains <code>ui-step</code> children. It supports linear progression, direct step navigation, and validation before advancing. <code>ui-step</code> accepts <code>label</code>, <code>description</code>, <code>value</code>, and <code>disabled</code>. Methods: <code>go(index)</code>, <code>nextStep()</code>, and <code>previous()</code>. Events: <code>ui-change</code>, <code>ui-invalid</code>, and <code>ui-complete</code>. A cancelable <code>ui-before-next</code> event prevents forward progression.
+
+<code>ui-timeline</code> contains <code>ui-timeline-item</code> entries. Each item accepts <code>title</code>, <code>time</code>, <code>status</code>, and <code>icon</code>; child content describes the event.
+
+<code>ui-rating</code> accepts <code>value</code>, <code>max</code>, <code>step</code>, <code>allow-half</code>, <code>show-value</code>, <code>disabled</code>, <code>readonly</code>, <code>label</code>, and <code>name</code>. It exposes a numeric <code>.value</code>, supports star and half-star selection, and emits <code>ui-input</code> and <code>ui-change</code>.
+
+<code>ui-skeleton</code> supports <code>text</code>, <code>avatar</code>, and <code>image</code> variants, custom <code>width</code> and <code>height</code>, <code>lines</code>, <code>animated="false"</code>, and an accessible loading <code>label</code>.
+
+<code>ui-empty-state</code> accepts <code>icon</code>, <code>title</code>, <code>description</code>, and <code>variant</code>. Child content is placed in its actions region.
+
+<code>ui-tour</code> takes a <code>.steps</code> array of <code>{ selector, title, description }</code> objects. Methods: <code>start(index?)</code>, <code>nextStep()</code>, <code>previous()</code>, and <code>end(reason?)</code>. Events: <code>ui-open</code>, <code>ui-step</code>, <code>ui-step-missing</code>, <code>ui-close</code>, and <code>ui-error</code>. Steps target existing page elements rather than cloning them.
 ## 3. JavaScript helpers that already exist
 
 These are APIs, not standalone UI custom elements.
@@ -342,9 +395,9 @@ The following are **not** registered custom elements. Keep them as static semant
 | --- | --- |
 | <code>&lt;ui-card&gt;</code> | `<article class="ui-card">` |
 | <code>&lt;ui-alert&gt;</code> / <code>&lt;ui-badge&gt;</code> / <code>&lt;ui-avatar&gt;</code> | Native semantic element with the corresponding static `.ui-*` class |
-| <code>&lt;ui-progress&gt;</code> / <code>&lt;ui-spinner&gt;</code> / <code>&lt;ui-skeleton&gt;</code> | Static element with the corresponding `.ui-*` class |
+| <code>&lt;ui-progress&gt;</code> / <code>&lt;ui-spinner&gt;</code> | Static element with the corresponding `.ui-*` class |
 | <code>&lt;ui-collapsible&gt;</code> | No custom element is registered. Use <code>&lt;ui-accordion&gt;</code> and <code>&lt;ui-accordion-item&gt;</code> instead. Do not use native <code>&lt;details&gt;</code> for new UI. |
-| <code>&lt;ui-table&gt;</code> / <code>&lt;ui-calendar&gt;</code> / <code>&lt;ui-file-upload&gt;</code> / <code>&lt;ui-chart&gt;</code> | No built-in custom element is registered for these in the current source. Use semantic content and application logic, or plan an explicitly approved library feature. |
+| <code>&lt;ui-table&gt;</code> / <code>&lt;ui-calendar&gt;</code> / <code>&lt;ui-chart&gt;</code> | No element is registered under these exact names. Use <code>&lt;ui-data-table&gt;</code> for tabular data. |
 
 **Never assume a class name creates a custom element.** Any `<ui-...>` element not present in Section 2 must be verified in the current source before use.
 
