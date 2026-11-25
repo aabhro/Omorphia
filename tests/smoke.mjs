@@ -250,9 +250,9 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   picker.setAttribute('value', '2026-12-01');
   assert.equal(picker.value, '2026-12-01');
   assert.match(picker.monthLabel.textContent, /December 2026/, 'external value changes move the displayed month');
-  picker.value = '2026-03-31';
   picker.removeAttribute('min');
   picker.removeAttribute('max');
+  picker.value = '2026-03-31';
   const march31 = picker.days.querySelector('[data-date="2026-03-31"]');
   march31.focus();
   march31.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'PageUp', bubbles: true, cancelable: true }));
