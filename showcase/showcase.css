@@ -1,10 +1,11 @@
 /* Showcase composition only. Components and control states come from Omorfia. */
 :root { --ui-font: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-html { scroll-behavior: smooth; scroll-padding-top: 82px; scrollbar-width: thin; scrollbar-color: rgb(245 245 245 / .12) transparent; }
+html { scroll-behavior: auto; scroll-padding-top: 82px; scrollbar-width: thin; scrollbar-color: rgb(245 245 245 / .12) transparent; }
 body { margin: 0; }
 .shell { display: flex; align-items: flex-start; min-height: 100dvh; }
-.main { flex: 1; min-width: 0; padding: 0 clamp(18px, 4vw, 64px) 96px; }
-.topbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 9px 0; background: color-mix(in srgb, var(--ui-bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.main { --ui-page-fade-left: var(--ui-sidebar-width); flex: 1; min-width: 0; padding: 0 clamp(18px, 4vw, 64px) 96px; }
+ui-sidebar[collapsed] + .main { --ui-page-fade-left: var(--ui-sidebar-collapsed-width); }
+.topbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 9px 0; background: var(--ui-bg); }
 .topbar .grow { flex: 1; }
 .hero { padding: clamp(42px, 7vw, 76px) 0 16px; max-width: 68ch; }
 .hero .ui-display { max-width: 13ch; font-size: clamp(36px, 5.2vw, 58px); letter-spacing: -.045em; line-height: 1.03; }
@@ -13,7 +14,7 @@ body { margin: 0; }
 section.block { padding-top: clamp(44px, 6vw, 72px); }
 section.block > header { margin-bottom: 18px; max-width: 68ch; }
 section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-width: 62ch; }
-.demo { position: relative; margin: 0; padding: 17px 0 18px; border-bottom: 1px solid var(--ui-border); background: transparent; border-radius: 0; }
+.demo { position: relative; contain: layout style; margin: 0; padding: 17px 0 18px; border-bottom: 1px solid var(--ui-border); background: transparent; border-radius: 0; }
 .demo-title { padding: 0; margin-bottom: 12px; color: var(--ui-text); font: 550 var(--ui-text-md)/1.4 var(--ui-font); }
 .demo-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 11px 12px; min-width: 0; }
 .demo-preview.stack { flex-direction: column; align-items: stretch; }
@@ -44,6 +45,8 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 .ctl ui-range { min-width: 0; }
 .ctl output { text-align: right; color: var(--ui-text); font-variant-numeric: tabular-nums; }
 .fx-code { margin: 0; padding: 13px 15px; overflow: auto; color: var(--ui-text); background: var(--ui-bg-inset); border: 1px solid var(--ui-border); border-radius: 4px; font: 12px/1.65 var(--ui-font-mono); white-space: pre; }
+.fx-grid .ui-edge--animated::before { animation-play-state: paused; }
+.fx-grid .ui-edge--animated:hover::before, .fx-grid .ui-edge--animated:focus-within::before { animation-play-state: running; }
 .fx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
 .fx-grid > div { min-height: 78px; display: grid; place-items: center; background: transparent; color: var(--ui-text-muted); font-size: var(--ui-text-sm); }
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
@@ -53,7 +56,7 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 @media (max-width: 767px) {
   .menu-btn { display: inline-flex; }
   .topbar .cmd-label { display: none; }
-  .main { padding-inline: 18px; }
+  .main { --ui-page-fade-left: 0px; padding-inline: 18px; }
   .hero { padding-top: 34px; }
   section.block { padding-top: 44px; }
   .cols { grid-template-columns: minmax(0, 1fr); }
