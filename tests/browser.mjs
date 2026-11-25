@@ -147,6 +147,14 @@ try {
   await delay(220);
   assert.equal(await evaluate(regionOptionColor), 'rgb(245, 245, 245)', 'an open select option switches back to dark after its color transition');
   console.log('  ✓ open floating surfaces switch light and dark themes');
+
+
+  const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
+  await click('.ui-select-option[data-ui-option-index="0"]');
+  await waitFor(`document.querySelector('#region-test').value === 'fra'`, 'region option selection updates the value');
+  assert.equal(await evaluate(`document.querySelector('#region-test').formFields.querySelector('input')?.value`), 'fra');
+  console.log(`  ✓ region picker opens and selects by pointer (${regionMode})`);
+
   await click('#layer-outer > button');
   await waitFor(`document.querySelector('#layer-outer').open`, 'outer layered panel opens');
   await evaluate("Omorphia.theme.set('light')");
@@ -162,13 +170,6 @@ try {
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-inner').panel).backgroundColor`), 'rgb(10, 10, 10)', 'nested panel switches back to dark');
   await evaluate("document.querySelector('#layer-inner').hide(); document.querySelector('#layer-outer').hide()");
   console.log('  ✓ nested floating panels follow light and dark themes');
-
-
-  const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
-  await click('.ui-select-option[data-ui-option-index="0"]');
-  await waitFor(`document.querySelector('#region-test').value === 'fra'`, 'region option selection updates the value');
-  assert.equal(await evaluate(`document.querySelector('#region-test').formFields.querySelector('input')?.value`), 'fra');
-  console.log(`  ✓ region picker opens and selects by pointer (${regionMode})`);
 
   await click('#date-test .ui-date-trigger');
   await waitFor(`document.querySelector('#date-test').open`, 'date picker opens');
