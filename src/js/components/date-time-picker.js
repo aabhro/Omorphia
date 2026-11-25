@@ -331,7 +331,7 @@ export class UITimePicker extends HTMLElement {
   }
   commitTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
-    if (!parsed) { this._invalidValue = true; this.input.setAttribute('aria-invalid', 'true'); return; }
+    if (!parsed) { this._invalidValue = false; this.sync(); return; }
     this._invalidValue = false;
     this._time = parsed;
     this.setAttribute('value', this.value);
