@@ -556,7 +556,7 @@ await t('nested floating surfaces inherit and refresh scoped themes', () => {
   assert.equal(outer.panel.style.getPropertyValue('--ui-theme-probe'), 'light');
   inner.show();
   assert.equal(inner.panel.getAttribute('data-ui-theme'), 'light');
-  assert.equal(inner.panel.style.getPropertyValue('--ui-theme-probe'), 'light', 'child panel inherits its parent's updated theme tokens');
+  assert.equal(inner.panel.style.getPropertyValue('--ui-theme-probe'), 'light', 'child panel inherits the parent updated theme tokens');
   scope.style.setProperty('--ui-theme-probe', 'dark');
   E.theme.set('dark', scope);
   assert.equal(outer.panel.getAttribute('data-ui-theme'), 'dark');
@@ -566,7 +566,7 @@ await t('nested floating surfaces inherit and refresh scoped themes', () => {
   outer.hide();
   scope.remove();
 });
-await t('overlay effects expose responsive themed utility classes', () => {
+await t('page bottom fade uses the active theme surface and viewport overlay', () => {
   const overlays = readFileSync('src/css/overlays.css', 'utf8');
   assert.match(overlays, /\.ui-page-fade/);
   assert.match(overlays, /position:fixed/);
