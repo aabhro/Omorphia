@@ -6,7 +6,7 @@
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
-    "test": "node tests/smoke.mjs && node tests/showcase.mjs"
+    "test": "npm run build && node tests/smoke.mjs && node tests/showcase.mjs"
   },
   "keywords": [
     "ui",
