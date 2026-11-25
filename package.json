@@ -7,7 +7,8 @@
     "icons": "node scripts/gen-icons.mjs",
     "build": "node scripts/gen-icons.mjs && node scripts/build.mjs",
     "test": "npm run build && node tests/utilities.mjs && node tests/smoke.mjs && node tests/showcase.mjs && node tests/types.mjs",
-    "test:visual": "node tests/visual-regression.mjs"
+    "test:visual": "node tests/visual-regression.mjs",
+    "test:types": "tsc --noEmit --strict --lib DOM,ES2022 --moduleResolution bundler --module esnext tests/types.fixture.ts"
   },
   "keywords": [
     "ui",

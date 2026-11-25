@@ -540,7 +540,8 @@ The Playwright suite captures the showcase and playground in multiple states. It
 Run locally with:
 
 ```sh
-npm install --no-save --package-lock=false playwright@1.56.1
+npm install --no-save --package-lock=false playwright@1.56.1 typescript@5.9.3
 npx playwright install chromium
+npm run test:types
 npm run test:visual
 ```

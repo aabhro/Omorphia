@@ -59,6 +59,8 @@ export class UIPopover extends HTMLElement {
   }
   closeFromParent() {
     if (!this.panel) return;
+    const wasOpen = this.panel.hasAttribute('data-open') || !!this.panel._uiFloatMode;
+    if (!wasOpen) { this._off?.(); this._off = null; return; }
     this._off?.(); this._off = null;
     this._morphToken = (this._morphToken || 0) + 1;
     this._morphAnimation?.cancel?.(); this._morphAnimation = null;
