@@ -97,10 +97,14 @@ assert.deepEqual(missing, [], 'all icons render from the bundle: ' + missing);
 assert.ok(d.querySelector('#search-local').data.length > 10); assert.ok(d.getElementById('actions-menu').panel);
 assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration presets render');
 assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
-assert.equal(d.querySelectorAll('#overlay-effects .overlay-effect-preview').length, 4, 'overlay effect previews render');
-for (const selector of ['.ui-overlay--fade-bottom', '.ui-overlay--fade-left', '.ui-overlay--fade-right', '.ui-overlay--vignette', '.ui-overlay--blur']) {
-  assert.ok(d.querySelector('#overlay-effects ' + selector), selector + ' is demonstrated');
-}
+assert.equal(d.querySelectorAll('#overlay-effects .overlay-effect-preview').length, 1, 'one page fade preview renders');
+assert.ok(d.querySelector('#overlay-effects .ui-page-fade'), 'the preview overlays the full sample page');
+assert.equal(d.querySelectorAll('body > .ui-page-fade').length, 1, 'one viewport fade is attached to the page');
+const showcaseStyles = readFileSync('showcase/showcase.css', 'utf8');
+const popoverStyleStart = showcaseStyles.indexOf('.ui-popover-panel {');
+const popoverStyleEnd = showcaseStyles.indexOf('}', popoverStyleStart);
+assert.ok(popoverStyleStart >= 0, 'showcase popover layout rule exists');
+assert.doesNotMatch(showcaseStyles.slice(popoverStyleStart, popoverStyleEnd), /background\s*:|color\s*:/, 'showcase layered panels inherit the active theme');
 assert.ok((d.querySelector('link[rel="icon"]')?.getAttribute('href') || '').endsWith('favicon.svg'));
 assert.match(d.title, /Omorphia/);
 const packageVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
