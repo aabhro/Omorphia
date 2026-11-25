@@ -92,6 +92,7 @@ try {
     if (!el) throw new Error('Missing element: ' + ${JSON.stringify(selector)});
     const list = el.closest?.('.ui-time-list');
     if (list) {
+      list.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       const listRect = list.getBoundingClientRect(), itemRect = el.getBoundingClientRect();
       if (itemRect.top < listRect.top) list.scrollTop -= listRect.top - itemRect.top;
       else if (itemRect.bottom > listRect.bottom) list.scrollTop += itemRect.bottom - listRect.bottom;
