@@ -12,7 +12,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
-  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist to load from the CDN. -->
+  <!-- The same two entry points developers use. Swap ./dist for https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist to load from the CDN. -->
   <link rel="stylesheet" href="./dist/omorphia.min.css">
   <link rel="stylesheet" href="./showcase/showcase.css">
 </head>
@@ -45,8 +45,8 @@
     <header class="hero">
       <h1 class="ui-display">Interfaces shaped by light.</h1>
       <p>Omorphia is a dependency-free UI library for websites. Use one stylesheet, one script, and native custom elements. Directional illumination adds a restrained highlight without turning every surface into an outline.</p>
-      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.min.css"&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
+      <div class="snippet demo" style="margin-bottom:0"><div class="demo-code" style="border:0"><pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.js"&gt;&lt;/script&gt;</pre></div></div>
     </header>
 
     <section class="block" id="type">
@@ -330,7 +330,7 @@
     </section>
 
     <section class="block" id="effects">
-      <header><h2 class="ui-h1">Effects and overlays</h2><p>Directional edge illumination, page fades, vignettes and backdrop layers. Overlay effects follow the active theme and never block pointer input.</p></header>
+      <header><h2 class="ui-h1">Effects and overlays</h2><p>Directional edge illumination, page bottom fades and backdrop layers. Overlay effects follow the active theme and never block pointer input.</p></header>
       <div class="demo" data-layout="stack"><div class="demo-title">Live configuration</div><template>
           <div class="fx-config">
             <div class="fx-config-preview">
@@ -399,18 +399,18 @@
       <div class="demo" id="overlay-effects"><div class="demo-title">Page bottom fade</div><template>
         <div class="overlay-effect-preview">
           <div class="overlay-effect-preview-content">
-            <strong>A full-width page overlay</strong>
-            <p>The gradient sits above the entire page at the bottom of the viewport. It fades everything beneath it into the current page background.</p>
+            <strong>A main-content fade</strong>
+            <p>The gradient stays within the main content area and fades the page into its current background without covering the sidebar.</p>
             <span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
           <div class="ui-page-fade" aria-hidden="true"></div>
         </div>
-        <p class="ui-hint">Add one <code>.ui-page-fade</code> element as a direct child of <code>body</code>. It stays fixed to the viewport and does not intercept pointer input.</p>
+        <p class="ui-hint">Place one <code>.ui-page-fade</code> inside the content region it should cover. Set <code>--ui-page-fade-left</code> when the fade needs to start after a fixed sidebar.</p>
       </template></div>
     </section>
+    <div class="ui-page-fade" aria-hidden="true"></div>
   </div>
 </div>
-<div class="ui-page-fade" aria-hidden="true"></div>
 
 <ui-command-palette hotkey="mod+shift+k" placeholder="Search sections and actions…">
   <ui-command label="Open the invite dialog" group="Actions" icon="send" description="Demonstrates a declarative command" onselect="document.getElementById('invite-modal').show()"></ui-command>
