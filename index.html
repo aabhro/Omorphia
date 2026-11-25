@@ -396,30 +396,21 @@
           <ui-button onclick="Omorphia.theme.set('auto')">Match system</ui-button>
           <ui-button variant="subtle" onclick="['--ui-accent','--ui-accent-hover','--ui-accent-contrast'].forEach(v => document.documentElement.style.removeProperty(v))">Neutral accents</ui-button>
         </div></template></div>
-      <div class="demo" id="overlay-effects"><div class="demo-title">Page fades and viewport overlays</div><template>
-        <div class="overlay-effect-grid">
-          <div class="overlay-effect-preview">
-            <div class="overlay-effect-copy"><strong>Fade at the bottom</strong><p>Let long pages blend naturally into the page background.</p></div>
-            <div class="ui-overlay ui-overlay--fade-bottom" aria-hidden="true"></div>
+      <div class="demo" id="overlay-effects"><div class="demo-title">Page bottom fade</div><template>
+        <div class="overlay-effect-preview">
+          <div class="overlay-effect-preview-content">
+            <strong>A full-width page overlay</strong>
+            <p>The gradient sits above the entire page at the bottom of the viewport. It fades everything beneath it into the current page background.</p>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
-          <div class="overlay-effect-preview">
-            <div class="overlay-effect-copy"><strong>Fade from the sides</strong><p>Useful for horizontal carousels and edge-scrolling content.</p></div>
-            <div class="ui-overlay ui-overlay--fade-left" aria-hidden="true"></div>
-            <div class="ui-overlay ui-overlay--fade-right" aria-hidden="true"></div>
-          </div>
-          <div class="overlay-effect-preview">
-            <div class="overlay-effect-copy"><strong>Vignette</strong><p>Fade all four edges toward the active page surface.</p></div>
-            <div class="ui-overlay ui-overlay--vignette" aria-hidden="true"></div>
-          </div>
-          <div class="overlay-effect-preview overlay-effect-preview--backdrop">
-            <div class="overlay-effect-copy"><strong>Dim and blur</strong><p>Use behind a focused surface, not on the surface itself.</p></div>
-            <div class="ui-overlay ui-overlay--blur" aria-hidden="true"></div>
-          </div>
+          <div class="ui-page-fade" aria-hidden="true"></div>
         </div>
+        <p class="ui-hint">Add one <code>.ui-page-fade</code> element as a direct child of <code>body</code>. It stays fixed to the viewport and does not intercept pointer input.</p>
       </template></div>
     </section>
   </div>
 </div>
+<div class="ui-page-fade" aria-hidden="true"></div>
 
 <ui-command-palette hotkey="mod+shift+k" placeholder="Search sections and actions…">
   <ui-command label="Open the invite dialog" group="Actions" icon="send" description="Demonstrates a declarative command" onselect="document.getElementById('invite-modal').show()"></ui-command>
