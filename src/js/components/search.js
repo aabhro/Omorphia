@@ -1,7 +1,15 @@
 import { define, h, uid, emit, bool, fuzzy, highlight, floatEl, showFloat, hideFloat, place, whileOpen, inheritTheme, debounce } from '../core.js';
 import { icon } from '../icons.js';
 
-const norm = (x) => (typeof x === 'string' ? { label: x, value: x } : { value: x.label, ...x });
+const norm = (item) => {
+  if (typeof item === 'string') return { label: item, value: item };
+  if (!item || typeof item !== 'object') {
+    const label = String(item ?? '');
+    return { label, value: item };
+  }
+  const label = String(item.label ?? item.value ?? '');
+  return { ...item, label, value: item.value ?? label };
+};
 
 /** <ui-search placeholder="Search…" autocomplete min-chars="1" debounce="150" max="8" loading name label empty-text>
  *  JS: el.data = [...]  el.suggestions = [...]  el.source = async (query, signal) => items  el.renderItem = (item, {query}) => Node|string
@@ -63,13 +71,26 @@ export class UISearch extends HTMLElement {
     if (bool(this, 'autocomplete')) this._q(this.input.value);
   }
   async query(q) {
-    const requestId = (this._queryId = (this._queryId || 0) + 1);\n    const min = +(this.getAttribute('min-chars') ?? 1), max = +(this.getAttribute('max') ?? 8); this._abort?.abort();
+    const requestId = (this._queryId = (this._queryId || 0) + 1);\n    const rawMin = Number(this.getAttribute('min-chars') ?? 1);
+    const rawMax = Number(this.getAttribute('max') ?? 8);
+    const min = Number.isInteger(rawMin) && rawMin >= 0 ? rawMin : 1;
+    const max = Number.isInteger(rawMax) && rawMax > 0 ? rawMax : 8;
+    this._abort?.abort();
     if (q.trim().length < min) { this.items = this.suggestions.map(norm).slice(0, max); this.title = 'Suggestions'; this.state = this.items.length ? 'ready' : 'idle'; return this.renderPanel(); }
     this.title = '';
     if (this.source) {
       const ac = (this._abort = new AbortController()); this.state = 'loading'; this.renderPanel();
-      try { const r = await this.source(q, ac.signal); if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return; this.items = (r || []).map(norm).slice(0, max); this.state = this.items.length ? 'ready' : 'empty'; }
-      catch (err) { if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return; this.items = []; this.state = 'error'; }
+      try {
+        const results = await this.source(q, ac.signal);
+        if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return;
+        if (!Array.isArray(results)) throw new TypeError('Search source must return an array');
+        this.items = results.map(norm).slice(0, max);
+        this.state = this.items.length ? 'ready' : 'empty';
+      } catch (error) {
+        if (ac.signal.aborted || requestId !== this._queryId || !this.isConnected) return;
+        this.items = [];
+        this.state = 'error';
+      }
     } else {
       this.items = this.data.map(norm).map((it) => ({ it, m: fuzzy(it.label, q) || fuzzy([it.description, ...(it.keywords || [])].filter(Boolean).join(' '), q) && { score: 0, ranges: [] } })).filter((x) => x.m).sort((a, b) => b.m.score - a.m.score).slice(0, max).map((x) => x.it);
       this.state = this.items.length ? 'ready' : 'empty';
