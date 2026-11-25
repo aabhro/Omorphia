@@ -5,7 +5,7 @@
   <p><strong>A framework-free UI component library for the browser.</strong></p>
   <p>Native custom elements. Plain CSS. CDN-first delivery.</p>
   <p>
-    <img src="https://img.shields.io/badge/version-1.2.1-111111?style=flat-square" alt="Version 1.2.1">
+    <img src="https://img.shields.io/badge/version-1.3.2-111111?style=flat-square" alt="Version 1.2.1">
     <img src="https://img.shields.io/badge/framework-free-111111?style=flat-square" alt="Framework free">
     <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
   </p>
@@ -112,10 +112,10 @@ Use the classic bundle when you want the global <code>Omorphia</code> API.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"
 >
 
-<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.js"></script>
 
 <ui-button variant="primary" icon="save">Save changes</ui-button>
 <ui-command-palette></ui-command-palette>
@@ -141,11 +141,11 @@ Load the stylesheet separately, then import the module in the browser.
 ~~~html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.min.css"
+  href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.min.css"
 >
 
 <script type="module">
-  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/omorphia.esm.min.js';
+  import * as Omorphia from 'https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/omorphia.esm.min.js';
 
   Omorphia.toast({
     title: 'Ready',
@@ -165,10 +165,10 @@ Load the stylesheet separately, then import the module in the browser.
 Load <code>core.min.css</code> first. It contains the design tokens, base styles, and edge effect. Add the modules required by your interface.
 
 ~~~html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/css/core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/css/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/css/forms.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.1/dist/css/feedback.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/forms.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aabhro/Omorphia@v1.3.2/dist/css/feedback.min.css">
 ~~~
 
 Available modules: <code>button</code>, <code>forms</code>, <code>nav</code>, <code>feedback</code>, <code>containers</code>, <code>advanced</code>, and <code>overlays</code>.
@@ -180,7 +180,7 @@ The complete stylesheet is <a href="dist/omorphia.min.css"><code>dist/omorphia.m
 ### Versioning and network requirements
 
 - **Development:** use the <code>@main</code> URLs to follow the current default branch.
-- **Production:** pin an exact release tag, such as <code>@v1.3.1</code>, so deployed projects use a known revision.
+- **Production:** pin an exact release tag, such as <code>@v1.3.2</code>, so deployed projects use a known revision.
 - **Online requirement:** the browser must be able to reach <code>cdn.jsdelivr.net</code>. CDN imports do not work offline unless the project deliberately hosts the files locally.
 - **Content Security Policy:** allow <code>https://cdn.jsdelivr.net</code> in the relevant <code>style-src</code> and <code>script-src</code> directives.
 - **ES modules:** load the module in the browser runtime. Keep browser-only imports out of server-side rendering entry points.
@@ -472,7 +472,7 @@ Use one fixed gradient overlay to fade the entire page at the bottom of the view
 
 </details>
 
-Place it once as a direct child of <code>body</code>, at the end of the document. Adjust its height with <code>--ui-page-fade-height</code> (default <code>144px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
+Place it once inside the content region it should cover. For layouts with a fixed sidebar, keep it inside the main content region and set <code>--ui-page-fade-left</code> to the sidebar width. Adjust its height with <code>--ui-page-fade-height</code> (default <code>144px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
 
 <h2 align="center" id="repository-map"><img src="assets/icons/terminal.svg" width="18" height="18" alt=""> Repository map</h2>
 
