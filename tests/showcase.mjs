@@ -99,7 +99,7 @@ assert.ok(d.querySelector('[data-fx-preset="balanced"]'), 'live configuration pr
 assert.ok(d.getElementById('fx-copy'), 'live configuration copy action renders');
 assert.equal(d.querySelectorAll('#overlay-effects .overlay-effect-preview').length, 1, 'one page fade preview renders');
 assert.ok(d.querySelector('#overlay-effects .ui-page-fade'), 'the preview overlays the full sample page');
-assert.equal(d.querySelectorAll('body > .ui-page-fade').length, 1, 'one viewport fade is attached to the page');
+assert.equal(d.querySelectorAll('.main > .ui-page-fade').length, 1, 'one fade is attached to the main content, not the sidebar');
 const showcaseStyles = readFileSync('showcase/showcase.css', 'utf8');
 const popoverStyleStart = showcaseStyles.indexOf('.ui-popover-panel {');
 const popoverStyleEnd = showcaseStyles.indexOf('}', popoverStyleStart);
