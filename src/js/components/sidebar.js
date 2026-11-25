@@ -57,7 +57,15 @@ export class UISidebar extends HTMLElement {
     this._esc = (e) => e.key === 'Escape' && this.mobile && this.hasAttribute('open') && this.closeMobile();
     document.addEventListener('keydown', this._esc); this.applyMode(); this.sync();
   }
-  disconnectedCallback() { this._mq?.removeEventListener('change', this._mqh); document.removeEventListener('keydown', this._esc); this.scrim?.remove(); }
+  disconnectedCallback() {
+    this._mq?.removeEventListener('change', this._mqh);
+    document.removeEventListener('keydown', this._esc);
+    this.scrim?.remove();
+    this.scrim = null;
+    this._mq = null;
+    this._mqh = null;
+    this._esc = null;
+  }
   attributeChangedCallback(n) { if (!this.nav) return; if (n === 'breakpoint') { this.disconnectedCallback(); this.connectedCallback(); } else this.sync(); }
   get mobile() { return this.hasAttribute('data-mobile'); }
   get collapsed() { return this.hasAttribute('collapsed'); }
