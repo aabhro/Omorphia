@@ -54,6 +54,13 @@ let floatSequence = 0;
 const activeFloats = new Set();
 let floatThemeListenerInstalled = false;
 
+function resolveThemeScope(context) {
+  for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-ui-theme')) return node._uiThemeScope || node;
+  }
+  return document.documentElement;
+}
+
 function inheritedThemeValue(context, name) {
   const computed = getComputedStyle(context).getPropertyValue(name);
   if (computed) return computed;
@@ -68,10 +75,10 @@ function syncFloatThemes(event) {
   const changed = event.target;
   for (const el of activeFloats) {
     const context = el._uiFloatThemeSource;
-    if (!context?.isConnected || (changed !== context && !changed?.contains?.(context))) continue;
-    const mode = context.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
-    if (mode) el.setAttribute('data-ui-theme', mode);
-    else el.removeAttribute('data-ui-theme');
+    const scope = el._uiThemeScope || resolveThemeScope(context);
+    if (!context?.isConnected || !scope?.isConnected || (changed !== scope && !changed?.contains?.(scope))) continue;
+    const mode = scope.getAttribute('data-ui-theme') || 'dark';
+    el.setAttribute('data-ui-theme', mode);
     for (const [name] of el._uiFloatSavedVars || []) {
       const value = inheritedThemeValue(context, name);
       if (value) el.style.setProperty(name, value);
@@ -107,6 +114,7 @@ function portalFloat(el) {
   }
   const inherited = [];
   el._uiFloatThemeSource = el._uiThemeSource || el.parentElement;
+  el._uiThemeScope ||= resolveThemeScope(el._uiFloatThemeSource);
   if (typeof getComputedStyle === 'function') {
     const computed = getComputedStyle(el);
     const context = el._uiFloatThemeSource;
@@ -151,6 +159,7 @@ function restoreFloat(el) {
   el._uiFloatPlaceholder = null;
   activeFloats.delete(el);
   el._uiFloatThemeSource = null;
+  el._uiThemeScope = null;
   for (const [name, value, priority] of el._uiFloatSavedVars || []) {
     if (value) el.style.setProperty(name, value, priority);
     else el.style.removeProperty(name);
@@ -211,8 +220,9 @@ export function morphSurface(anchor, surface, opening = true) {
 
 export function inheritTheme(from, to) {
   to._uiThemeSource = from;
-  const t = from.closest('[data-ui-theme]')?.getAttribute('data-ui-theme');
-  if (t) to.setAttribute('data-ui-theme', t); else to.removeAttribute('data-ui-theme');
+  const scope = resolveThemeScope(from);
+  to._uiThemeScope = scope;
+  to.setAttribute('data-ui-theme', scope.getAttribute('data-ui-theme') || 'dark');
 }
 
 /* Position a floating surface against the viewport, flipping only when the requested side lacks room. */
