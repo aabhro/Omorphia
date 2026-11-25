@@ -87,7 +87,7 @@ try {
     }
     throw new Error(`Timed out: ${description}`);
   };
-  const center = async (selector) => evaluate(`(() => {
+  const center = async (selector) => evaluate(`(async () => {
     const el = document.querySelector(${JSON.stringify(selector)});
     if (!el) throw new Error('Missing element: ' + ${JSON.stringify(selector)});
     const list = el.closest?.('.ui-time-list');
@@ -97,6 +97,7 @@ try {
       if (itemRect.top < listRect.top) list.scrollTop -= listRect.top - itemRect.top;
       else if (itemRect.bottom > listRect.bottom) list.scrollTop += itemRect.bottom - listRect.bottom;
     } else el.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const rect = el.getBoundingClientRect();
     if (!rect.width || !rect.height) throw new Error('Element has no hit area: ' + ${JSON.stringify(selector)});
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
