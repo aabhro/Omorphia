@@ -267,7 +267,7 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   const lastDay = picker.days.querySelector('[data-date="2026-11-30"]');
   lastDay.focus();
   lastDay.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
-  assert.equal(d.activeElement, lastDay, 'keyboard navigation does not lose focus at max');
+  assert.equal(d.activeElement.dataset.date, '2026-11-30', 'keyboard navigation clamps focus at max');
   picker.disabled = true;
   picker.clearButton.click();
   assert.equal(picker.value, '2026-11-30', 'a disabled picker cannot be cleared');
