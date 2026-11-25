@@ -115,3 +115,5 @@ section.block > header p { margin: 6px 0 0; color: var(--ui-text-muted); max-wid
 .overlay-effect-preview-content p { margin: 0; color: var(--ui-text-muted); font-size: var(--ui-text-xs); line-height: 1.6; }
 .overlay-effect-preview-content span { display: block; height: 4px; width: 70%; background: var(--ui-text-faint); opacity: .24; }
 @media (max-width: 560px) { .picker-demo-frame { grid-template-columns: minmax(0, 1fr); gap: 16px; } .picker-demo-unit + .picker-demo-unit { padding-top: 14px; border-top: 1px solid var(--ui-border); } }
+
+.overlay-effect-preview .ui-page-fade{position:absolute;height:64px;z-index:1;}
