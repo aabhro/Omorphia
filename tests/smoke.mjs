@@ -416,7 +416,7 @@ await t('floating morph and overlay surfaces avoid visible borders', () => {
   assert.match(feedback, /\.ui-toast\{[^}]*border:0/);
   assert.match(containers, /grid-template-rows:0fr/);
   assert.match(containers, /prefers-reduced-motion:reduce/);
-  assert.match(readFileSync('src/js/core.js', 'utf8'), /function morphSurface/);
+  assert.match(readFileSync('src/js/core/floating.js', 'utf8'), /function morphSurface/);
   assert.match(readFileSync('src/js/components/popover.js', 'utf8'), /morphSurface\(this\.trigger/);
 });
 
