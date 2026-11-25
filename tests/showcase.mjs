@@ -13,7 +13,7 @@ assert.ok([...d.querySelectorAll('.demo-code pre')].every((p) => p.textContent.t
 for (const s of ['type', 'buttons', 'inputs', 'navigation', 'feedback', 'containers', 'advanced', 'effects']) assert.ok(d.getElementById(s), s);
 const sourceHtml = readFileSync('index.html', 'utf8');
 assert.doesNotMatch(sourceHtml, /<(?:button|input|textarea|select|option|details)\b/i, 'showcase authors custom controls, not raw native widgets');
-for (const name of ['ui-input', 'ui-textarea', 'ui-checkbox', 'ui-radio', 'ui-switch', 'ui-range', 'ui-option', 'ui-select', 'ui-date-picker', 'ui-time-picker', 'ui-menu-item', 'ui-drawer', 'ui-accordion', 'ui-accordion-item']) {
+for (const name of ['ui-input', 'ui-textarea', 'ui-checkbox', 'ui-radio', 'ui-switch', 'ui-range', 'ui-option', 'ui-select', 'ui-date-picker', 'ui-time-picker', 'ui-menu-item', 'ui-drawer', 'ui-accordion', 'ui-accordion-item', 'ui-color-picker', 'ui-file-upload', 'ui-combobox', 'ui-multi-select', 'ui-number-input', 'ui-otp-input', 'ui-rich-text-editor', 'ui-data-table', 'ui-tree-view', 'ui-split-panel', 'ui-stepper', 'ui-step', 'ui-timeline', 'ui-timeline-item', 'ui-rating', 'ui-skeleton', 'ui-empty-state', 'ui-tour']) {
   assert.ok(dom.window.customElements.get(name), name + ' is registered');
 }
 assert.ok(d.querySelector('#i-name')?.matches('ui-input'), 'text fields use the custom input');
@@ -92,6 +92,13 @@ assert.equal(innerPopover.open, true, 'interacting inside the child panel leaves
 innerPopover.hide();
 outerPopover.hide();
 assert.ok(d.querySelectorAll('ui-menu-item').length >= 3, 'dropdown examples use custom menu items');
+const advancedNames = ['color-picker-demo','file-upload-demo','combobox-demo','multi-select-demo','number-demo','otp-demo','rich-editor-demo','data-table-demo','tree-view-demo','split-panel-demo','stepper-demo','rating-demo','tour-demo'];
+for (const id of advancedNames) assert.ok(d.getElementById(id), id + ' advanced example renders');
+assert.equal(d.getElementById('data-table-demo').data.length, 6, 'data table gets example rows');
+assert.equal(d.getElementById('tree-view-demo').visibleNodes().length, 6, 'tree renders expanded hierarchy');
+assert.equal(d.getElementById('tour-demo').steps.length, 3, 'tour has three walkthrough steps');
+assert.equal(d.getElementById('multi-select-demo').multiple, true, 'multi-select enables multiple values');
+assert.equal(d.getElementById('stepper-demo').steps.length, 3, 'stepper has three stages');
 const missing = [...d.querySelectorAll('ui-icon')].filter((i) => !i.querySelector('svg')).map((i) => i.getAttribute('name'));
 assert.deepEqual(missing, [], 'all icons render from the bundle: ' + missing);
 assert.ok(d.querySelector('#search-local').data.length > 10); assert.ok(d.getElementById('actions-menu').panel);

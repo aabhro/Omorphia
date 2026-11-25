@@ -13,8 +13,8 @@ const E = w.Omorphia, d = w.document; const tick = (ms = 0) => new Promise((r) =
 let passed = 0; const t = async (name, fn) => { await fn(); passed++; console.log('  ✓', name); };
 const mount = (html) => { const c = d.createElement('div'); c.innerHTML = html; d.body.append(c); return c; };
 
-await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config', 'UIInput', 'UITextarea', 'UICheckbox', 'UIRadio', 'UISwitch', 'UIRange', 'UIOption', 'UISelect', 'UIDatePicker', 'UITimePicker', 'UIDrawer', 'UIAccordion', 'UIAccordionItem', 'UIMenuItem']) assert.ok(E[k], k); });
-await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-command', 'ui-search', 'ui-sidebar', 'ui-sidebar-item', 'ui-input', 'ui-textarea', 'ui-checkbox', 'ui-radio', 'ui-switch', 'ui-range', 'ui-option', 'ui-select', 'ui-date-picker', 'ui-time-picker', 'ui-drawer', 'ui-accordion', 'ui-accordion-item', 'ui-menu-item']) assert.ok(w.customElements.get(n), n); });
+await t('exports Omorphia API', () => { assert.ok(E.version); for (const k of ['toast', 'confirm', 'commands', 'icons', 'theme', 'config', 'UIInput', 'UITextarea', 'UICheckbox', 'UIRadio', 'UISwitch', 'UIRange', 'UIOption', 'UISelect', 'UIDatePicker', 'UITimePicker', 'UIDrawer', 'UIAccordion', 'UIAccordionItem', 'UIMenuItem', 'UIColorPicker', 'UIFileUpload', 'UICombobox', 'UIMultiSelect', 'UINumberInput', 'UIOtpInput', 'UIRichTextEditor', 'UIDataTable', 'UITreeView', 'UISplitPanel', 'UIStepper', 'UIStep', 'UITimeline', 'UITimelineItem', 'UIRating', 'UISkeleton', 'UIEmptyState', 'UITour']) assert.ok(E[k], k); });
+await t('registers every custom element once', () => { for (const n of ['ui-button', 'ui-icon', 'ui-tooltip', 'ui-modal', 'ui-popover', 'ui-dropdown', 'ui-tabs', 'ui-tab', 'ui-pagination', 'ui-command-palette', 'ui-command', 'ui-search', 'ui-sidebar', 'ui-sidebar-item', 'ui-input', 'ui-textarea', 'ui-checkbox', 'ui-radio', 'ui-switch', 'ui-range', 'ui-option', 'ui-select', 'ui-date-picker', 'ui-time-picker', 'ui-drawer', 'ui-accordion', 'ui-accordion-item', 'ui-menu-item', 'ui-color-picker', 'ui-file-upload', 'ui-combobox', 'ui-multi-select', 'ui-number-input', 'ui-otp-input', 'ui-rich-text-editor', 'ui-data-table', 'ui-tree-view', 'ui-split-panel', 'ui-stepper', 'ui-step', 'ui-timeline', 'ui-timeline-item', 'ui-rating', 'ui-skeleton', 'ui-empty-state', 'ui-tour']) assert.ok(w.customElements.get(n), n); });
 await t('Modernimal neutral theme and opaque overlay defaults', () => {
   const css = readFileSync('dist/omorphia.css', 'utf8');
   assert.match(css, /--ui-bg:\s*#0a0a0a/);
@@ -125,7 +125,7 @@ await t('AI component catalog matches registered elements and every agent entry 
   const inventory = catalog.slice(inventoryStart, inventoryEnd);
   const documented = new Set([...inventory.matchAll(/&lt;(ui-[a-z-]+)&gt;/g)].map((match) => match[1]));
   assert.deepEqual([...documented].sort(), [...registered].sort(), 'catalog lists exactly the elements registered by source');
-  assert.equal(registered.size, 28, 'expected current Omorphia custom-element count');
+  assert.equal(registered.size, 46, 'expected current Omorphia custom-element count');
   for (const falseTag of ['ui-card', 'ui-alert', 'ui-badge', 'ui-avatar', 'ui-progress', 'ui-skeleton', 'ui-collapsible']) {
     assert.ok(catalog.includes('<code>&lt;' + falseTag + '&gt;</code>'), falseTag + ' is explicitly identified as a non-element');
   }
