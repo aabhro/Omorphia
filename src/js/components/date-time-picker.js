@@ -1,34 +1,15 @@
 import { define, h, emit, uid } from '../core.js';
-
-const pad = (value) => String(value).padStart(2, '0');
-const isoDate = (date) => date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
-const parseDate = (value) => {
-  if (!value) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const date = new Date(0);
-  date.setHours(0, 0, 0, 0);
-  date.setFullYear(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
-};
-const dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
-const yearMonth = (date) => date.getFullYear() * 12 + date.getMonth();
-const weekStartOf = (value) => {
-  const parsed = Number.parseInt(value ?? '0', 10);
-  return Number.isFinite(parsed) ? Math.min(6, Math.max(0, parsed)) : 0;
-};
-const shiftMonth = (date, amount) => {
-  const target = new Date(date.getFullYear(), date.getMonth() + amount, 1);
-  target.setDate(Math.min(date.getDate(), new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()));
-  return target;
-};
+import { pad, isoDate, parseDate, dateLabel, yearMonth, weekStartOf, shiftMonth, isDateWithinBounds, clampDateToBounds } from '../core/date.js';
+import { parseTime, defaultTime, parseTypedTime as parseTimeText, normalizeTimeStep } from '../core/time.js';
 
 export class UIDatePicker extends HTMLElement {
   static observedAttributes = ['value', 'min', 'max', 'disabled', 'placeholder', 'locale', 'week-start', 'placement', 'name', 'label'];
   connectedCallback() {
     if (this.popoverElement) return;
-    this._value = parseDate(this.getAttribute('value')) ? this.getAttribute('value') : '';
+    const initialValue = parseDate(this.getAttribute('value'));
+    this._value = isDateWithinBounds(initialValue, this.getAttribute('min'), this.getAttribute('max')) ? isoDate(initialValue) : '';
     const initial = parseDate(this._value) || new Date();
+    this._activeDate = this._value || (isDateWithinBounds(initial, this.getAttribute('min'), this.getAttribute('max')) ? isoDate(initial) : '');
     this.view = new Date(initial.getFullYear(), initial.getMonth(), 1);
     this.trigger = h('button', { class: 'ui-date-trigger', type: 'button', slot: 'trigger', 'aria-haspopup': 'dialog', 'aria-label': this.getAttribute('label') || 'Choose date' });
     this.valueLabel = h('span', { class: 'ui-date-value' });
@@ -41,7 +22,7 @@ export class UIDatePicker extends HTMLElement {
     this.next = h('button', { class: 'ui-calendar-nav', type: 'button', 'aria-label': 'Next month' }, h('ui-icon', { name: 'chevron-right' }));
     this.header.append(this.prev, this.monthLabel, this.next);
     this.weekdays = h('div', { class: 'ui-calendar-weekdays', role: 'row' });
-    this.days = h('div', { class: 'ui-calendar-days', role: 'grid', 'aria-label': 'Calendar days' });
+    this.days = h('div', { class: 'ui-calendar-days', role: 'grid', 'aria-label': 'Calendar days', 'aria-roledescription': 'calendar' });
     this.footer = h('div', { class: 'ui-calendar-footer' });
     this.clearButton = h('button', { class: 'ui-calendar-text-action', type: 'button', text: 'Clear' });
     this.todayButton = h('button', { class: 'ui-calendar-text-action', type: 'button', text: 'Today' });
@@ -67,19 +48,29 @@ export class UIDatePicker extends HTMLElement {
     if (!this.popoverElement) return;
     if (name === 'value') {
       const date = parseDate(newValue);
-      this._value = date ? isoDate(date) : '';
-      if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+      this._value = isDateWithinBounds(date, this.getAttribute('min'), this.getAttribute('max')) ? isoDate(date) : '';
+      this._activeDate = this._value;
+      if (date && this._value) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
     } else if (name === 'min' || name === 'max') {
       const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
-      if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
-      if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
+      if (min && max && min > max) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+      else {
+        if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+        if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
+      }
+      const current = parseDate(this._value);
+      if (current && !isDateWithinBounds(current, this.getAttribute('min'), this.getAttribute('max'))) {
+        this._value = ''; this._activeDate = ''; this.setAttribute('value', '');
+      }
     }
     this.sync();
   }
   get value() { return this._value || ''; }
   set value(value) {
-    const valid = parseDate(String(value || ''));
+    const parsed = parseDate(String(value || ''));
+    const valid = isDateWithinBounds(parsed, this.getAttribute('min'), this.getAttribute('max')) ? parsed : null;
     this._value = valid ? isoDate(valid) : '';
+    this._activeDate = this._value;
     if (valid) this.view = new Date(valid.getFullYear(), valid.getMonth(), 1);
     this.setAttribute('value', this._value);
     if (this.calendar) this.sync();
@@ -95,11 +86,9 @@ export class UIDatePicker extends HTMLElement {
   isDisabled(date) {
     const iso = isoDate(date);
     const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
-    return (min && iso < isoDate(min)) || (max && iso > isoDate(max)) || this.disabled;
+    return this.disabled || !isDateWithinBounds(date, min ? isoDate(min) : '', max ? isoDate(max) : '');
   }
   sync() {
-    const parsed = parseDate(this.getAttribute('value'));
-    if (this.hasAttribute('value')) this._value = parsed ? isoDate(parsed) : '';
     this.trigger.disabled = this.disabled;
     this.trigger.setAttribute('aria-disabled', String(this.disabled));
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute('locale')) : (this.getAttribute('placeholder') || 'Choose date');
@@ -111,7 +100,7 @@ export class UIDatePicker extends HTMLElement {
     this.next.disabled = this.disabled || !!(max && monthValue >= yearMonth(max));
     this.clearButton.disabled = this.disabled || !this.value;
     this.todayButton.disabled = this.disabled || this.isDisabled(new Date());
-    this.hiddenValue.name = this.disabled || this._invalidValue ? '' : (this.getAttribute('name') || '');
+    this.hiddenValue.name = this.disabled ? '' : (this.getAttribute('name') || '');
     this.hiddenValue.value = this.value;
     this.renderCalendar();
   }
@@ -127,9 +116,11 @@ export class UIDatePicker extends HTMLElement {
       const day = new Date(2024, 0, 7 + ((weekStart + i) % 7));
       return h('span', { role: 'columnheader', text: formatter.format(day) });
     }));
-    const items = [];
-    for (let i = 0; i < 42; i++) {
-      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    const dates = Array.from({ length: 42 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+    const enabledDates = dates.filter((date) => !this.isDisabled(date));
+    const active = enabledDates.find((date) => isoDate(date) === this._activeDate) || enabledDates.find((date) => isoDate(date) === this.value) || enabledDates.find((date) => isoDate(date) === isoDate(new Date())) || enabledDates[0];
+    this._activeDate = active ? isoDate(active) : '';
+    const items = dates.map((date) => {
       const iso = isoDate(date), outside = date.getMonth() !== month, selected = iso === this.value;
       const button = h('button', {
         class: 'ui-calendar-day' + (outside ? ' is-outside' : '') + (selected ? ' is-selected' : ''),
@@ -138,16 +129,17 @@ export class UIDatePicker extends HTMLElement {
         'aria-selected': String(selected),
         'aria-current': iso === isoDate(new Date()) ? 'date' : null,
         disabled: this.isDisabled(date),
-        tabindex: selected ? '0' : '-1'
+        tabindex: iso === this._activeDate ? '0' : '-1'
       }, String(date.getDate()));
-      items.push(button);
-    }
+      return button;
+    });
     this.days.replaceChildren(...items);
   }
   changeMonth(amount) {
     if (this.disabled) return;
     const target = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
     const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
+    if (min && max && min > max) return;
     if (min && yearMonth(target) < yearMonth(min)) return;
     if (max && yearMonth(target) > yearMonth(max)) return;
     this.view = target;
@@ -157,12 +149,12 @@ export class UIDatePicker extends HTMLElement {
   syncNavigation() {
     if (!this.prev || !this.next) return;
     const min = parseDate(this.getAttribute('min')), max = parseDate(this.getAttribute('max'));
-    const month = yearMonth(this.view);
-    this.prev.disabled = this.disabled || !!(min && month <= yearMonth(min));
-    this.next.disabled = this.disabled || !!(max && month >= yearMonth(max));
+    const month = yearMonth(this.view), invalidRange = !!(min && max && min > max);
+    this.prev.disabled = this.disabled || invalidRange || !!(min && month <= yearMonth(min));
+    this.next.disabled = this.disabled || invalidRange || !!(max && month >= yearMonth(max));
   }
   focusCurrentDay() {
-    const target = this.days.querySelector('[data-date="' + (this.value || isoDate(new Date())) + '"]:not(:disabled)') || this.days.querySelector('button:not(:disabled)');
+    const target = this.days.querySelector('[data-date="' + this._activeDate + '"]:not(:disabled)') || this.days.querySelector('button:not(:disabled)');
     target?.focus({ preventScroll: true });
   }
   onDayKey(event) {
@@ -180,7 +172,9 @@ export class UIDatePicker extends HTMLElement {
     else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.select(event.target.dataset.date); return; }
     else return;
     event.preventDefault();
-    if (this.isDisabled(next)) return;
+    next = clampDateToBounds(next, this.getAttribute('min'), this.getAttribute('max'));
+    if (!next || this.isDisabled(next)) return;
+    this._activeDate = isoDate(next);
     if (next.getMonth() !== this.view.getMonth() || next.getFullYear() !== this.view.getFullYear()) this.view = new Date(next.getFullYear(), next.getMonth(), 1);
     this.renderCalendar();
     this.syncNavigation();
@@ -191,6 +185,7 @@ export class UIDatePicker extends HTMLElement {
     const date = parseDate(value);
     if (date && this.isDisabled(date)) return;
     this._value = date ? isoDate(date) : '';
+    this._activeDate = this._value;
     this.setAttribute('value', this._value);
     if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
     this.sync();
@@ -200,13 +195,6 @@ export class UIDatePicker extends HTMLElement {
   }
 }
 define('ui-date-picker', UIDatePicker);
-
-const parseTime = (value) => {
-  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(value || ''));
-  return match ? { hour: Number(match[1]), minute: Number(match[2]) } : null;
-};
-
-const defaultTime = () => ({ hour: 9, minute: 0 });
 
 export class UITimePicker extends HTMLElement {
   static observedAttributes = ['value', 'disabled', 'placeholder', 'format', 'step', 'placement', 'label', 'name'];
@@ -293,10 +281,7 @@ export class UITimePicker extends HTMLElement {
   }
   renderOptions() {
     const hour = this._time.hour, displayHour = this.is12Hour ? ((hour + 11) % 12) + 1 : hour;
-    const requestedStep = Number(this.getAttribute('step') || 5);
-    const step = Number.isInteger(requestedStep) && requestedStep >= 1 && requestedStep <= 30
-      ? requestedStep
-      : 5;
+    const step = normalizeTimeStep(this.getAttribute('step'));
     const hours = this.is12Hour ? Array.from({ length: 12 }, (_, i) => i + 1) : Array.from({ length: 24 }, (_, i) => i);
     this.hourList.replaceChildren(...hours.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-hour': String(this.is12Hour ? n % 12 : n), 'aria-selected': String(displayHour === n), tabindex: displayHour === n ? '0' : '-1' }, this.is12Hour ? String(n) : pad(n))));
     const minutes = [];
@@ -305,14 +290,7 @@ export class UITimePicker extends HTMLElement {
     minutes.sort((a, b) => a - b);
     this.minuteList.replaceChildren(...minutes.map((n) => h('button', { class: 'ui-time-option', type: 'button', role: 'option', 'data-minute': String(n), 'aria-selected': String(this._time.minute === n), tabindex: this._time.minute === n ? '0' : '-1' }, pad(n))));
   }
-  parseTypedTime(raw) {
-    const value = String(raw || '').trim();
-    let match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(value);
-    if (match) return { hour: Number(match[1]), minute: Number(match[2]) };
-    match = /^(0?[1-9]|1[0-2]):([0-5]\d)\s*(AM|PM)$/i.exec(value);
-    if (match) return { hour: (Number(match[1]) % 12) + (match[3].toUpperCase() === 'PM' ? 12 : 0), minute: Number(match[2]) };
-    return null;
-  }
+  parseTypedTime(raw) { return parseTimeText(raw); }
   handleTypedInput() {
     const parsed = this.parseTypedTime(this.input.value);
     this.input.setAttribute('aria-invalid', String(!parsed));

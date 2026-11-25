@@ -1,0 +1,282 @@
+/* Floating surfaces are portalled out of clipped ancestors, then promoted to the native top layer when available. */
+const hasPopover = () => typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
+let floatLayer = null;
+let floatSequence = 0;
+const activeFloats = new Set();
+let floatThemeListenerInstalled = false;
+
+function resolveThemeScope(context) {
+  for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-ui-theme')) return node._uiThemeScope || node;
+  }
+  return document.documentElement;
+}
+
+function inheritedThemeValue(context, name) {
+  const computed = getComputedStyle(context).getPropertyValue(name);
+  if (computed) return computed;
+  for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+    const inline = node.style?.getPropertyValue(name);
+    if (inline) return inline;
+  }
+  return '';
+}
+
+function syncFloatThemes(event) {
+  const changed = event.target;
+  for (const el of activeFloats) {
+    const context = el._uiFloatThemeSource;
+    const scope = el._uiThemeScope || resolveThemeScope(context);
+    if (!context?.isConnected || !scope?.isConnected || (changed !== scope && !changed?.contains?.(scope))) continue;
+    const mode = scope.getAttribute('data-ui-theme') || 'dark';
+    el.setAttribute('data-ui-theme', mode);
+    for (const [name] of el._uiFloatSavedVars || []) {
+      const value = inheritedThemeValue(context, name);
+      if (value) el.style.setProperty(name, value);
+    }
+  }
+}
+
+function watchFloatThemes() {
+  if (floatThemeListenerInstalled || typeof document === 'undefined') return;
+  document.addEventListener('ui-theme', syncFloatThemes);
+  floatThemeListenerInstalled = true;
+}
+function unwatchFloatThemes() {
+  if (!floatThemeListenerInstalled || activeFloats.size) return;
+  document.removeEventListener('ui-theme', syncFloatThemes);
+  floatThemeListenerInstalled = false;
+}
+
+function getFloatLayer() {
+  if (floatLayer?.isConnected) return floatLayer;
+  floatLayer = document.querySelector('[data-ui-floating-layer]');
+  if (!floatLayer) {
+    floatLayer = document.createElement('div');
+    floatLayer.setAttribute('data-ui-floating-layer', '');
+    Object.assign(floatLayer.style, {
+      position: 'fixed', inset: '0', zIndex: '1800',
+      pointerEvents: 'none', isolation: 'isolate', overflow: 'visible'
+    });
+    (document.body || document.documentElement).append(floatLayer);
+  }
+  return floatLayer;
+}
+
+function portalFloat(el) {
+  if (el._uiFloatMode && el.parentNode === floatLayer) {
+    el.style.zIndex = String(++floatSequence);
+    return;
+  }
+  const inherited = [];
+  el._uiFloatThemeSource = el._uiThemeSource || el.parentElement;
+  el._uiThemeScope ||= resolveThemeScope(el._uiFloatThemeSource);
+  if (typeof getComputedStyle === 'function') {
+    const computed = getComputedStyle(el);
+    const context = el._uiFloatThemeSource;
+    const inheritedTheme = context ? getComputedStyle(context) : null;
+    const names = new Set();
+    for (const style of [computed, inheritedTheme]) {
+      if (!style) continue;
+      for (let i = 0; i < style.length; i++) {
+        const name = style[i];
+        if (name.startsWith('--')) names.add(name);
+      }
+    }
+    for (const name of names) {
+      const value = (context && inheritedThemeValue(context, name)) || computed.getPropertyValue(name);
+      if (value) inherited.push([name, value, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]);
+    }
+  }
+  // Keep the floating parent relationship so child popovers do not dismiss their owner.
+  el._uiFloatParent = el.parentElement?.closest('.ui-float[data-open]') || null;
+  if (el.parentNode && !el._uiFloatPlaceholder) {
+    el._uiFloatPlaceholder = document.createComment('ui-float-origin');
+    el.parentNode.insertBefore(el._uiFloatPlaceholder, el);
+  }
+  const layer = getFloatLayer();
+  if (el.parentNode !== layer) layer.append(el);
+  el._uiFloatSavedVars = inherited.map(([name, value, oldValue, priority]) => {
+    el.style.setProperty(name, value);
+    return [name, oldValue, priority];
+  });
+  activeFloats.add(el);
+  watchFloatThemes();
+  if (el._uiFloatSavedZ == null) el._uiFloatSavedZ = el.style.zIndex;
+  el.style.zIndex = String(++floatSequence);
+  el._uiFloatMode = 'portal';
+}
+
+function restoreFloat(el) {
+  const marker = el._uiFloatPlaceholder;
+  if (marker?.parentNode) marker.parentNode.insertBefore(el, marker);
+  else el.remove();
+  marker?.remove();
+  el._uiFloatPlaceholder = null;
+  activeFloats.delete(el);
+  el._uiFloatThemeSource = null;
+  el._uiThemeScope = null;
+  for (const [name, value, priority] of el._uiFloatSavedVars || []) {
+    if (value) el.style.setProperty(name, value, priority);
+    else el.style.removeProperty(name);
+  }
+  el._uiFloatSavedVars = null;
+  if (el._uiFloatSavedZ != null) el.style.zIndex = el._uiFloatSavedZ;
+  else el.style.removeProperty('z-index');
+  el._uiFloatSavedZ = null;
+  el._uiFloatParent = null;
+  el._uiFloatMode = null;
+  unwatchFloatThemes();
+}
+
+export function floatEl(el) {
+  el.classList.add('ui-float');
+  if (hasPopover()) el.setAttribute('popover', 'manual');
+  return el;
+}
+export function showFloat(el) {
+  el.setAttribute('data-open', '');
+  portalFloat(el);
+  if (hasPopover() && el.hasAttribute('popover')) {
+    try {
+      if (!el.matches(':popover-open')) el.showPopover();
+      el._uiFloatMode = 'native-portal';
+    } catch (_) {
+      el.removeAttribute('popover');
+    }
+  }
+}
+export function closeFloatChildren(parent) {
+  const depth = (el) => { let n = 0; for (let p = el._uiFloatParent; p; p = p._uiFloatParent) n++; return n; };
+  const children = [...activeFloats].filter((el) => {
+    for (let p = el._uiFloatParent; p; p = p._uiFloatParent) if (p === parent) return true;
+    return false;
+  }).sort((x,y) => depth(y)-depth(x));
+  for (const child of children) {
+    if (typeof child._uiFloatCloseFromParent === 'function') child._uiFloatCloseFromParent();
+    else hideFloat(child);
+  }
+}
+export function hideFloat(el) {
+  if (!el) return;
+  closeFloatChildren(el);
+  el.removeAttribute('data-open');
+  if (el._uiFloatMode === 'native-portal') {
+    try { if (el.matches(':popover-open')) el.hidePopover(); } catch (_) {}
+  }
+  if (el._uiFloatMode === 'portal' || el._uiFloatMode === 'native-portal') restoreFloat(el);
+}
+
+/* Morph a floating surface from the control that opened it. Uses geometry, not a generic fade. */
+export function morphSurface(anchor, surface, opening = true) {
+  if (!anchor || !surface || typeof surface.animate !== 'function') return null;
+  if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return null;
+  const a = anchor.getBoundingClientRect();
+  const b = surface.getBoundingClientRect();
+  if (!a.width || !a.height || !b.width || !b.height) return null;
+  const originX = ((a.left + a.width / 2 - b.left) / b.width) * 100;
+  const originY = ((a.top + a.height / 2 - b.top) / b.height) * 100;
+  const scaleX = Math.max(0.12, Math.min(1, a.width / b.width));
+  const scaleY = Math.max(0.12, Math.min(1, a.height / b.height));
+  surface.style.transformOrigin = originX + '% ' + originY + '%';
+  const from = { opacity: 0, transform: 'scale(' + scaleX + ',' + scaleY + ')' };
+  const to = { opacity: 1, transform: 'scale(1,1)' };
+  return surface.animate(opening ? [from, to] : [to, from], {
+    duration: opening ? 190 : 145,
+    easing: opening ? 'cubic-bezier(.16,1,.3,1)' : 'cubic-bezier(.4,0,1,1)',
+    fill: 'both'
+  });
+}
+
+export function inheritTheme(from, to) {
+  to._uiThemeSource = from;
+  const scope = resolveThemeScope(from);
+  to._uiThemeScope = scope;
+  to.setAttribute('data-ui-theme', scope.getAttribute('data-ui-theme') || 'dark');
+}
+
+/* Position a floating surface against the viewport, flipping only when the requested side lacks room. */
+export function place(anchor, floating, { placement = 'bottom', offset = 8, matchWidth = false } = {}) {
+  if (!anchor || !floating) return;
+  const a = anchor.getBoundingClientRect();
+  const vw = Math.max(1, document.documentElement.clientWidth || window.innerWidth);
+  const vh = Math.max(1, document.documentElement.clientHeight || window.innerHeight);
+  const pad = 8;
+  floating.style.minWidth = matchWidth ? `${a.width}px` : '';
+  floating.style.width = matchWidth ? `${a.width}px` : '';
+  floating.style.maxWidth = `${Math.max(120, vw - pad * 2)}px`;
+  // Native popovers default to inset: 0; clear all four edges before assigning viewport coordinates.
+  floating.style.inset = 'auto';
+  floating.style.right = 'auto';
+  floating.style.bottom = 'auto';
+  floating.style.maxHeight = '';
+  floating.style.overflowY = '';
+  floating.style.left = '0px';
+  floating.style.top = '0px';
+  const f = floating.getBoundingClientRect();
+  const [requestedSide, align = 'center'] = placement.split('-');
+  const opposite = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
+  let side = ['top', 'bottom', 'left', 'right'].includes(requestedSide) ? requestedSide : 'bottom';
+  const verticalRoom = (value) => value === 'bottom' ? vh - a.bottom - offset - pad : a.top - offset - pad;
+  const horizontalRoom = (value) => value === 'right' ? vw - a.right - offset - pad : a.left - offset - pad;
+
+  if (side === 'top' || side === 'bottom') {
+    if (f.height > verticalRoom(side) && verticalRoom(opposite[side]) > verticalRoom(side)) side = opposite[side];
+  } else if (f.width > horizontalRoom(side) && horizontalRoom(opposite[side]) > horizontalRoom(side)) {
+    side = opposite[side];
+  }
+
+  const verticalSide = side === 'top' || side === 'bottom'
+    ? side
+    : (a.top > vh - a.bottom ? 'top' : 'bottom');
+  const availableHeight = Math.max(80, Math.floor(verticalRoom(verticalSide)));
+  const maxHeight = Math.min(vh - pad * 2, availableHeight);
+  floating.style.maxHeight = `${maxHeight}px`;
+  floating.style.setProperty('--ui-float-available-height', `${maxHeight}px`);
+  if (f.height > maxHeight) floating.style.overflowY = 'auto';
+  const finalRect = floating.getBoundingClientRect();
+
+  let x, y;
+  if (side === 'top' || side === 'bottom') {
+    y = side === 'top' ? a.top - finalRect.height - offset : a.bottom + offset;
+    x = align === 'start' ? a.left : align === 'end' ? a.right - finalRect.width : a.left + (a.width - finalRect.width) / 2;
+  } else {
+    x = side === 'left' ? a.left - finalRect.width - offset : a.right + offset;
+    y = align === 'start' ? a.top : align === 'end' ? a.bottom - finalRect.height : a.top + (a.height - finalRect.height) / 2;
+  }
+  x = Math.max(pad, Math.min(x, vw - finalRect.width - pad));
+  y = Math.max(pad, Math.min(y, vh - Math.min(finalRect.height, maxHeight) - pad));
+  floating.style.left = `${Math.round(x)}px`;
+  floating.style.top = `${Math.round(y)}px`;
+  floating.setAttribute('data-placement', side);
+}
+
+/* Close handlers while open: outside pointerdown, Escape, reposition on scroll/resize. */
+export function whileOpen({ anchor, floating, onClose, reposition, escape = true }) {
+  const insideChildFloat = (target) => {
+    const layer = getFloatLayer();
+    return [...layer.querySelectorAll('.ui-float[data-open]')].some((panel) => {
+      if (!panel.contains(target)) return false;
+      for (let parent = panel._uiFloatParent; parent; parent = parent._uiFloatParent) {
+        if (parent === floating) return true;
+      }
+      return false;
+    });
+  };
+  const down = (e) => {
+    if (!floating.contains(e.target) && !anchor.contains(e.target) && !insideChildFloat(e.target)) onClose('outside');
+  };
+  const key = (e) => { if (e.key !== 'Escape' || insideChildFloat(e.target)) return; e.stopPropagation(); onClose('escape'); };
+  let frame = 0;
+  const move = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => { frame = 0; reposition(); });
+  };
+  document.addEventListener('pointerdown', down, true); if (escape) document.addEventListener('keydown', key, true);
+  window.addEventListener('resize', move, { passive: true }); window.addEventListener('scroll', move, { capture: true, passive: true });
+  return () => {
+    if (frame) cancelAnimationFrame(frame);
+    document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true);
+    window.removeEventListener('resize', move); window.removeEventListener('scroll', move, true);
+  };
+}

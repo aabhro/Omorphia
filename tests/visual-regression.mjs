@@ -1,0 +1,34 @@
+import {chromium} from 'playwright';
+import {createServer} from 'node:http';
+import {existsSync,mkdirSync,readFileSync} from 'node:fs';
+import {extname,resolve,sep} from 'node:path';
+import assert from 'node:assert/strict';
+const root=resolve(process.cwd()),output=resolve(root,'test-results/visual');mkdirSync(output,{recursive:true});
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.webp':'image/webp','.png':'image/png'};
+const server=createServer((req,res)=>{let p;try{p=decodeURIComponent(new URL(req.url,'http://localhost').pathname);}catch{res.writeHead(400).end();return;}const f=resolve(root,'.'+p);if(f!==root&&!f.startsWith(root+sep)){res.writeHead(403).end();return;}if(!existsSync(f)){res.writeHead(404).end();return;}res.writeHead(200,{'content-type':mime[extname(f)]||'application/octet-stream'});res.end(readFileSync(f));});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));const address=server.address(),browser=await chromium.launch({headless:true,args:['--no-sandbox']}),errors=[];
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1,reducedMotion:'reduce'});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:'+address.port+'/index.html',{waitUntil:'domcontentloaded'});await page.waitForSelector('#date-demo');
+ await page.waitForFunction(()=>!!document.querySelector('#date-demo')?.popoverElement?.panel);
+ await page.screenshot({path:resolve(output,'showcase-dark.png'),fullPage:true,animations:'disabled'});
+ const date=page.locator('#date-demo');await date.evaluate(el=>el.show());
+ const v=await date.evaluate(el=>{const p=el.popoverElement.panel,r=p.getBoundingClientRect(),s=getComputedStyle(p);return{position:s.position,pointerEvents:s.pointerEvents,width:Math.round(r.width),height:Math.round(r.height),left:Math.round(r.left),top:Math.round(r.top)};});
+ assert.equal(v.position,'fixed');assert.equal(v.pointerEvents,'auto');assert.ok(v.width>0&&v.height>0);assert.ok(v.left>=0&&v.top>=0&&v.left+v.width<=1440&&v.top+v.height<=1000);
+ await page.screenshot({path:resolve(output,'date-picker-open.png'),fullPage:true,animations:'disabled'});
+ await page.locator('[data-ui-floating-layer] .ui-calendar-day[data-date="2026-11-21"]').click();
+ assert.equal(await date.evaluate(el=>el.open),false,'selecting a date closes the calendar');
+ await page.waitForFunction(()=>!!document.querySelector('#nested-popover-outer')?.panel&&!!document.querySelector('#nested-popover-inner')?.panel);
+ await page.locator('#nested-popover-outer').evaluate(el=>{const child=document.querySelector('#nested-popover-inner');el.show();child.show();});
+ const n=await page.locator('#nested-popover-inner').evaluate(el=>{const r=el.panel.getBoundingClientRect();return{parented:!!el.panel._uiFloatParent,z:Number(el.panel.style.zIndex),w:Math.round(r.width),h:Math.round(r.height)};});
+ assert.ok(n.parented&&n.z>0&&n.w>0&&n.h>0);await page.screenshot({path:resolve(output,'nested-popovers-open.png'),fullPage:true,animations:'disabled'});
+ await page.locator('#nested-popover-outer').evaluate(el=>el.hide());await page.waitForTimeout(240);assert.equal(await page.locator('[data-ui-floating-layer] .ui-float[data-open]').count(),0);
+ await page.locator('html').evaluate(el=>el.setAttribute('data-ui-theme','light'));await page.screenshot({path:resolve(output,'showcase-light.png'),fullPage:true,animations:'disabled'});
+ await page.goto('http://127.0.0.1:'+address.port+'/playground/index.html',{waitUntil:'domcontentloaded'});await page.waitForSelector('#component-preview ui-button');
+ assert.equal(await page.locator('link[href="../dist/omorphia.min.css"]').evaluate(el=>!!el.sheet),true,'playground stylesheet loads successfully');
+ await page.screenshot({path:resolve(output,'playground-dark.png'),fullPage:true,animations:'disabled'});
+ await page.locator('#component-search').evaluate(el=>{el.input.value='date';el.input.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForFunction(()=>document.querySelector('#component-list').textContent.includes('Date picker'));await page.locator('#component-list ui-button').first().click();
+ assert.equal(await page.locator('#component-preview ui-date-picker').count(),1);await page.screenshot({path:resolve(output,'playground-date-picker.png'),fullPage:true,animations:'disabled'});
+ assert.deepEqual(errors,[]);console.log('Playwright visual regression checks passed. Screenshots saved to test-results/visual/.');
+}finally{await browser.close();await new Promise(r=>server.close(r));}

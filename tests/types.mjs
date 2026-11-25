@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const declarations=readFileSync('types/index.d.ts','utf8');
+const catalog=readFileSync('AI/COMPONENT-CATALOG.md','utf8');
+const start=catalog.indexOf('## 2. Actual custom elements');
+const end=catalog.indexOf('### ',start+10);
+assert.ok(start>=0&&end>start,'component inventory section exists');
+const inventory=catalog.slice(start,end);
+const tags=[...inventory.matchAll(/&lt;(ui-[a-z-]+)&gt;/g)].map(match=>match[1]);
+for(const tag of new Set(tags)) assert.ok(declarations.includes("'"+tag+"':"),'TypeScript tag map includes '+tag);
+for(const symbol of ['version','theme','config','toast','confirm','commands','icons','icon','iconConfig','UIDatePicker','UITimePicker']) assert.match(declarations,new RegExp('\\b'+symbol+'\\b'),'TypeScript declaration includes '+symbol);
+console.log('TypeScript declaration checks passed.');

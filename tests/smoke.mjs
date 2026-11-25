@@ -250,9 +250,9 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   picker.setAttribute('value', '2026-12-01');
   assert.equal(picker.value, '2026-12-01');
   assert.match(picker.monthLabel.textContent, /December 2026/, 'external value changes move the displayed month');
-  picker.value = '2026-03-31';
   picker.removeAttribute('min');
   picker.removeAttribute('max');
+  picker.value = '2026-03-31';
   const march31 = picker.days.querySelector('[data-date="2026-03-31"]');
   march31.focus();
   march31.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'PageUp', bubbles: true, cancelable: true }));
@@ -267,7 +267,7 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   const lastDay = picker.days.querySelector('[data-date="2026-11-30"]');
   lastDay.focus();
   lastDay.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
-  assert.equal(d.activeElement, lastDay, 'keyboard navigation does not lose focus at max');
+  assert.equal(d.activeElement.dataset.date, '2026-11-30', 'keyboard navigation clamps focus at max');
   picker.disabled = true;
   picker.clearButton.click();
   assert.equal(picker.value, '2026-11-30', 'a disabled picker cannot be cleared');
@@ -279,6 +279,16 @@ await t('custom date picker handles calendar selection, limits, navigation and f
   assert.equal(picker.open, false);
   picker.focus();
   assert.equal(d.activeElement, picker.trigger, 'focus() targets the date picker trigger');
+});
+await t('closing a parent popover closes nested surfaces and cleans up listeners', async () => {
+ const c=mount('<ui-popover id="life-outer"><button slot="trigger">Outer</button><div><ui-popover id="life-inner"><button slot="trigger">Inner</button><p>Nested</p></ui-popover></div></ui-popover>');
+ const outer=c.querySelector('#life-outer'),inner=c.querySelector('#life-inner'); outer.show(); inner.show();
+ assert.equal(inner.panel._uiFloatParent,outer.panel);
+ inner.panel.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+ assert.equal(inner.open,false,'Escape closes the topmost child surface first'); assert.equal(outer.open,true,'Escape leaves the parent surface open');
+ inner.show(); outer.hide(); assert.equal(inner.open,false); await tick(220);
+ assert.equal(inner.panel.hasAttribute('data-open'),false); outer.show(); inner.show(); outer.remove(); assert.equal(inner.open,false); await tick(220);
+ assert.equal(d.querySelectorAll('[data-ui-floating-layer] .ui-float[data-open]').length,0);
 });
 await t('floating surfaces share a clipped-layer escape hatch and stack by open order', () => {
   const c = mount('<ui-popover id="first"><button slot="trigger">First</button><p>First panel</p></ui-popover><ui-popover id="second"><button slot="trigger">Second</button><p>Second panel</p></ui-popover>');
@@ -302,6 +312,15 @@ await t('floating surfaces share a clipped-layer escape hatch and stack by open 
   first.hide();
 });
 
+await t('date picker enforces boundaries for programmatic values and keyboard movement', () => {
+ const c=mount('<ui-date-picker name="release" value="2026-11-15" min="2026-11-10" max="2026-11-20"></ui-date-picker>'), p=c.firstChild;
+ assert.equal(p.value,'2026-11-15'); assert.equal([...p.days.querySelectorAll('[tabindex="0"]')].length,1);
+ p.value='2026-11-21'; assert.equal(p.value,''); assert.equal(p.hiddenValue.value,'');
+ p.value='2026-11-10'; const first=p.days.querySelector('[data-date="2026-11-10"]'); first.focus(); first.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true})); assert.equal(d.activeElement.dataset.date,'2026-11-10');
+ p.value='2026-11-20'; const last=p.days.querySelector('[data-date="2026-11-20"]'); last.focus(); last.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true})); assert.equal(d.activeElement.dataset.date,'2026-11-20');
+ p.setAttribute('max','2026-11-09'); assert.equal(p.value,''); assert.ok([...p.days.querySelectorAll('button')].every(x=>x.disabled)); assert.ok(p.prev.disabled&&p.next.disabled);
+ p.setAttribute('min','2026-12-01'); p.setAttribute('max','2026-12-31'); p.value='2026-12-15'; p.show(); assert.equal([...p.days.querySelectorAll('[tabindex="0"]')].length,1); assert.equal(d.activeElement.dataset.date,'2026-12-15'); p.hide();
+});
 await t('custom time picker supports 12-hour mode and hidden form value', () => {
   const c = mount('<ui-time-picker id="time" name="time" value="14:30" format="12h" step="5"></ui-time-picker>');
   const picker = c.firstChild;
@@ -397,7 +416,7 @@ await t('floating morph and overlay surfaces avoid visible borders', () => {
   assert.match(feedback, /\.ui-toast\{[^}]*border:0/);
   assert.match(containers, /grid-template-rows:0fr/);
   assert.match(containers, /prefers-reduced-motion:reduce/);
-  assert.match(readFileSync('src/js/core.js', 'utf8'), /function morphSurface/);
+  assert.match(readFileSync('src/js/core/floating.js', 'utf8'), /function morphSurface/);
   assert.match(readFileSync('src/js/components/popover.js', 'utf8'), /morphSurface\(this\.trigger/);
 });
 
@@ -522,7 +541,7 @@ await t('ui-search: local data, keyboard select, clear, async source states', as
   s.source = (q) => new Promise((resolve) => setTimeout(() => resolve([{ label: q }]), q === 'slow' ? 35 : 5));
   s.input.value = 'slow'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
   s.input.value = 'fast'; s.input.dispatchEvent(new w.Event('input')); await tick(50);
-  assert.equal(s.listEl.querySelector('.ui-option-label')?.textContent, 'fast', 'late responses cannot overwrite newer search results');
+  assert.equal(s.listEl.querySelector('.ui-option b')?.textContent, '★ fast', 'late responses cannot overwrite the newer result and the custom renderer stays active');
   s.input.value = 'pending'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
   s.clear(); await tick(50);
   assert.equal(s.panel.hasAttribute('data-open'), false, 'clearing a pending search keeps the panel closed');
@@ -618,13 +637,13 @@ await t('page bottom fade supports content offsets and keeps pointer input clear
 });
 await t('showcase avoids scroll-time blur and continuously running demo effects', () => {
   const showcase = readFileSync('showcase/showcase.css', 'utf8');
-  const core = readFileSync('src/js/core.js', 'utf8');
+  const floating = readFileSync('src/js/core/floating.js', 'utf8');
   assert.match(showcase, /scroll-behavior:\s*auto/);
   assert.doesNotMatch(showcase, /\.topbar[^}]*backdrop-filter/);
   assert.match(showcase, /contain:\s*layout style/);
   assert.match(showcase, /\.fx-grid \.ui-edge--animated::before\s*\{\s*animation-play-state:\s*paused/);
-  assert.match(core, /requestAnimationFrame\(\(\) => \{ frame = 0; reposition\(\); \}\)/);
-  assert.match(core, /passive:\s*true/);
+  assert.match(floating, /requestAnimationFrame\(\(\) => \{ frame = 0; reposition\(\); \}\)/);
+  assert.match(floating, /passive:\s*true/);
 });
 await t('floating component surfaces use semantic theme tokens', () => {
   const advanced = readFileSync('src/css/advanced.css', 'utf8');

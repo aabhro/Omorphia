@@ -1,4 +1,4 @@
-import { define, h, uid, emit, floatEl, showFloat, hideFloat, place, whileOpen, inheritTheme, morphSurface } from '../core.js';
+import { define, h, uid, emit, floatEl, showFloat, hideFloat, closeFloatChildren, place, whileOpen, inheritTheme, morphSurface } from '../core.js';
 
 /** <ui-popover placement="bottom-start"><ui-button slot="trigger">Open</ui-button> …content… </ui-popover>
  *  Methods: show(), hide(), toggle(). Property: open. Events: ui-open, ui-close. */
@@ -10,6 +10,7 @@ export class UIPopover extends HTMLElement {
       this.trigger = kids.find((n) => n.nodeType === 1 && n.getAttribute('slot') === 'trigger') || kids.find((n) => n.nodeType === 1);
       this.panel = floatEl(h('div', { class: this.constructor.panelClass, id: uid('ui-pop'), role: this.constructor.panelRole }));
       this.panel.append(...kids.filter((n) => n !== this.trigger)); this.append(this.panel);
+      this.panel._uiFloatCloseFromParent = () => this.closeFromParent();
       this.trigger?.addEventListener('click', (e) => { e.preventDefault(); this.toggle(); });
       this.trigger?.addEventListener('keydown', (e) => this.triggerKey(e));
       this.panel.addEventListener('keydown', (e) => this.panelKey(e));
@@ -17,7 +18,7 @@ export class UIPopover extends HTMLElement {
       t?.setAttribute('aria-haspopup', this.constructor.haspopup); t?.setAttribute('aria-controls', this.panel.id); t?.setAttribute('aria-expanded', 'false');
     }
   }
-  disconnectedCallback() { this.hide(); }
+  disconnectedCallback() { this.closeFromParent(); }
   get open() { return !!(this.panel?.hasAttribute('data-open') && !this.panel?.hasAttribute('data-closing')); }
   set open(v) { v ? this.show() : this.hide(); }
   reposition = () => place(this.trigger, this.panel, { placement: this.getAttribute('placement') || 'bottom-start', offset: 6 });
@@ -34,6 +35,7 @@ export class UIPopover extends HTMLElement {
   }
   hide() {
     if (!this.open) return;
+    closeFloatChildren(this.panel);
     this._off?.(); this._off = null;
     this.focusTarget?.setAttribute('aria-expanded', 'false');
     const token = this._morphToken = (this._morphToken || 0) + 1;
@@ -55,8 +57,30 @@ export class UIPopover extends HTMLElement {
     }
     emit(this, 'ui-close');
   }
+  closeFromParent() {
+    if (!this.panel) return;
+    const wasOpen = this.panel.hasAttribute('data-open') || !!this.panel._uiFloatMode;
+    if (!wasOpen) { this._off?.(); this._off = null; return; }
+    this._off?.(); this._off = null;
+    this._morphToken = (this._morphToken || 0) + 1;
+    this._morphAnimation?.cancel?.(); this._morphAnimation = null;
+    this.focusTarget?.setAttribute('aria-expanded', 'false');
+    this.panel.removeAttribute('data-closing');
+    hideFloat(this.panel);
+    emit(this, 'ui-close', { reason: 'parent' });
+  }
   toggle() { this.open ? this.hide() : this.show(); }
-  triggerKey() {} panelKey(e) { if (e.key === 'Tab') this.hide(); }
+  triggerKey(e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const before = this.ownerDocument.activeElement;
+    this.show();
+    if (this.ownerDocument.activeElement === before) {
+      const items = this.panel.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])');
+      (e.key === 'ArrowUp' ? items[items.length - 1] : items[0])?.focus({ preventScroll: true });
+    }
+  }
+  panelKey(e) { if (e.key === 'Tab') this.hide(); }
 }
 define('ui-popover', UIPopover);
 
