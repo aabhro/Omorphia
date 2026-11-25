@@ -10,7 +10,6 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));const address=server.addres
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1,reducedMotion:'reduce'});page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:'+address.port+'/index.html',{waitUntil:'domcontentloaded'});await page.waitForSelector('#date-demo');
- assert.equal(await page.locator('link[href="../dist/omorphia.min.css"]').evaluate(el=>!!el.sheet),true,'playground stylesheet loads successfully');
  await page.screenshot({path:resolve(output,'showcase-dark.png'),fullPage:true,animations:'disabled'});
  const date=page.locator('#date-demo');await date.evaluate(el=>el.show());
  const v=await date.evaluate(el=>{const p=el.popoverElement.panel,r=p.getBoundingClientRect(),s=getComputedStyle(p);return{position:s.position,pointerEvents:s.pointerEvents,width:Math.round(r.width),height:Math.round(r.height),left:Math.round(r.left),top:Math.round(r.top)};});
@@ -22,6 +21,7 @@ try{
  await page.locator('#nested-popover-outer').evaluate(el=>el.hide());await page.waitForTimeout(240);assert.equal(await page.locator('[data-ui-floating-layer] .ui-float[data-open]').count(),0);
  await page.locator('html').evaluate(el=>el.setAttribute('data-ui-theme','light'));await page.screenshot({path:resolve(output,'showcase-light.png'),fullPage:true,animations:'disabled'});
  await page.goto('http://127.0.0.1:'+address.port+'/playground/index.html',{waitUntil:'domcontentloaded'});await page.waitForSelector('#component-preview ui-button');
+ assert.equal(await page.locator('link[href="../dist/omorphia.min.css"]').evaluate(el=>!!el.sheet),true,'playground stylesheet loads successfully');
  await page.screenshot({path:resolve(output,'playground-dark.png'),fullPage:true,animations:'disabled'});
  await page.locator('#component-search').evaluate(el=>{el.input.value='date';el.input.dispatchEvent(new Event('input',{bubbles:true}));});
  await page.waitForFunction(()=>document.querySelector('#component-list').textContent.includes('Date picker'));await page.locator('#component-list ui-button').first().click();
