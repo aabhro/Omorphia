@@ -1,9 +1,9 @@
 {
   "name": "Omorphia",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "files": {
-    "omorphia.min.css": "sha384-X5KCFfQCXt6KGtFjx9nsMAsZyzBmavylP60CnFoCovny/yquiKmmIiHUYmWWsJj5",
-    "omorphia.min.js": "sha384-LqWD7Le0RQP5nS020NRmCvo+vP7Hcmgk4CprQW9SqRwRxA7PP5p48LJcRzg7yaMc",
-    "omorphia.esm.min.js": "sha384-rAEaH/3EV3ADbxURj7Uo3txqMiJ9ST2r/Cs8AcZ3ZMLCVNaGb4jqjn9ympr6QuK+"
+    "omorphia.min.css": "sha384-ndVM/p9yDd5b4VHEP54urK6CctyvYP97xkGp5wTmDFU0ZdfMleLc5MQQVJYjAQS3",
+    "omorphia.min.js": "sha384-kBsxN8Pi5zP8A3YyP6Q7EggHfOjxKKr1WrJp7RZsI4DeUX6Rk3dg1q1PsZVbCEOi",
+    "omorphia.esm.min.js": "sha384-LJmL+4uDrMdaayTN7AnstKAvNQtQXNlFT9hInnUrP+vl1gNZWwR5G3/udpjJGtMe"
   }
 }

@@ -1,4 +1,4 @@
-/*! Omorphia v1.3.0 | MIT | https://github.com/aabhro/Omorphia */
+/*! Omorphia v1.3.1 | MIT | https://github.com/aabhro/Omorphia */
 
 // src/js/icon-data.js
 var LUCIDE_VERSION = "1.77.0";
@@ -68,6 +68,12 @@ var floatLayer = null;
 var floatSequence = 0;
 var activeFloats = /* @__PURE__ */ new Set();
 var floatThemeListenerInstalled = false;
+function resolveThemeScope(context) {
+  for (let node = context; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute("data-ui-theme")) return node._uiThemeScope || node;
+  }
+  return document.documentElement;
+}
 function inheritedThemeValue(context, name) {
   const computed = getComputedStyle(context).getPropertyValue(name);
   if (computed) return computed;
@@ -81,10 +87,10 @@ function syncFloatThemes(event) {
   const changed = event.target;
   for (const el of activeFloats) {
     const context = el._uiFloatThemeSource;
-    if (!context?.isConnected || changed !== context && !changed?.contains?.(context)) continue;
-    const mode = context.closest("[data-ui-theme]")?.getAttribute("data-ui-theme");
-    if (mode) el.setAttribute("data-ui-theme", mode);
-    else el.removeAttribute("data-ui-theme");
+    const scope = el._uiThemeScope || resolveThemeScope(context);
+    if (!context?.isConnected || !scope?.isConnected || changed !== scope && !changed?.contains?.(scope)) continue;
+    const mode = scope.getAttribute("data-ui-theme") || "dark";
+    el.setAttribute("data-ui-theme", mode);
     for (const [name] of el._uiFloatSavedVars || []) {
       const value = inheritedThemeValue(context, name);
       if (value) el.style.setProperty(name, value);
@@ -121,6 +127,7 @@ function portalFloat(el) {
   }
   const inherited = [];
   el._uiFloatThemeSource = el._uiThemeSource || el.parentElement;
+  el._uiThemeScope ||= resolveThemeScope(el._uiFloatThemeSource);
   if (typeof getComputedStyle === "function") {
     const computed = getComputedStyle(el);
     const context = el._uiFloatThemeSource;
@@ -163,6 +170,7 @@ function restoreFloat(el) {
   el._uiFloatPlaceholder = null;
   activeFloats.delete(el);
   el._uiFloatThemeSource = null;
+  el._uiThemeScope = null;
   for (const [name, value, priority] of el._uiFloatSavedVars || []) {
     if (value) el.style.setProperty(name, value, priority);
     else el.style.removeProperty(name);
@@ -222,9 +230,9 @@ function morphSurface(anchor, surface, opening = true) {
 }
 function inheritTheme(from, to) {
   to._uiThemeSource = from;
-  const t = from.closest("[data-ui-theme]")?.getAttribute("data-ui-theme");
-  if (t) to.setAttribute("data-ui-theme", t);
-  else to.removeAttribute("data-ui-theme");
+  const scope = resolveThemeScope(from);
+  to._uiThemeScope = scope;
+  to.setAttribute("data-ui-theme", scope.getAttribute("data-ui-theme") || "dark");
 }
 function place(anchor, floating, { placement = "bottom", offset = 8, matchWidth = false } = {}) {
   if (!anchor || !floating) return;
@@ -2305,6 +2313,16 @@ var parseDate = (value) => {
   return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
 };
 var dateLabel = (date, locale) => new Intl.DateTimeFormat(locale || void 0, { year: "numeric", month: "short", day: "numeric" }).format(date);
+var yearMonth = (date) => date.getFullYear() * 12 + date.getMonth();
+var weekStartOf = (value) => {
+  const parsed = Number.parseInt(value ?? "0", 10);
+  return Number.isFinite(parsed) ? Math.min(6, Math.max(0, parsed)) : 0;
+};
+var shiftMonth = (date, amount) => {
+  const target = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  target.setDate(Math.min(date.getDate(), new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()));
+  return target;
+};
 var UIDatePicker = class extends HTMLElement {
   static observedAttributes = ["value", "min", "max", "disabled", "placeholder", "locale", "week-start", "placement", "name", "label"];
   connectedCallback() {
@@ -2345,8 +2363,18 @@ var UIDatePicker = class extends HTMLElement {
     this.replaceChildren(this.popoverElement, this.hiddenValue);
     this.sync();
   }
-  attributeChangedCallback() {
-    if (this.popoverElement) this.sync();
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (!this.popoverElement) return;
+    if (name === "value") {
+      const date = parseDate(newValue);
+      this._value = date ? isoDate(date) : "";
+      if (date) this.view = new Date(date.getFullYear(), date.getMonth(), 1);
+    } else if (name === "min" || name === "max") {
+      const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+      if (min && yearMonth(this.view) < yearMonth(min)) this.view = new Date(min.getFullYear(), min.getMonth(), 1);
+      if (max && yearMonth(this.view) > yearMonth(max)) this.view = new Date(max.getFullYear(), max.getMonth(), 1);
+    }
+    this.sync();
   }
   get value() {
     return this._value || "";
@@ -2362,7 +2390,7 @@ var UIDatePicker = class extends HTMLElement {
     return parseDate(this.value);
   }
   focus(options) {
-    this.input?.focus(options);
+    this.trigger?.focus(options);
   }
   get open() {
     return !!this.popoverElement?.open;
@@ -2384,8 +2412,8 @@ var UIDatePicker = class extends HTMLElement {
   }
   isDisabled(date) {
     const iso = isoDate(date);
-    const min = this.getAttribute("min"), max = this.getAttribute("max");
-    return min && iso < min || max && iso > max || this.disabled;
+    const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+    return min && iso < isoDate(min) || max && iso > isoDate(max) || this.disabled;
   }
   sync() {
     const parsed = parseDate(this.getAttribute("value"));
@@ -2395,6 +2423,12 @@ var UIDatePicker = class extends HTMLElement {
     this.valueLabel.textContent = this.date ? dateLabel(this.date, this.getAttribute("locale")) : this.getAttribute("placeholder") || "Choose date";
     this.trigger.classList.toggle("is-placeholder", !this.value);
     this.trigger.setAttribute("aria-expanded", String(this.popoverElement.open));
+    const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+    const monthValue = yearMonth(this.view);
+    this.prev.disabled = this.disabled || !!(min && monthValue <= yearMonth(min));
+    this.next.disabled = this.disabled || !!(max && monthValue >= yearMonth(max));
+    this.clearButton.disabled = this.disabled || !this.value;
+    this.todayButton.disabled = this.disabled || this.isDisabled(/* @__PURE__ */ new Date());
     this.hiddenValue.name = this.disabled ? "" : this.getAttribute("name") || "";
     this.hiddenValue.value = this.value;
     this.renderCalendar();
@@ -2402,7 +2436,7 @@ var UIDatePicker = class extends HTMLElement {
   renderCalendar() {
     const year = this.view.getFullYear(), month = this.view.getMonth();
     this.monthLabel.textContent = new Intl.DateTimeFormat(this.getAttribute("locale") || void 0, { month: "long", year: "numeric" }).format(this.view);
-    const weekStart = Math.min(6, Math.max(0, Number(this.getAttribute("week-start") || 0)));
+    const weekStart = weekStartOf(this.getAttribute("week-start"));
     const base = new Date(year, month, 1);
     const offset = (base.getDay() - weekStart + 7) % 7;
     const start = new Date(year, month, 1 - offset);
@@ -2431,36 +2465,52 @@ var UIDatePicker = class extends HTMLElement {
     this.days.replaceChildren(...items);
   }
   changeMonth(amount) {
-    this.view = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
+    if (this.disabled) return;
+    const target = new Date(this.view.getFullYear(), this.view.getMonth() + amount, 1);
+    const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+    if (min && yearMonth(target) < yearMonth(min)) return;
+    if (max && yearMonth(target) > yearMonth(max)) return;
+    this.view = target;
     this.renderCalendar();
+    this.syncNavigation();
+  }
+  syncNavigation() {
+    if (!this.prev || !this.next) return;
+    const min = parseDate(this.getAttribute("min")), max = parseDate(this.getAttribute("max"));
+    const month = yearMonth(this.view);
+    this.prev.disabled = this.disabled || !!(min && month <= yearMonth(min));
+    this.next.disabled = this.disabled || !!(max && month >= yearMonth(max));
   }
   focusCurrentDay() {
     const target = this.days.querySelector('[data-date="' + (this.value || isoDate(/* @__PURE__ */ new Date())) + '"]:not(:disabled)') || this.days.querySelector("button:not(:disabled)");
-    target?.focus();
+    target?.focus({ preventScroll: true });
   }
   onDayKey(event) {
     const current = parseDate(event.target.dataset.date);
-    if (!current) return;
+    if (!current || this.disabled) return;
     let next = null;
     if (event.key === "ArrowLeft") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 1);
     else if (event.key === "ArrowRight") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
     else if (event.key === "ArrowUp") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - 7);
     else if (event.key === "ArrowDown") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 7);
-    else if (event.key === "Home") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - (current.getDay() - Number(this.getAttribute("week-start") || 0) + 7) % 7);
-    else if (event.key === "End") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + (6 - (current.getDay() - Number(this.getAttribute("week-start") || 0) + 7) % 7));
-    else if (event.key === "PageUp") next = new Date(current.getFullYear(), current.getMonth() - (event.shiftKey ? 12 : 1), current.getDate());
-    else if (event.key === "PageDown") next = new Date(current.getFullYear(), current.getMonth() + (event.shiftKey ? 12 : 1), current.getDate());
+    else if (event.key === "Home") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() - (current.getDay() - weekStartOf(this.getAttribute("week-start")) + 7) % 7);
+    else if (event.key === "End") next = new Date(current.getFullYear(), current.getMonth(), current.getDate() + (6 - (current.getDay() - weekStartOf(this.getAttribute("week-start")) + 7) % 7));
+    else if (event.key === "PageUp") next = shiftMonth(current, event.shiftKey ? -12 : -1);
+    else if (event.key === "PageDown") next = shiftMonth(current, event.shiftKey ? 12 : 1);
     else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       this.select(event.target.dataset.date);
       return;
     } else return;
     event.preventDefault();
+    if (this.isDisabled(next)) return;
     if (next.getMonth() !== this.view.getMonth() || next.getFullYear() !== this.view.getFullYear()) this.view = new Date(next.getFullYear(), next.getMonth(), 1);
     this.renderCalendar();
-    this.days.querySelector('[data-date="' + isoDate(next) + '"]:not(:disabled)')?.focus();
+    this.syncNavigation();
+    this.days.querySelector('[data-date="' + isoDate(next) + '"]:not(:disabled)')?.focus({ preventScroll: true });
   }
   select(value) {
+    if (this.disabled) return;
     const date = parseDate(value);
     if (date && this.isDisabled(date)) return;
     this._value = date ? isoDate(date) : "";
@@ -2990,7 +3040,7 @@ var UIMenuItem = class extends HTMLElement {
 define("ui-menu-item", UIMenuItem);
 
 // src/js/index.js
-var version = true ? "1.3.0" : "dev";
+var version = true ? "1.3.1" : "dev";
 var theme = {
   get: (el = document.documentElement) => el.getAttribute("data-ui-theme") || "dark",
   set(mode, el = document.documentElement) {
