@@ -541,7 +541,7 @@ await t('ui-search: local data, keyboard select, clear, async source states', as
   s.source = (q) => new Promise((resolve) => setTimeout(() => resolve([{ label: q }]), q === 'slow' ? 35 : 5));
   s.input.value = 'slow'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
   s.input.value = 'fast'; s.input.dispatchEvent(new w.Event('input')); await tick(50);
-  assert.equal(s.listEl.querySelector('.ui-option b')?.textContent, '★ Remote fast', 'late responses cannot overwrite the newer result and the custom renderer stays active');
+  assert.equal(s.listEl.querySelector('.ui-option b')?.textContent, '★ fast', 'late responses cannot overwrite the newer result and the custom renderer stays active');
   s.input.value = 'pending'; s.input.dispatchEvent(new w.Event('input')); await tick(2);
   s.clear(); await tick(50);
   assert.equal(s.panel.hasAttribute('data-open'), false, 'clearing a pending search keeps the panel closed');
