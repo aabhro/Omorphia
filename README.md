@@ -463,9 +463,14 @@ Set <code>data-ui-theme="light"</code> on any section for a scoped light theme. 
 
 Use one fixed gradient overlay to fade the entire page at the bottom of the viewport. It is not a text mask. It stays above page content, uses the active theme background, and never blocks clicks.
 
+<details>
+  <summary><strong>Viewport fade element</strong></summary>
+
 ~~~html
 <div class="ui-page-fade" aria-hidden="true"></div>
 ~~~
+
+</details>
 
 Place it once as a direct child of <code>body</code>, at the end of the document. Adjust its height with <code>--ui-page-fade-height</code> (default <code>144px</code>). Load <code>overlays.min.css</code> after <code>core.min.css</code> when using individual CSS modules.
 
