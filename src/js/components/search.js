@@ -71,7 +71,8 @@ export class UISearch extends HTMLElement {
     if (bool(this, 'autocomplete')) this._q(this.input.value);
   }
   async query(q) {
-    const requestId = (this._queryId = (this._queryId || 0) + 1);\n    const rawMin = Number(this.getAttribute('min-chars') ?? 1);
+    const requestId = (this._queryId = (this._queryId || 0) + 1);
+    const rawMin = Number(this.getAttribute('min-chars') ?? 1);
     const rawMax = Number(this.getAttribute('max') ?? 8);
     const min = Number.isInteger(rawMin) && rawMin >= 0 ? rawMin : 1;
     const max = Number.isInteger(rawMax) && rawMax > 0 ? rawMax : 8;
