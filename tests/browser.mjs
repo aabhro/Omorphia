@@ -147,6 +147,22 @@ try {
   await delay(220);
   assert.equal(await evaluate(regionOptionColor), 'rgb(245, 245, 245)', 'an open select option switches back to dark after its color transition');
   console.log('  ✓ open floating surfaces switch light and dark themes');
+  await click('#layer-outer > button');
+  await waitFor(`document.querySelector('#layer-outer').open`, 'outer layered panel opens');
+  await evaluate("Omorphia.theme.set('light')");
+  await delay(220);
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-outer').panel).backgroundColor`), 'rgb(250, 250, 250)', 'outer panel uses the light surface');
+  await click('#layer-inner > button');
+  await waitFor(`document.querySelector('#layer-inner').open`, 'nested layered panel opens');
+  await delay(220);
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-inner').panel).backgroundColor`), 'rgb(250, 250, 250)', 'nested panel inherits the light surface');
+  await evaluate("Omorphia.theme.set('dark')");
+  await delay(220);
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-outer').panel).backgroundColor`), 'rgb(10, 10, 10)', 'outer panel switches back to dark');
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('#layer-inner').panel).backgroundColor`), 'rgb(10, 10, 10)', 'nested panel switches back to dark');
+  await evaluate("document.querySelector('#layer-inner').hide(); document.querySelector('#layer-outer').hide()");
+  console.log('  ✓ nested floating panels follow light and dark themes');
+
 
   const regionMode = await evaluate(`document.querySelector('#region-test').popoverElement.panel._uiFloatMode`);
   await click('.ui-select-option[data-ui-option-index="0"]');
@@ -162,6 +178,30 @@ try {
   await waitFor(`document.querySelector('#date-test').value === '2026-11-21'`, 'date cell selection updates the value');
   assert.equal(await evaluate(`document.querySelector('#date-test').hiddenValue.value`), '2026-11-21');
   console.log(`  ✓ date picker opens and selects by pointer (${dateMode})`);
+  await click('#date-test .ui-date-trigger');
+  await click('.ui-calendar-nav[aria-label="Next month"]');
+  assert.match(await evaluate(`document.querySelector('#date-test').monthLabel.textContent`), /December 2026/, 'next-month navigation changes the visible month');
+  assert.equal(await evaluate(`document.querySelector('#date-test').next.disabled`), true, 'the calendar stops at its configured maximum month');
+  await evaluate(`document.querySelector('#date-test').value = '2026-03-31'`);
+  assert.match(await evaluate(`document.querySelector('#date-test').monthLabel.textContent`), /March 2026/, 'external value changes update the visible month');
+  await evaluate(`(() => {
+    const picker = document.querySelector('#date-test');
+    const day = picker.days.querySelector('[data-date="2026-03-31"]');
+    day.focus();
+    day.dispatchEvent(new KeyboardEvent('keydown', { key: 'PageUp', bubbles: true, cancelable: true }));
+  })()`);
+  assert.equal(await evaluate(`document.activeElement.dataset.date`), '2026-02-28', 'Page Up clamps at February instead of overflowing into March');
+  await evaluate(`document.querySelector('#date-test').value = '2026-12-31'`);
+  await evaluate(`(() => {
+    const picker = document.querySelector('#date-test');
+    const day = picker.days.querySelector('[data-date="2026-12-31"]');
+    day.focus();
+    day.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+  })()`);
+  assert.equal(await evaluate(`document.activeElement.dataset.date`), '2026-12-31', 'keyboard focus stays on the last allowed date');
+  await evaluate(`document.querySelector('#date-test').hide()`);
+  console.log('  ✓ date picker month navigation, external values and keyboard limits');
+
 
   await click('#time-test .ui-time-trigger');
   await waitFor(`document.querySelector('#time-test').open`, 'time picker opens');
