@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/framework-free-111111?style=flat-square" alt="Framework free">
     <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
   </p>
-  <p><a href="https://aabhro.github.io/Omorphia/"><strong>Open the live demo ↗</strong></a></p>
+  <p><a href="https://aabhro.github.io/Omorphia/"><strong>Open the live demo ↗</strong></a> · <a href="./playground/"><strong>Component playground ↗</strong></a></p>
 </div>
 
 <div align="center">
@@ -94,7 +94,7 @@ Load the stylesheet and script, then use the components directly in your markup.
 
 <div align="center">
 
-[**Open the live demo**](https://aabhro.github.io/Omorphia/) · [Showcase source](index.html) · [Source styles](src/css/) · [Component logic](src/js/)
+[**Open the live demo**](https://aabhro.github.io/Omorphia/) · [**Component playground**](playground/) · [Showcase source](index.html) · [Source styles](src/css/) · [Component logic](src/js/)
 
 </div>
 
@@ -523,3 +523,24 @@ MIT. See <a href="LICENSE">LICENSE</a>.
   <strong>Omorphia</strong><br>
   <sub>A small, considered foundation for browser interfaces.</sub>
 </div>
+
+
+## Component playground
+
+Use the [interactive component playground](playground/) to browse live elements, switch themes, inspect examples, and copy their markup.
+
+## TypeScript
+
+The package includes declarations at `types/index.d.ts`, including tag mappings for the registered custom elements.
+
+## Visual regression checks
+
+The Playwright suite captures the showcase and playground in multiple states. It checks floating-surface geometry, stacking, theme rendering, and picker behavior. CI uploads screenshots as an artifact.
+
+Run locally with:
+
+```sh
+npm install --no-save --package-lock=false playwright@1.56.1
+npx playwright install chromium
+npm run test:visual
+```

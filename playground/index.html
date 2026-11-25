@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en" data-ui-theme="dark"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light">
+<title>Omorphia · Component playground</title><link rel="stylesheet" href="../dist/omorphia.css"><link rel="stylesheet" href="./playground.css">
+</head><body>
+<div class="playground-shell">
+<header class="playground-topbar"><a class="brand" href="../index.html"><span class="brand-mark">O</span><span>Omorphia</span></a><span class="topbar-note">Component playground</span>
+<div class="topbar-actions"><ui-select id="theme-select" value="dark" aria-label="Theme"><ui-option value="dark">Dark theme</ui-option><ui-option value="light">Light theme</ui-option></ui-select><ui-button id="open-palette" variant="secondary" icon="command">Commands</ui-button></div></header>
+<main class="playground-main"><aside class="playground-sidebar"><p class="eyebrow">Library</p><h1>Components</h1><ui-input id="component-search" label="Filter components" placeholder="Search components…"></ui-input><nav id="component-list" aria-label="Components"></nav><p class="sidebar-foot">28 registered elements<br>Framework-free · CDN-first</p></aside>
+<section class="playground-content"><div class="content-heading"><div><p class="eyebrow" id="component-category">Foundations</p><h2 id="component-title">Buttons</h2><p id="component-description">Button styles, sizes and states.</p></div><ui-button id="copy-markup" variant="secondary" icon="copy">Copy markup</ui-button></div>
+<div class="playground-stage ui-edge" id="component-preview" aria-live="polite"></div>
+<section class="code-section"><div class="code-heading"><span>Example markup</span><span id="copy-state" role="status" aria-live="polite"></span></div><pre><code id="component-code"></code></pre></section></section></main></div>
+<ui-command-palette hotkey="mod+shift+k"></ui-command-palette><script src="../dist/omorphia.min.js"></script><script src="./playground.js"></script>
+</body></html>
